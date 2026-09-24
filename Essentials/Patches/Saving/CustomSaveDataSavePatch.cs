@@ -22,7 +22,7 @@ internal static class CustomSaveDataSavePatch
             {
                 var base128 = rootSave.ToBytes().EncodeToBase128();
                 var finalEntry = $"{DataPrefixOwn}{base128}";
-                __result.ZoneIndex.IndexTable = MiscEUtil.AddToNew(__result.ZoneIndex.IndexTable,finalEntry);
+                __result.ZoneIndex = MiscEUtil.AddToNew(__result.ZoneIndex,finalEntry);
             }
         }
         catch (Exception e) { LogError(e); }
@@ -38,7 +38,7 @@ internal static class CustomSaveDataSavePatch
                 var base128 = rootSave.ToBytes().EncodeToBase128();
                 var md5Hash = expansion.GetPackageInfoFromExpansion()?.ID.CreateMD5();
                 var finalEntry = $"{DataPrefix}{md5Hash}{base128}";
-                __result.ZoneIndex.IndexTable = MiscEUtil.AddToNew(__result.ZoneIndex.IndexTable,finalEntry);
+                __result.ZoneIndex = MiscEUtil.AddToNew(__result.ZoneIndex,finalEntry);
             }
             catch (Exception e)
             {
