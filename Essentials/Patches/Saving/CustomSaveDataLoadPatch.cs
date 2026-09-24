@@ -1,7 +1,5 @@
-using System.Linq;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
-using Il2CppMonomiPark.SlimeRancher.Persist;
 using Starlight.Expansion;
 using Starlight.Managers;
 using Starlight.Saving;
@@ -33,7 +31,7 @@ internal static class CustomSaveDataLoadPatch
     internal static void Prefix(ActorIdProvider actorIdProvider, ISaveReferenceTranslation saveReferenceTranslation, dynamic gameState, GameModel gameModel)
     {
         bool hasExecutedOwn = false;
-        foreach (var entry in MiscEUtil.ToNetArray(gameState.ZoneIndex.IndexTable))
+        foreach (var entry in MiscEUtil.ToNetArray(gameState.ZoneIndex))
             if (entry.StartsWith(DataPrefixOwn))
             {
                 try
@@ -57,7 +55,7 @@ internal static class CustomSaveDataLoadPatch
         _rootSaves = new Dictionary<StarlightExpansionV01, (RootSave, LoadingGameSessionData)>();
         _noRootSaves = new Dictionary<StarlightExpansionV01, LoadingGameSessionData>();
         var executedExpansions = new List<StarlightExpansionV01>();
-        foreach (var entry in MiscEUtil.ToNetArray(gameState.ZoneIndex.IndexTable))
+        foreach (var entry in MiscEUtil.ToNetArray(gameState.ZoneIndex))
             if (entry.StartsWith(DataPrefix))
             {
                 string remaining = entry.Substring(DataPrefix.Length);

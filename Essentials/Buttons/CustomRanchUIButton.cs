@@ -8,13 +8,15 @@ public class CustomRanchUIButton
 {
     public LocalizedString Label;
     public int InsertIndex;
-    internal RanchHouseMenuItemModel Model;
+
+    internal RanchHouseItemViewModelBase Model;
+
     public SystemAction Action;
     public bool Enabled = true;
 
     public CustomRanchUIButton(LocalizedString label, int insertIndex, SystemAction action)
     {
-        this.Label = label; ;
+        this.Label = label;
         this.InsertIndex = insertIndex;
         this.Action = action;
 
