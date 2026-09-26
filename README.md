@@ -23,7 +23,7 @@ Examples: https://github.com/ThatFinn/Starlight-Expansion-Examples
 Special thanks to SlimeRancherModding for SRML because it gave me good starting point for a bit of stuff when commencing development.<br />
 Link: https://github.com/SlimeRancherModding/SRML
 
-Special thanks to Thead for helping with early development and for the design of the icon and text for Starlight<br />
+Special thanks to Thean for helping with early development and for the design of the icon and text for Starlight<br />
 Link: https://github.com/TheanMcGarity
 
 Special thanks to Artur for adjusting the weather commands<br />
