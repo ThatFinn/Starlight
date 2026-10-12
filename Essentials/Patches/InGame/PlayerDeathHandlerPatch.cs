@@ -7,7 +7,7 @@ internal static class PlayerDeathHandlerPatch
 {
     internal static void Prefix(ref bool clearOutAmmo)
     {
-        if (StarlightSaveManager.inGameData.KeepInventoryActive)
+        if (StarlightSaveManager.inGameData?.KeepInventoryActive == true)
             clearOutAmmo = false;
     }
 }
