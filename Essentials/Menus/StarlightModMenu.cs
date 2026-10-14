@@ -251,6 +251,7 @@ internal class StarlightModMenu : StarlightMenu
                 else if (entry.BoxedEditedValue is LKey) ApplyLKeyFeatures(entry,blueprint,category);
                 else if (entry.BoxedEditedValue is KeyCode) ApplyKeyCodeFeatures(entry,blueprint,category);
                 else if (entry.BoxedEditedValue is Key) ApplyKeyFeatures(entry,blueprint,category);
+                else if (entry.BoxedEditedValue is Enum) ApplyEnumFeatures(entry,blueprint,category);
                 else ApplyUnknownFeatures(entry,blueprint,category);
                 
                 list.Add(blueprint);
@@ -321,6 +322,7 @@ internal class StarlightModMenu : StarlightMenu
                 else if (entry.dynamicValue is LKey) ApplyLKeyFeatures(entry,blueprint,prefs);
                 else if (entry.dynamicValue is KeyCode) ApplyKeyCodeFeatures(entry,blueprint,prefs);
                 else if (entry.dynamicValue is Key) ApplyKeyFeatures(entry,blueprint,prefs);
+                else if (entry.dynamicValue is Enum) ApplyEnumFeatures(entry,blueprint,prefs);
                 else ApplyUnknownFeatures(entry,blueprint,prefs);
                 
                 list.Add(blueprint);
@@ -735,6 +737,43 @@ internal class StarlightModMenu : StarlightMenu
             })
         });
     }
+    private static void ApplyEnumFeatures(PackagePref entry, UIBlueprint blueprint, PackagePrefs category)
+    {
+        blueprint.Children.Add(new ButtonUIBlueprintV01()
+        {
+            Size = new(480, 45), Position = new(410, 0), CornerRadius = 10,
+            ButtonColors = UIColorBlock.AlternativeButtons,
+            Children =
+            [
+                new TextUIBlueprintV01()
+                {
+                    TextContent = entry.stringifiedValue,
+                    DisableAutoTranslation = true,
+                    Alignment = TextAlignmentOptions.Center,
+                    FontSize = 30,
+                    Anchors = new Vector4(0, 0, 1, 1),
+                }
+            ],
+            OnClickButton = (button =>
+            {
+                try
+                {
+                    AudioEUtil.PlaySound(MenuSound.Click);
+                    var textMesh = button.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+                    var enumType = entry.dynamicValue.GetType();
+                    var values = Enum.GetValues(enumType);
+                    var currentIndex = Array.IndexOf(values, entry.dynamicValue);
+                    var nextValue = values.GetValue((currentIndex + 1) % values.Length);
+                    textMesh.text = nextValue.ToString();
+                    entry.SetPref(nextValue);
+                    category.Save();
+                    if (entry.showWarningOnEdit) ShowWarningText();
+                    UnityEngine.EventSystems.EventSystem.current?.SetSelectedGameObject(null);
+                }
+                catch (Exception e) { LogError(e); }
+            })
+        });
+    }
     private static void ApplyUnknownFeatures(PackagePref entry, UIBlueprint blueprint, PackagePrefs category)
     {
         blueprint.Children.Add(new TextUIBlueprintV01()
@@ -962,6 +1001,42 @@ internal class StarlightModMenu : StarlightMenu
 
                     _listeningAction = null;
                 };
+            })
+        });
+    }
+    private static void ApplyEnumFeatures(MelonPreferences_Entry entry, UIBlueprint blueprint, MelonPreferences_Category category)
+    {
+        blueprint.Children.Add(new ButtonUIBlueprintV01()
+        {
+            Size = new(480, 45), Position = new(410, 0), CornerRadius = 10,
+            ButtonColors = UIColorBlock.AlternativeButtons,
+            Children =
+            [
+                new TextUIBlueprintV01()
+                {
+                    TextContent = entry.GetEditedValueAsString(),
+                    DisableAutoTranslation = true,
+                    Alignment = TextAlignmentOptions.Center,
+                    FontSize = 30,
+                    Anchors = new Vector4(0, 0, 1, 1),
+                }
+            ],
+            OnClickButton = (button =>
+            {
+                try
+                {
+                    AudioEUtil.PlaySound(MenuSound.Click);
+                    var textMesh = button.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+                    var enumType = entry.BoxedEditedValue.GetType();
+                    var values = Enum.GetValues(enumType);
+                    var currentIndex = Array.IndexOf(values, entry.BoxedEditedValue);
+                    var nextValue = values.GetValue((currentIndex + 1) % values.Length);
+                    textMesh.text = nextValue.ToString();
+                    entry.BoxedEditedValue = nextValue;
+                    category.SaveToFile(false);
+                    UnityEngine.EventSystems.EventSystem.current?.SetSelectedGameObject(null);
+                }
+                catch (Exception e) { LogError(e); }
             })
         });
     }
