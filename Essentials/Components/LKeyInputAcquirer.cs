@@ -1,6 +1,7 @@
 using Starlight.Enums;
 using Starlight.Storage;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 namespace Starlight.Components;
 
@@ -11,6 +12,26 @@ internal class LKeyInputAcquirer : MonoBehaviour
     private HashSet<LKey> pressedKeys = new HashSet<LKey>();
     private HashSet<LKey> downThisFrame = new HashSet<LKey>();
     private HashSet<LKey> upThisFrame = new HashSet<LKey>();
+
+    private static readonly (System.Func<Gamepad, ButtonControl> control, LKey key)[] GamepadBindings =
+    {
+        (g => g.buttonSouth,        LKey.GamepadSouth),
+        (g => g.buttonNorth,        LKey.GamepadNorth),
+        (g => g.buttonEast,         LKey.GamepadEast),
+        (g => g.buttonWest,         LKey.GamepadWest),
+        (g => g.leftShoulder,       LKey.GamepadL1),
+        (g => g.rightShoulder,      LKey.GamepadR1),
+        (g => g.leftTrigger,        LKey.GamepadL2),
+        (g => g.rightTrigger,       LKey.GamepadR2),
+        (g => g.leftStickButton,    LKey.GamepadL3),
+        (g => g.rightStickButton,   LKey.GamepadR3),
+        (g => g.startButton,        LKey.GamepadStart),
+        (g => g.selectButton,       LKey.GamepadSelect),
+        (g => g.dpad.up,            LKey.GamepadUp),
+        (g => g.dpad.down,          LKey.GamepadDown),
+        (g => g.dpad.left,          LKey.GamepadLeft),
+        (g => g.dpad.right,         LKey.GamepadRight),
+    };
 
 
     private void Start()
@@ -81,7 +102,8 @@ internal class LKeyInputAcquirer : MonoBehaviour
         upThisFrame.Clear();
         tmpKeyCode = KeyCode.None;
 
-        // Safety net: check if any keys are physically pressed
+        // Safety net: check if any keyboard keys are physically pressed
+        // Only clears keyboard-related keys, not gamepad keys
         if (Keyboard.current != null)
         {
             bool anyPressed = false;
@@ -95,13 +117,47 @@ internal class LKeyInputAcquirer : MonoBehaviour
                     }
                 }
                 catch {}
-            
 
             if (!anyPressed)
             {
-                pressedKeys.Clear();
+                var toRemove = new List<LKey>();
+                foreach (var key in pressedKeys)
+                    if ((int)key < 1101) // only remove non-gamepad keys
+                        toRemove.Add(key);
+                foreach (var key in toRemove)
+                    pressedKeys.Remove(key);
                 keyMemory.Clear();
             }
+        }
+
+        // Gamepad polling
+        var gamepad = Gamepad.current;
+        if (gamepad != null)
+        {
+            foreach (var (getControl, lkey) in GamepadBindings)
+            {
+                try
+                {
+                    var control = getControl(gamepad);
+                    if (control.wasPressedThisFrame)
+                    {
+                        pressedKeys.Add(lkey);
+                        downThisFrame.Add(lkey);
+                    }
+                    else if (control.wasReleasedThisFrame)
+                    {
+                        pressedKeys.Remove(lkey);
+                        upThisFrame.Add(lkey);
+                    }
+                }
+                catch {}
+            }
+        }
+        else
+        {
+            // No gamepad connected — clear any stale gamepad keys
+            foreach (var (_, lkey) in GamepadBindings)
+                pressedKeys.Remove(lkey);
         }
     }
 

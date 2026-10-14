@@ -60,6 +60,13 @@ public enum LKey
     П = 917, Р = 918, С = 919, Т = 920, У = 921, Ф = 922, Х = 923, Ц = 924,
     Ч = 925, Ш = 926, Щ = 927, Ъ = 928, Ы = 929, Ь = 930, Э = 931, Ю = 932, Я = 933,
 
+    // Gamepad
+    GamepadSouth = 1101, GamepadNorth = 1102, GamepadEast = 1103, GamepadWest = 1104,
+    GamepadL1 = 1105, GamepadR1 = 1106, GamepadL2 = 1107, GamepadR2 = 1108,
+    GamepadL3 = 1109, GamepadR3 = 1110,
+    GamepadStart = 1111, GamepadSelect = 1112,
+    GamepadUp = 1113, GamepadDown = 1114, GamepadLeft = 1115, GamepadRight = 1116,
+
     // Hiragana 
     //The fallback font doesn't support it :/
     /*あ = 1001, い = 1002, う = 1003, え = 1004, お = 1005,
