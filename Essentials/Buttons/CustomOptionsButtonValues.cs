@@ -13,8 +13,7 @@ using QualityLevel = Il2CppMonomiPark.ScriptedValue.QualityLevel;
 
 namespace Starlight.Buttons;
 
-// Make it public on release
-internal class CustomOptionsButtonValues : CustomAbstractOptionsButton
+public class CustomOptionsButtonValues : CustomAbstractOptionsButton
 {
     public LocalizedString label;
     public LocalizedString detailsText;

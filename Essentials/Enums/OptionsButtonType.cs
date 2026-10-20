@@ -1,6 +1,5 @@
 namespace Starlight.Enums;
-// Make it public on release
-internal enum OptionsButtonType
+public enum OptionsButtonType
 {
     /// <summary>
     /// If you use this, saveID will be used to store the state outside a save file

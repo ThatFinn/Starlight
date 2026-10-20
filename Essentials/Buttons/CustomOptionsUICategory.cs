@@ -5,8 +5,7 @@ using Starlight.Managers;
 using UnityEngine.Localization;
 
 namespace Starlight.Buttons;
-// Make it public on release
-internal class CustomOptionsUICategory
+public class CustomOptionsUICategory
 {
     private HashSet<CustomAbstractOptionsButton> _buttons = new ();
     public LocalizedString Label;

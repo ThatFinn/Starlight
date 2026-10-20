@@ -27,6 +27,10 @@ internal class CustomOptionsValuesDefinition : ScriptedValuePresetOptionDefiniti
 
     public override bool ShouldDisplay()
     {
+        if (button.Visible != null)
+        {
+            try { if (!button.Visible()) return false; } catch (Exception e) { LogError(e); }
+        }
         switch (button.Type)
         {
             case OptionsButtonType.OptionsUI: return true;
