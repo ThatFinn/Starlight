@@ -49,11 +49,11 @@ public enum FeatureFlag
     /// <summary>
     /// Enables the repo manager
     /// </summary>
-    EnableRepoManagement=100,
+    [Obsolete("Deprecated")] EnableRepoManagement=100,
     /// <summary>
     /// Add test repo
     /// </summary>
-    UseMockRepo=101, //
+    [Obsolete("Deprecated")] UseMockRepo=101, //
     
     //Commands+Dev
     /// <summary>
@@ -171,11 +171,15 @@ public enum FeatureFlag
     /// <summary>
     /// Enable the repo menu
     /// </summary>
-    EnableRepoMenu=360, //
+    [Obsolete("Deprecated")] EnableRepoMenu=360, //
     /// <summary>
     /// Enable the studio menu
     /// </summary>
     EnableStudioMenu=365, //
+    /// <summary>
+    /// Enable the EmberMode menubar
+    /// </summary>
+    EnableEmberMode=366, //
     
     //UI
     /// <summary>

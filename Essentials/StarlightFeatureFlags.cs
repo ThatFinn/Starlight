@@ -16,7 +16,7 @@ public static class StarlightFeatureFlags
         CommandsLoadCommands, CommandsLoadCheat, CommandsLoadLandPlot, CommandsLoadBinding, CommandsLoadWarp,
         CommandsLoadCommon, CommandsLoadMenu, CommandsLoadMiscellaneous, CommandsLoadFun,
         AllowExpansions, AllowExpansionsV1, EnableModMenu, EnableConsole,
-        InjectMainMenuButtons, InjectRanchUIButtons, InjectPauseButtons, InjectTranslations,
+        InjectMainMenuButtons, InjectRanchUIButtons, InjectPauseButtons, InjectOptionsButtons, InjectTranslations,
         AddCheatMenuButton, AddModMenuButton, CheckForUpdates, AllowAutoUpdate, EnableInfHealth,
         EnableInfEnergy, EnableCheatMenu, EnableLocalizedVersionPatch, EnableThemeMenu,
         ChangeSystemContextIsModded, AllowPrism, AllowSaveExport, TryFixingInvalidSceneGroups, SupportRadiant
@@ -25,9 +25,9 @@ public static class StarlightFeatureFlags
     private static FeatureFlag[] extraDevFlags =>
     [
         DevMode, Experiments, CommandsLoadDevOnly, CommandsLoadExperimental, IgnoreSaveErrors, 
-        ExperimentalKeyCodes, EnableRepoManagement, EnableRepoMenu, UseMockRepo, DevTestMenu,
-        EnableStudioMenu,
-        //InjectOptionsButtons, AddMockOptionsUIButtons
+        ExperimentalKeyCodes, DevTestMenu, EnableStudioMenu, EnableEmberMode,
+        //EnableRepoMenu, UseMockRepo, EnableRepoManagement
+        //AddMockOptionsUIButtons
     ];
     private static FeatureFlag[] extraNightlyFlags => [None];
     
@@ -337,7 +337,6 @@ public static class StarlightFeatureFlags
         {RestoreDebugDevConsole, [new FFRActivated(RestoreDebugAbilities)] },
         {RestoreDebugDebugUI, [new FFRActivated(RestoreDebugAbilities)] },
         {IgnoreWorldPopulatorErrors, [new FFRActivated(ShowWorldPopulatorErrors)] },
-        {InjectOptionsButtons, [new FFRActivated(Experiments)] },
         {UseMockRepo, [new FFRActivated(EnableRepoManagement)] },
         {EnableRepoMenu, [new FFRActivated(EnableRepoManagement)] },
         {EnableStudioMenu, [new FFRActivated(DevMode)] },
