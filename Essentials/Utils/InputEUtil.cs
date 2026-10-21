@@ -1,5 +1,7 @@
-using Starlight.Components;
+﻿using Starlight.Components;
 using Starlight.Enums;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 
 namespace Starlight.Utils;
 
@@ -341,6 +343,48 @@ public static class InputEUtil
         return false;
     }
     
+
+    /// <summary>
+    /// Returns true if mouse button is currently pressed
+    /// </summary>
+    public static bool OnMouse(this MouseButton button)
+    {
+        if (!KeyCodeInputAcquirer.Instance) return false;
+        return KeyCodeInputAcquirer.Instance.OnMouse((int)button);
+    }
+    
+    /// <summary>
+    /// Returns true if mouse button was pressed this frame
+    /// </summary>
+    public static bool OnMouseDown(this MouseButton button)
+    {
+        if (!KeyCodeInputAcquirer.Instance) return false;
+        return KeyCodeInputAcquirer.Instance.OnMouseDown((int)button);
+    }
+    
+    /// <summary>
+    /// Returns true if mouse button was released this frame
+    /// </summary>
+    public static bool OnMouseUp(this MouseButton button)
+    {
+        if (!KeyCodeInputAcquirer.Instance) return false;
+        return KeyCodeInputAcquirer.Instance.OnMouseUp((int)button);
+    }
+    
+    /// <summary>
+    /// Returns true if key is currently pressed
+    /// </summary>
+    public static bool OnKey(this Key key) => key.ToKeyCode().OnKey();
+    
+    /// <summary>
+    /// Returns true if key was pressed this frame
+    /// </summary>
+    public static bool OnKeyDown(this Key key) => key.ToKeyCode().OnKeyDown();
+    
+    /// <summary>
+    /// Returns true if key was released this frame
+    /// </summary>
+    public static bool OnKeyUp(this Key key) => key.ToKeyCode().OnKeyUp();
 }
 
             
