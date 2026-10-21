@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.InteropTypes;
@@ -16,6 +16,8 @@ public static class MiscEUtil
     
     public static Texture2D CopyWithoutMipmaps(this Texture2D src)
     {
+        if (src == null) return null;
+
         var tex = new Texture2D(src.width, src.height, src.format, mipChain: false);
 
         tex.SetPixels(src.GetPixels());
@@ -24,7 +26,11 @@ public static class MiscEUtil
     }
     public static Sprite CopyWithoutMipmaps(this Sprite srcSprite)
     {
+        if (!srcSprite) return null;
+
         var src = srcSprite.texture;
+        if (!src) return null;
+
         var r = srcSprite.textureRect;
 
         int width  = (int)r.width;
@@ -171,20 +177,18 @@ public static class MiscEUtil
     public static Il2CppReferenceArray<T> RemoveToNew<T>(this Il2CppReferenceArray<T> array, T obj) where T : Il2CppObjectBase
     {
         var list = new Il2CppSystem.Collections.Generic.List<T>();
-        foreach (var item in array) list.Add(item);
-        if(list.Contains(obj)) list.Remove(obj);
+        if (array != null) foreach (var item in array) list.Add(item);
+        if (list.Contains(obj)) list.Remove(obj);
 
-        array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
-        return array;
+        return list.ToArray().Cast<Il2CppReferenceArray<T>>();
     }
     public static Il2CppReferenceArray<T> AddToNew<T>(this Il2CppReferenceArray<T> array, T obj) where T : Il2CppObjectBase
     {
         var list = new Il2CppSystem.Collections.Generic.List<T>();
-        foreach (var item in array) list.Add(item);
+        if (array != null) foreach (var item in array) list.Add(item);
         list.Add(obj);
         
-        array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
-        return array;
+        return list.ToArray().Cast<Il2CppReferenceArray<T>>();
     }
     public static Il2CppReferenceArray<T> ReplaceToNew<T>(this Il2CppReferenceArray<T> array, T obj, int index) where T : Il2CppObjectBase
     {
@@ -248,13 +252,16 @@ public static class MiscEUtil
 
     public static Il2CppStringArray AddToNew(this Il2CppStringArray array, string str)
     {
-        string[] strArray = new string[array.Count + 1];
-        int i = 0;
-        foreach (var item in array)
-        {
-            strArray[i] = item;
-            i++;
-        }
+        var count = array?.Count ?? 0;
+        var strArray = new string[count + 1];
+
+        var i = 0;
+        if (array != null)
+            foreach (var item in array)
+            {
+                strArray[i] = item;
+                i++;
+            }
 
         strArray[i] = str;
         return new Il2CppStringArray(strArray);
@@ -292,7 +299,7 @@ public static class MiscEUtil
     
     
     // To System HashSet
-    public static HashSet<T> ToNetHashSet<T>(this List<T> list) { if (list == null) return null; var hashSet = new HashSet<T>(); foreach (var item in list) if(hashSet.Contains(item)) hashSet.Add(item); return hashSet; }
+    public static HashSet<T> ToNetHashSet<T>(this List<T> list) { if (list == null) return null; var hashSet = new HashSet<T>(); foreach (var item in list) if (!hashSet.Contains(item)) hashSet.Add(item); return hashSet; }
     public static HashSet<T> ToNetHashSet<T>(this Il2CppSystem.Collections.Generic.List<T> list) { if (list == null) return null; var hashSet = new HashSet<T>(); foreach (var item in list) if(!hashSet.Contains(item)) hashSet.Add(item); return hashSet; }
     public static HashSet<T> ToNetHashSet<T>(this Il2CppSystem.Collections.Generic.HashSet<T> hashSet) { if (hashSet == null) return null; var ihashSet = new HashSet<T>(); foreach (var item in hashSet) if(!ihashSet.Contains(item)) ihashSet.Add(item); return ihashSet; }
     public static HashSet<T> ToNetHashSet<T>(this T[] array) { if (array == null) return null; var ihashSet = new HashSet<T>(); foreach (var item in array) if(!ihashSet.Contains(item)) ihashSet.Add(item); return ihashSet; }
