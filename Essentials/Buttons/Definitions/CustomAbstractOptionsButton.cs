@@ -3,8 +3,7 @@ using Il2CppMonomiPark.SlimeRancher.Options;
 using Starlight.Enums;
 
 namespace Starlight.Buttons.Definitions;
-// Make it public on release
-internal abstract class CustomAbstractOptionsButton
+public abstract class CustomAbstractOptionsButton
 {
     public OptionsButtonType Type = OptionsButtonType.OptionsUI;
     internal static List<string> UsedIds = new ();
