@@ -13,19 +13,30 @@ public static class NativeEUtil
     private static BaseInputModule _nativeInputModule;
     private static GameObject _starlightEventSystemObj;
     internal static bool ue = false;
+
+    private static BaseUI _hiddenGameUI;
+    private static bool _hudHiddenByStarlight;
+    private static bool _hudWasVisible;
+    private static bool _inputDisabledByStarlight;
+    private static bool _mainGameMapWasEnabled;
+    private static bool _pausedMapWasEnabled;
     
     public static void OverrideSR2Input()
     { 
-        //Fixes compatibility with UE
-        var method = AccessTools.Method("UniverseLib.Input.EventSystemHelper:EnableEventSystem");
-        if (ue&&method != null)
+        // Fixes compatibility with UE
+        if (ue)
         {
-            try
+            var method = AccessTools.Method("UniverseLib.Input.EventSystemHelper:EnableEventSystem");
+
+            if (method != null)
             {
-                method.Invoke(null,null);
+                try
+                {
+                    method.Invoke(null,null);
+                }
+                catch (Exception e) { LogError(e); }
+                return;
             }
-            catch (Exception e) { LogError(e); }
-            return;
         }
         try
         {
@@ -54,16 +65,20 @@ public static class NativeEUtil
 
     public static void DeOverrideSR2Input()
     {
-        //Fixes compatibility with UE
-        var method = AccessTools.Method("UniverseLib.Input.EventSystemHelper:ReleaseEventSystem");
-        if (ue&&method != null)
+        // Fixes compatibility with UE
+        if (ue)
         {
-            try
+            var method = AccessTools.Method("UniverseLib.Input.EventSystemHelper:ReleaseEventSystem");
+
+            if (method != null)
             {
-                method.Invoke(null,null);
+                try
+                {
+                    method.Invoke(null,null);
+                }
+                catch (Exception e) { LogError(e); }
+                return;
             }
-            catch (Exception e) { LogError(e); }
-            return;
         }
         try
         {
@@ -81,7 +96,7 @@ public static class NativeEUtil
     
     public static void TryHideMenus()
     {
-        if (StarlightEntryPoint.MainMenuLoaded)
+        if (StarlightEntryPoint.MainMenuLoaded && !inGame)
         {
             try
             {
@@ -98,7 +113,15 @@ public static class NativeEUtil
 
         if (inGame)
         {
-            try { GetAnyInScene<PauseMenuRoot>()?.HideUI(); } catch { }
+            try
+            {
+                var pauseMenu = GetAnyInScene<PauseMenuRoot>();
+                if (pauseMenu)
+                {
+                    pauseMenu.HideUI();
+                    _hiddenGameUI = pauseMenu;
+                }
+            } catch { }
         }
     }
 
@@ -108,7 +131,7 @@ public static class NativeEUtil
         {
             TryHideMenus();
             TryPauseGame(false);
-            if (inGame) HudUI.Instance.transform.GetChild(0).gameObject.SetActive(false);
+            if (inGame) HideHud();
         }
         else
         {
@@ -144,7 +167,7 @@ public static class NativeEUtil
     {
         try
         {
-            if (StarlightEntryPoint.MainMenuLoaded)
+            if (StarlightEntryPoint.MainMenuLoaded && !inGame)
             {
                 try
                 {
@@ -160,7 +183,36 @@ public static class NativeEUtil
                         }
                 } catch { }
             }
-            if (inGame) HudUI.Instance.transform.GetChild(0).gameObject.SetActive(true);
+            if (_hiddenGameUI)
+            {
+                try { _hiddenGameUI.ShowUI(); } catch { }
+                _hiddenGameUI = null;
+            }
+            if (inGame) ShowHud();
+        } catch { }
+    }
+
+    static void HideHud()
+    {
+        try
+        {
+            var hud = HudUI.Instance.transform.GetChild(0).gameObject;
+            if (!_hudHiddenByStarlight)
+            {
+                _hudWasVisible = hud.activeSelf;
+                _hudHiddenByStarlight = true;
+            }
+            hud.SetActive(false);
+        } catch { }
+    }
+
+    static void ShowHud()
+    {
+        try
+        {
+            var hud = HudUI.Instance.transform.GetChild(0).gameObject;
+            hud.SetActive(!_hudHiddenByStarlight || _hudWasVisible);
+            _hudHiddenByStarlight = false;
         } catch { }
     }
 
@@ -182,8 +234,16 @@ public static class NativeEUtil
     {
         try
         {
-            gameContext.InputDirector._paused.Map.Disable();
-            gameContext.InputDirector._mainGame.Map.Disable();
+            var paused = gameContext.InputDirector._paused.Map;
+            var mainGame = gameContext.InputDirector._mainGame.Map;
+            if (!_inputDisabledByStarlight)
+            {
+                _pausedMapWasEnabled = paused.enabled;
+                _mainGameMapWasEnabled = mainGame.enabled;
+                _inputDisabledByStarlight = true;
+            }
+            paused.Disable();
+            mainGame.Disable();
         } catch { }
     }
 
@@ -191,8 +251,18 @@ public static class NativeEUtil
     {
         try
         {
-            gameContext.InputDirector._paused.Map.Enable();
-            gameContext.InputDirector._mainGame.Map.Enable();
+            var paused = gameContext.InputDirector._paused.Map;
+            var mainGame = gameContext.InputDirector._mainGame.Map;
+            
+            if (_inputDisabledByStarlight)
+            {
+                if (_pausedMapWasEnabled) paused.Enable();
+                if (_mainGameMapWasEnabled) mainGame.Enable();
+                _inputDisabledByStarlight = false;
+                return;
+            }
+            paused.Enable();
+            mainGame.Enable();
         } catch { }
     }
 }
