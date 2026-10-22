@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Linq;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.Input;
+using Il2CppMonomiPark.SlimeRancher.Player.Component;
 using Il2CppMonomiPark.SlimeRancher.Weather;
-using Il2CppSystem.Linq;
 using Starlight.Enums;
 using UnityEngine.InputSystem;
 
@@ -25,6 +25,7 @@ public static class LookupEUtil
     
     
     public static WeatherStateDefinition[] weatherStateDefinitions => autoSaveDirector._configuration.WeatherStates.items.ToArray();
+    public static UpgradeComponent[] upgradeComponents => autoSaveDirector._configuration.UpgradeComponents.items.ToArray();
     public static Dictionary<string, IdentifiableTypeGroup> allIdentifiableTypeGroups {
         get
         {
@@ -40,6 +41,18 @@ public static class LookupEUtil
     public static IdentifiableType[] identifiableTypes => autoSaveDirector._configuration.IdentifiableTypes.GetAllMembersHashSet().Where(type => !string.IsNullOrEmpty(type.ReferenceId)).ToArray();
 
     public static IdentifiableType[] vaccableTypes => _FromGroupList("VaccableNonLiquids");
+    
+    public static IdentifiableType[] allVaccableTypes
+    {
+        get
+        {
+            var list = new List<IdentifiableType>(vaccableTypes);
+            foreach (var liquid in liquidTypes)
+                if (!list.Contains(liquid.Cast<IdentifiableType>()))
+                    list.Add(liquid.Cast<IdentifiableType>());
+            return list.ToArray();
+        }
+    }
     public static GadgetDefinition[] gadgetTypes => _FromGGroupList("GadgetGroup");
     public static ToyDefinition[] toyTypes => _FromTGroupList("ToyGroup");
     public static LiquidDefinition[] liquidTypes => _FromLGroupList("LiquidGroup");
@@ -453,7 +466,7 @@ public static class LookupEUtil
     /// <returns>List<string></returns>
     public static List<string> GetVaccableStringListByPartialName(string partial, bool useContain, int maxEntries)
     {
-        var types = vaccableTypes;
+        var types = allVaccableTypes;
         maxEntries -= 1;
         //If partial string is empty, no need to match the name
         var list = new List<string>();
