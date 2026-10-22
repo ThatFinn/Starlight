@@ -20,6 +20,17 @@ internal static class OptionsUIRootSwapCategoryPatch
         if (category == null) return;
         foreach (var def in category.items.ToNetList())
         {
+            if (def is CustomOptionsSliderDefinition sliderDef)
+            {
+                IOptionsItemModel sliderModel = null;
+                try { sliderModel = sliderDef.CreateOptionItemModel()?.TryCast<IOptionsItemModel>(); }
+                catch (Exception e) { LogError(e); }
+
+                if (sliderModel != null && !__instance.optionsItemModels.Contains(sliderModel))
+                    __instance.optionsItemModels.Insert(Math.Clamp(sliderDef.button.InsertIndex, 0, __instance.optionsItemModels.Count), sliderModel);
+
+                continue;
+            }
             if (def!=null)
                 if (def is CustomOptionsValuesDefinition customDef && def.ReferenceId.StartsWithAny("setting.sr2eexclude","setting.starlightexclude"))
                 {

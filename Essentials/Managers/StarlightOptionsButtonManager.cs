@@ -8,8 +8,7 @@ using Starlight.Saving;
 using Starlight.Storage;
 
 namespace Starlight.Managers;
-// Make it public on release
-internal static class StarlightOptionsButtonManager
+public static class StarlightOptionsButtonManager
 {
      static readonly Dictionary<NativeOptionsUICategory,HashSet<CustomAbstractOptionsButton>> customOptionsUIButtonsInNative = new();
     internal static Dictionary<CustomOptionsUICategory,HashSet<CustomAbstractOptionsButton>> customOptionsUICategories = new();
