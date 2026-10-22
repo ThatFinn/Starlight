@@ -3,9 +3,9 @@ using System.Text;
 
 namespace Starlight.Utils;
 
-internal static class EncodingEUtil
+public static class EncodingEUtil
 {
-    internal static string CreateMD5(this string input)
+    public static string CreateMD5(this string input)
     {
         using var md5 = MD5.Create();
         var inputBytes = Encoding.Unicode.GetBytes(input);
@@ -15,7 +15,7 @@ internal static class EncodingEUtil
             sb.Append(t.ToString("x2"));
         return sb.ToString();
     }
-    internal static string EncodeToBase128(this byte[] data)
+    public static string EncodeToBase128(this byte[] data)
     {
         var result = new StringBuilder((data.Length * 8 + 6) / 7);
         var storage = 0;
@@ -36,7 +36,7 @@ internal static class EncodingEUtil
         return result.ToString();
     }
 
-    internal static byte[] DecodeFromBase128(this string data)
+    public static byte[] DecodeFromBase128(this string data)
     {
         var result = new List<byte>();
         var storage = 0;
