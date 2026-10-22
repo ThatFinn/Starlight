@@ -1,7 +1,4 @@
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Starlight.Patches.Context;
-using Starlight.Prism;
-using Starlight.Prism.Wrappers;
 using Starlight.Storage;
 
 namespace Starlight.Components;
@@ -36,7 +33,7 @@ public class StarlightSlimeRenderer : MonoBehaviour
         if(_renderedObj) Destroy(_renderedObj);
     }
 
-    public GameObject RenderAppearance(SlimeDefinition slime, float scale = 1.0f) => RenderAppearance(slime.GetPrismSlime().GetSlimeAppearance(), scale, slime);
+    public GameObject RenderAppearance(SlimeDefinition slime, float scale = 1.0f) => RenderAppearance(slime.GetDefaultAppearance(), scale, slime);
     public GameObject RenderAppearance(SlimeAppearance appearance,float scale = 1.0f,SlimeDefinition customBones = null)
     {
         if(_renderedObj) Destroy(_renderedObj);
