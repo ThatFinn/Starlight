@@ -118,7 +118,6 @@ public static class InventoryEUtil
     public static int GetStarlightSlotItemPossibleSlot(StarlightSlotItemInfo info)
     {
         if (info == null || !info.IdentifiableType) return -1;
-        var isSlime = SlimeDefinition.IsSlimeDefinition(info.IdentifiableType);
 
         var slotID = -1;
         var i = -1;
@@ -129,7 +128,7 @@ public static class InventoryEUtil
             if (!slot.Id) continue;
             if (slot.Id.ReferenceId != info.IdentifiableType.ReferenceId) continue;
             dynamic dynamicSlot = slot;
-            if(SupportRadiant.HasFlag()&&isSlime)
+            if(SupportRadiant.HasFlag())
                 if (dynamicSlot.Radiant != info.IsRadiant) continue;
             slotID = i;
             break;
