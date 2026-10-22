@@ -1,13 +1,34 @@
+﻿using System;
 using Starlight.Components.AssetBundle;
 using UnityEngine.Rendering;
-using UnityEngine.UI;
 
 namespace Starlight.UI.Blueprints;
 
 public abstract class UIBlueprint
 {
-    public static float ScaleFactor => Screen.height / 1080f;
-    public string mame = "<MissingName>"; 
+    private static Canvas _menuCanvas;
+
+    /// <summary>
+    /// The scale factor of the canvas Starlight menus use 
+    /// </summary>
+    internal static float CanvasScale
+    {
+        get
+        {
+            if (!_menuCanvas)
+            {
+                if (!StarlightEntryPoint.StarlightStuff) return 1f;
+                _menuCanvas = StarlightEntryPoint.StarlightStuff.GetComponent<Canvas>();
+            }
+            return _menuCanvas && _menuCanvas.scaleFactor > 0f ? _menuCanvas.scaleFactor : 1f;
+        }
+    }
+
+    public static float ScaleFactor => Screen.height / CanvasScale / 1080f;
+    internal static float ScaleFactorY => ScaleFactor;
+    internal static float ScaleFactorX => ScaleFactor;
+    [Obsolete("Please use Name instead")]public string mame = null;
+    public string Name = "<MissingName>"; 
     public Vector2 Size = new(100,100);
     public Vector2 Position = Vector2.zero;
     public Vector2 Rotation = new ();
@@ -20,15 +41,15 @@ public abstract class UIBlueprint
     public List<Il2CppSystem.Type> Components;
     public RectTransform Render(UITheme theme, FontTheme fontTheme, Transform parent)
     {
-        var obj = new GameObject(mame);
+        var obj = new GameObject(mame??Name);
         obj.transform.localRotation=Quaternion.Euler(Rotation.x,Rotation.y,0);
         var rectT = obj.AddComponent<RectTransform>();
-        obj.transform.SetParent(parent);
-        rectT.pivot = Pivot;
-        rectT.sizeDelta = Size*ScaleFactor;
-        rectT.anchoredPosition = Position*ScaleFactor;
+        obj.transform.SetParent(parent, false);
         rectT.anchorMin = new Vector2(Anchors.x, Anchors.y);
         rectT.anchorMax = new Vector2(Anchors.z, Anchors.w);
+        rectT.pivot = Pivot;
+        rectT.sizeDelta = new Vector2(Size.x*ScaleFactorX, Size.y*ScaleFactorY);
+        rectT.anchoredPosition = Position*ScaleFactor;
         try { OnRender(theme, fontTheme, rectT); } catch (Exception e) { LogError(e); }
 
         if(CornerRadius>0&&!IgnoreCorners)
