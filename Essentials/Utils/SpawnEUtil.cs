@@ -1,4 +1,4 @@
-using Il2CppMonomiPark.SlimeRancher.DataModel;
+﻿using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Slime;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Starlight.Managers;
@@ -166,6 +166,7 @@ public static class SpawnEUtil
         {
             var def = actor.identType.Cast<SlimeDefinition>();
             var newAppearance = def.GetRadiantAppearance();
+            if (!newAppearance) return false;
             RotateSlimeActorAppearance_Radiant(actor, newAppearance);
             applicator.Appearance = newAppearance;
             applicator.ApplyAppearance();
