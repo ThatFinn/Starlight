@@ -5,7 +5,6 @@ using Il2CppInterop.Runtime.InteropTypes;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppSystem.Linq;
 using MelonLoader;
-using Starlight.Menus;
 using Starlight.Patches.MainMenu;
 using Unity.Mathematics;
 
@@ -13,7 +12,6 @@ namespace Starlight.Utils;
 
 public static class MiscEUtil
 {
-    
     public static Texture2D CopyWithoutMipmaps(this Texture2D src)
     {
         if (src == null) return null;
@@ -24,6 +22,7 @@ public static class MiscEUtil
         tex.Apply(updateMipmaps: false, makeNoLongerReadable: false);
         return tex;
     }
+    
     public static Sprite CopyWithoutMipmaps(this Sprite srcSprite)
     {
         if (!srcSprite) return null;
@@ -54,6 +53,7 @@ public static class MiscEUtil
         if(!CompanyLogoScenePatches.CustomBouncySprites.Contains(sprite))
             CompanyLogoScenePatches.CustomBouncySprites.Add(sprite);
     }
+    
     public static float4 ChangeValue(this float4 float4, int index, float value)
     {
         return new float4(index == 0 ? value : float4[0],
@@ -62,6 +62,7 @@ public static class MiscEUtil
             index == 3 ? value : float4[3]
         );
     }
+    
     public static LayerMask defaultMask
     {
         get
@@ -72,7 +73,6 @@ public static class MiscEUtil
             return mask;
         }
     }
-
     
     private const string AllowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static readonly int AllowedCharCount = AllowedChars.Length;
@@ -101,10 +101,12 @@ public static class MiscEUtil
         if (SlimeDefinition.IsSlimeDefinition(type)) return SlimeAppearance.AppearanceSaveSet.CLASSIC;
         return SlimeAppearance.AppearanceSaveSet.NONE;
     }
+    
     [Obsolete("Use PackagePrefs instead!",true)] public static void AddNullAction(this MelonPreferences_Entry entry) {}
     [Obsolete("Use PackagePrefs instead!",true)] public static void AddAction(this MelonPreferences_Entry entry, Action action) {}
 
     public static Il2CppSystem.Type IL2CPPTypeof(this Type type) => Il2CppType.From(type);
+    
     public static Type SystemTypeOf(this Il2CppSystem.Type type)
     {
         try
@@ -117,7 +119,6 @@ public static class MiscEUtil
         return Type.GetType(type.FullName);
     }
     
-    
     public static HashSet<IdentifiableType> GetAllMembersHashSet(this IdentifiableTypeGroup group) => group.GetAllMembers().ToNetHashSet();
     
     public static List<IdentifiableType> GetAllMembersList(this IdentifiableTypeGroup group) => group.GetAllMembers().ToNetHashSet().ToList();
@@ -126,12 +127,11 @@ public static class MiscEUtil
     /// Same as the other one, but it doesn't filter out duplicates
     /// </summary>
     public static Il2CppArrayBase GetAllMembersArrayDuplicate(this IdentifiableTypeGroup group) => group.GetAllMembers().ToArray();
+    
     /// <summary>
     /// Same as the other one, but it doesn't filter out duplicates
     /// </summary>
     public static List<IdentifiableType> GetAllMembersListDuplicate(this IdentifiableTypeGroup group) => group.GetAllMembers().ToArray().ToList();
-
-
     
     /// <summary>
     /// Use this for copying components, please make sure you are copying the same types!
@@ -151,9 +151,6 @@ public static class MiscEUtil
         }
     }
     
-    
-    
-    
     public static Il2CppArrayBase<T> RemoveToNew<T>(this Il2CppArrayBase<T> array, T obj) where T : Il2CppObjectBase
     {
         var list = new Il2CppSystem.Collections.Generic.List<T>();
@@ -163,6 +160,7 @@ public static class MiscEUtil
         array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
         return array;
     }
+    
     public static Il2CppArrayBase<T> AddToNew<T>(this Il2CppArrayBase<T> array, T obj) where T : Il2CppObjectBase
     {
         var list = new Il2CppSystem.Collections.Generic.List<T>();
@@ -173,7 +171,6 @@ public static class MiscEUtil
         return array;
     }
     
-    
     public static Il2CppReferenceArray<T> RemoveToNew<T>(this Il2CppReferenceArray<T> array, T obj) where T : Il2CppObjectBase
     {
         var list = new Il2CppSystem.Collections.Generic.List<T>();
@@ -182,6 +179,7 @@ public static class MiscEUtil
 
         return list.ToArray().Cast<Il2CppReferenceArray<T>>();
     }
+    
     public static Il2CppReferenceArray<T> AddToNew<T>(this Il2CppReferenceArray<T> array, T obj) where T : Il2CppObjectBase
     {
         var list = new Il2CppSystem.Collections.Generic.List<T>();
@@ -190,6 +188,7 @@ public static class MiscEUtil
         
         return list.ToArray().Cast<Il2CppReferenceArray<T>>();
     }
+    
     public static Il2CppReferenceArray<T> ReplaceToNew<T>(this Il2CppReferenceArray<T> array, T obj, int index) where T : Il2CppObjectBase
     {
         var list = new Il2CppSystem.Collections.Generic.List<T>();
@@ -200,6 +199,7 @@ public static class MiscEUtil
         array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
         return array;
     }
+    
     public static Il2CppReferenceArray<T> RemoveAtToNew<T>(this Il2CppReferenceArray<T> array, int index) where T : Il2CppObjectBase
     {
         var list = new Il2CppSystem.Collections.Generic.List<T>();
@@ -209,6 +209,7 @@ public static class MiscEUtil
         array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
         return array;
     }
+    
     public static Il2CppReferenceArray<T> InsertToNew<T>(this Il2CppReferenceArray<T> array, T obj, int index) where T : Il2CppObjectBase
     {
         var list = new Il2CppSystem.Collections.Generic.List<T>();
@@ -218,6 +219,7 @@ public static class MiscEUtil
         array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
         return array;
     }
+    
     public static Il2CppReferenceArray<T> AddRangeToNew<T>(this Il2CppReferenceArray<T> array, Il2CppReferenceArray<T> obj) where T : Il2CppObjectBase
     {
         var list = new Il2CppSystem.Collections.Generic.List<T>();
@@ -266,17 +268,12 @@ public static class MiscEUtil
         strArray[i] = str;
         return new Il2CppStringArray(strArray);
     }
-
-    
-    
     
     // To DotNet Dictionary
     public static Dictionary<TKey, TValue> ToNetDictionary<TKey, TValue>(this Il2CppSystem.Collections.Generic.Dictionary<TKey, TValue> dictionary) { if (dictionary == null) return null; var dict = new Dictionary<TKey, TValue>(); foreach (var pair in dictionary) dict.Add(pair.Key,pair.Value); return dict; }
-
     
     // To Il2CppSystem Dictionary
     public static Il2CppSystem.Collections.Generic.Dictionary<TKey, TValue> ToIl2CppDictionary<TKey, TValue>(this Dictionary<TKey, TValue> dictionary) { if (dictionary == null) return null; var dict = new Il2CppSystem.Collections.Generic.Dictionary<TKey, TValue>(); foreach (var pair in dictionary) dict.Add(pair.Key,pair.Value); return dict; }
-
     
     // To System List
     public static List<T> ToNetList<T>(this HashSet<T> hashSet) { if (hashSet == null) return null; var list = new List<T>(); foreach (var item in hashSet) list.Add(item); return list; }
@@ -287,7 +284,6 @@ public static class MiscEUtil
     public static List<T> ToNetList<T>(this IEnumerable<T> collection) { if (collection == null) return null; var list = new List<T>(); foreach (var item in collection) list.Add(item); return list; }
     public static List<T> ToNetList<T>(this Il2CppSystem.Collections.Generic.IEnumerable<T> collection) { if (collection == null) return null; var list = new List<T>(); foreach (var item in collection.ToArray()) list.Add(item); return list; }
     
-    
     // To Il2CppSystem List
     public static Il2CppSystem.Collections.Generic.List<T> ToIl2CppList<T>(this HashSet<T> hashSet) { if (hashSet == null) return null; var list = new Il2CppSystem.Collections.Generic.List<T>(); foreach (var item in hashSet) list.Add(item); return list; }
     public static Il2CppSystem.Collections.Generic.List<T> ToIl2CppList<T>(this Il2CppSystem.Collections.Generic.HashSet<T> hashSet) { if (hashSet == null) return null; var list = new Il2CppSystem.Collections.Generic.List<T>(); foreach (var item in hashSet) list.Add(item); return list; }
@@ -296,7 +292,6 @@ public static class MiscEUtil
     public static Il2CppSystem.Collections.Generic.List<T> ToIl2CppList<T>(this Il2CppReferenceArray<T> array) where T : Il2CppObjectBase { if (array == null) return null; var ilist = new Il2CppSystem.Collections.Generic.List<T>(); foreach (var item in array) ilist.Add(item); return ilist; }
     public static Il2CppSystem.Collections.Generic.List<T> ToIl2CppList<T>(this IEnumerable<T> collection) { if (collection == null) return null; var ilist = new Il2CppSystem.Collections.Generic.List<T>(); foreach (var item in collection) ilist.Add(item); return ilist; }
     public static Il2CppSystem.Collections.Generic.List<T> ToIl2CppList<T>(this Il2CppSystem.Collections.Generic.IEnumerable<T> collection) { if (collection == null) return null; var ilist = new Il2CppSystem.Collections.Generic.List<T>(); foreach (var item in collection.ToArray()) ilist.Add(item); return ilist; }
-    
     
     // To System HashSet
     public static HashSet<T> ToNetHashSet<T>(this List<T> list) { if (list == null) return null; var hashSet = new HashSet<T>(); foreach (var item in list) if (!hashSet.Contains(item)) hashSet.Add(item); return hashSet; }
@@ -307,7 +302,6 @@ public static class MiscEUtil
     public static HashSet<T> ToNetHashSet<T>(this IEnumerable<T> collection) { if (collection == null) return null; var ihashSet = new HashSet<T>(); foreach (var item in collection) if(!ihashSet.Contains(item)) ihashSet.Add(item); return ihashSet; }
     public static HashSet<T> ToNetHashSet<T>(this Il2CppSystem.Collections.Generic.IEnumerable<T> collection) { if (collection == null) return null; var ihashSet = new HashSet<T>(); foreach (var item in collection.ToArray()) if(!ihashSet.Contains(item)) ihashSet.Add(item); return ihashSet; }
     
-    
     // To Il2CppSystem HashSet
     public static Il2CppSystem.Collections.Generic.HashSet<T> ToIl2CppHashSet<T>(this List<T> list) { if (list == null) return null; var hashSet = new Il2CppSystem.Collections.Generic.HashSet<T>(); foreach (var item in list) hashSet.Add(item); return hashSet; }
     public static Il2CppSystem.Collections.Generic.HashSet<T> ToIl2CppHashSet<T>(this Il2CppSystem.Collections.Generic.List<T> list) { if (list == null) return null; var hashSet = new Il2CppSystem.Collections.Generic.HashSet<T>(); foreach (var item in list) hashSet.Add(item); return hashSet; }
@@ -316,7 +310,6 @@ public static class MiscEUtil
     public static Il2CppSystem.Collections.Generic.HashSet<T> ToIl2CppHashSet<T>(this Il2CppReferenceArray<T> array) where T : Il2CppObjectBase { if (array == null) return null; var ihashSet = new Il2CppSystem.Collections.Generic.HashSet<T>(); foreach (var item in array) ihashSet.Add(item); return ihashSet; }
     public static Il2CppSystem.Collections.Generic.HashSet<T> ToIl2CppHashSet<T>(this IEnumerable<T> collection) { if (collection == null) return null; var ihashSet = new Il2CppSystem.Collections.Generic.HashSet<T>(); foreach (var item in collection) ihashSet.Add(item); return ihashSet; }
     public static Il2CppSystem.Collections.Generic.HashSet<T> ToIl2CppHashSet<T>(this Il2CppSystem.Collections.Generic.IEnumerable<T> collection) { if (collection == null) return null; var ihashSet = new Il2CppSystem.Collections.Generic.HashSet<T>(); foreach (var item in collection.ToArray()) ihashSet.Add(item); return ihashSet; }
-    
     
     // To Il2CppReferenceArray
     public static Il2CppReferenceArray<T> ToIl2CppArray<T>(this List<T> list) where T : Il2CppObjectBase => new(list.ToArray());
@@ -327,7 +320,6 @@ public static class MiscEUtil
     public static Il2CppReferenceArray<T> ToIl2CppArray<T>(this IEnumerable<T> collection) where T : Il2CppObjectBase => new(collection.ToArray());
     public static Il2CppReferenceArray<T> ToIl2CppArray<T>(this Il2CppSystem.Collections.Generic.IEnumerable<T> collection) where T : Il2CppObjectBase => new(collection.ToArray());
     
-    
     // To System Array
     public static T[] ToNetArray<T>(this List<T> list) => list.ToArray();
     public static T[] ToNetArray<T>(this Il2CppSystem.Collections.Generic.List<T> list) => list.ToArray();
@@ -336,11 +328,6 @@ public static class MiscEUtil
     public static T[] ToNetArray<T>(this Il2CppReferenceArray<T> array) where T : Il2CppObjectBase => array;
     public static T[] ToNetArray<T>(this IEnumerable<T> collection) => collection.ToArray();
     public static T[] ToNetArray<T>(this Il2CppSystem.Collections.Generic.IEnumerable<T> collection) => collection.ToArray();
-
-    
-    
-    
-    
     
     public static bool IsInsideRange(this int number, int rangeMin, int rangeMax) => number >= rangeMin && number <= rangeMax;
 
