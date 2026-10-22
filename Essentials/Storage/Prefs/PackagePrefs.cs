@@ -40,6 +40,7 @@ public class PackagePrefs
             var dataToSave = new Dictionary<string, object>();
             foreach (var pref in _entries)
                 dataToSave[pref.key] = pref.dynamicValue;
+            
             var directory = Path.GetDirectoryName(path);
             if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
