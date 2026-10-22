@@ -22,7 +22,7 @@ public class CheckboxUIBlueprintV01 : UIBlueprint
 
         var backgroundObj = new GameObject("Background");
         var backgroundRect = backgroundObj.AddComponent<RectTransform>();
-        backgroundObj.transform.SetParent(obj);
+        backgroundObj.transform.SetParent(obj, false);
         backgroundRect.anchorMin = Vector2.zero;
         backgroundRect.anchorMax = new Vector2(1,1);
         backgroundRect.offsetMin = Vector2.zero;
@@ -39,7 +39,7 @@ public class CheckboxUIBlueprintV01 : UIBlueprint
         
         var checkmarkObj = new GameObject("Checkmark");
         var checkmarkRect = checkmarkObj.AddComponent<RectTransform>();
-        checkmarkObj.transform.SetParent(backgroundObj.transform);
+        checkmarkObj.transform.SetParent(backgroundObj.transform, false);
         checkmarkRect.anchorMin = Vector2.zero;
         checkmarkRect.anchorMax = new Vector2(1,1);
         checkmarkRect.offsetMin = Vector2.zero;
