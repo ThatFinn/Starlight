@@ -20,6 +20,7 @@ public static class NativeEUtil
     private static bool _inputDisabledByStarlight;
     private static bool _mainGameMapWasEnabled;
     private static bool _pausedMapWasEnabled;
+    private static bool _pausedByStarlight;
     
     public static void OverrideSR2Input()
     { 
@@ -143,7 +144,10 @@ public static class NativeEUtil
     public static void TryPauseGame(bool usePauseMenu = true)
     {
         if (StarlightEntryPoint.MainMenuLoaded)
+        {
             Time.timeScale = 0;
+            _pausedByStarlight = true;
+        }
         
         try { systemContext.SceneLoader.TryPauseGame(); } catch { }
 
@@ -156,6 +160,7 @@ public static class NativeEUtil
 
         if (StarlightEntryPoint.MainMenuLoaded)
             Time.timeScale = 1;
+        _pausedByStarlight = false;
         
         try { systemContext.SceneLoader.UnpauseGame(); } catch { }
 
@@ -249,20 +254,34 @@ public static class NativeEUtil
 
     public static void TryEnableSR2Input()
     {
+        if (!_inputDisabledByStarlight) return;
+
         try
         {
             var paused = gameContext.InputDirector._paused.Map;
             var mainGame = gameContext.InputDirector._mainGame.Map;
-            
-            if (_inputDisabledByStarlight)
-            {
-                if (_pausedMapWasEnabled) paused.Enable();
-                if (_mainGameMapWasEnabled) mainGame.Enable();
-                _inputDisabledByStarlight = false;
-                return;
-            }
-            paused.Enable();
-            mainGame.Enable();
+
+            if (_pausedMapWasEnabled) paused.Enable();
+            if (_mainGameMapWasEnabled) mainGame.Enable();
         } catch { }
+
+        _inputDisabledByStarlight = false;
+    }
+    
+    internal static void ReleaseForSceneLoad()
+    {
+        if (MenuEUtil.isAnyMenuOpen) return;
+
+        if (_inputDisabledByStarlight)
+        {
+            _inputDisabledByStarlight = false;
+            try { gameContext.InputDirector._mainGame.Map.Enable(); } catch { }
+        }
+
+        if (!_pausedByStarlight) return;
+
+        _pausedByStarlight = false;
+        Time.timeScale = CustomTimeScale;
+        try { systemContext.SceneLoader.UnpauseGame(); } catch { }
     }
 }
