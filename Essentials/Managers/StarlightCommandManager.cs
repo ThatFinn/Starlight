@@ -62,8 +62,8 @@ public static class StarlightCommandManager
     /// <param name="key">The key to be checked</param>
     /// <returns>bool</returns>
     public static bool IsKeyBoundToCommand(LKey key) => StarlightSaveManager.data.keyBinds.ContainsKey(key);
-    
-    
+
+    private static bool _executedStartup;
     internal static void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
         switch (sceneName)
@@ -79,6 +79,11 @@ public static class StarlightCommandManager
                 foreach (var pair in Commands) try { pair.Value.OnMainMenuUILoad(); } catch (Exception e) { LogError(e); }
                 if (!string.IsNullOrEmpty(StarlightEntryPoint.onMainMenuLoadCommand)) 
                     ExecuteByString(StarlightEntryPoint.onMainMenuLoadCommand);
+                if (!_executedStartup&&!string.IsNullOrEmpty(StarlightEntryPoint.onStartupCommand))
+                {
+                    _executedStartup = true;
+                    ExecuteByString(StarlightEntryPoint.onStartupCommand);
+                }
                 break;
             case "LoadScene": foreach (var pair in Commands) try { pair.Value.OnLoadSceneLoad(); } catch (Exception e) { LogError(e); } break;
         }
@@ -336,13 +341,13 @@ public static class StarlightCommandManager
                         else
                         {
                             command.silent = silent;
-                            try { successful = command.Execute(null); } catch (Exception e) { LogError($"Error in command execution!\n{e}"); }
+                            try { successful = command.Execute([]); } catch (Exception e) { LogError($"Error in command execution!\n{e}"); }
 
                             try
                             {
                                 if (CommandAddons.TryGetValue(cmd, out List<Action<string[]>> list))
                                     foreach (var action in list)
-                                        action(null);
+                                        action([]);
                             }
                             catch (Exception e) { LogError($"Error in command extension execution!\n{e}"); }
                             
