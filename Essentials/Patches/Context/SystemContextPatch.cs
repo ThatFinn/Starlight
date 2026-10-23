@@ -2,6 +2,7 @@ using System.Linq;
 using System.Reflection;
 using System;
 using Il2CppInterop.Runtime.Injection;
+using Starlight.EmberMode;
 using Starlight.Enums;
 using Starlight.Managers;
 using Starlight.Storage;
@@ -86,7 +87,6 @@ internal class SystemContextPatch
                     catch (Exception e) { LogError(e); }
                     StarlightSaveManager.Start();
                     StarlightCommandManager.Start();
-                    StarlightRepoManager.Start();
                     StarlightEntryPoint.StarlightStuff = instance;
                     instance.name = "StarlightStuff";
                     instance.SetActive(false);
@@ -131,12 +131,12 @@ internal class SystemContextPatch
                                         }
 
                                         var gameObj = rootObject.Cast<GameObject>();
-                                        gameObj.transform.SetParent(instance.transform);
+                                        gameObj.transform.SetParent(instance.transform, false);
                                         try
                                         {
                                             var rectT = gameObj.transform.GetComponent<RectTransform>();
                                             var setAnchor = false;
-                                            if (rectT.sizeDelta == Vector2.zero)
+                                            if (rectT.sizeDelta == Vector2.zero && (rectT.anchorMin != Vector2.zero || rectT.anchorMax != Vector2.one))
                                             {
                                                 rectT.sizeDelta = rectT.GetParentSize();
                                                 setAnchor = true;
@@ -184,6 +184,11 @@ internal class SystemContextPatch
         var lang = __instance.LocalizationDirector.GetCurrentLocaleCode();
                     
         LoadLanguage(lang);
+        
+        try { EmberModeUI.Initialize(__instance); } 
+        catch (Exception e) { LogError(e); }
+        try { if (StarlightEntryPoint.enableEmberMode) EmberModeUI.Enable(); }
+        catch { }
         
         foreach (var expansion in StarlightEntryPoint.ExpansionV01S)
             try { expansion.AfterSystemContext(__instance); } 
