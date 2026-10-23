@@ -77,11 +77,18 @@ internal class CheatMenuSlot : MonoBehaviour
     private bool AllowRadiant(IdentifiableType type)
     {
         if (!SupportRadiant.HasFlag()) return false;
-        if(type)
-            if (SlimeDefinition.IsSlimeDefinition(type))
-                foreach (var appearance in type.Cast<SlimeDefinition>().AppearancesDefault)
-                    if (appearance.name.Contains("Radiant"))
-                        return true;
+        if (!type) return false;
+        if (!SlimeDefinition.IsSlimeDefinition(type)) return false;
+
+        var slimeDef = type.Cast<SlimeDefinition>();
+
+        if (slimeDef.RadiantBase == null) return false;
+        if (slimeDef.AppearancesDefault == null) return false;
+
+        foreach (var appearance in slimeDef.AppearancesDefault)
+            if (appearance != null && appearance.name.Contains("Radiant"))
+                return true;
+
         return false;
     }
     private bool AllowRadiant(string input)
