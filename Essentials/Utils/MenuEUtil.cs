@@ -203,9 +203,16 @@ public static class MenuEUtil
     }
     public static void CloseOpenMenu()
     {
-        var menu = GetOpenMenu();
-        if(menu)
-            menu.Close();
+        try
+        {
+            var menu = GetOpenMenu();
+            if(menu)
+                menu.Close();
+        }
+        catch (Exception e)
+        {
+            LogError(e);
+        }
     }
     public static StarlightMenu GetOpenMenu()
     {
@@ -217,9 +224,6 @@ public static class MenuEUtil
         }
         return null;
     }
-    
-    
-    
     
     private static Sprite _whitePillBg;
     private static Texture2D _whitePillBgTex;
@@ -268,5 +272,4 @@ public static class MenuEUtil
             return _whitePillBgTex;
         }
     }
-    
 }

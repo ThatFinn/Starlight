@@ -110,10 +110,12 @@ public class StarlightCheatMenu : StarlightMenu
 
         _noclipButton.TextInstance.text = Tr("cheatmenu.cheatbuttons.noclip" + (sceneContext.Camera.GetComponent<NoClipComponent>() == null ? "off" : "on"));
         _refillButton.TextInstance.text = Tr("cheatmenu.cheatbuttons.refillinv");
-        if (EnableInfHealth.HasFlag()) _infHealthButton.TextInstance.text = Tr("cheatmenu.cheatbuttons.infhealth" + (StarlightSaveManager.inGameData.InfiniteHealthActive? "on" : "off"));
-        if (EnableInfEnergy.HasFlag()) _infEnergyButton.TextInstance.text = Tr("cheatmenu.cheatbuttons.infenergy" + (StarlightSaveManager.inGameData.InfiniteEnergyActive? "on" : "off"));
-        _removeFogButton.TextInstance.text = Tr("cheatmenu.cheatbuttons.removefog" + (StarlightSaveManager.inGameData.RemoveFogActive? "on" : "off"));
-        _keepInvButton.TextInstance.text = Tr("cheatmenu.cheatbuttons.keepinv" + (StarlightSaveManager.inGameData.KeepInventoryActive? "on" : "off"));
+        var saved = StarlightSaveManager.inGameData;
+
+        if (EnableInfHealth.HasFlag()) _infHealthButton.TextInstance.text = Tr("cheatmenu.cheatbuttons.infhealth" + (saved is { InfiniteHealthActive: true } ? "on" : "off"));
+        if (EnableInfEnergy.HasFlag()) _infEnergyButton.TextInstance.text = Tr("cheatmenu.cheatbuttons.infenergy" + (saved is { InfiniteEnergyActive: true } ? "on" : "off"));
+        _removeFogButton.TextInstance.text = Tr("cheatmenu.cheatbuttons.removefog" + (saved is { RemoveFogActive: true } ? "on" : "off"));
+        _keepInvButton.TextInstance.text = Tr("cheatmenu.cheatbuttons.keepinv" + (saved is { KeepInventoryActive: true } ? "on" : "off"));
 
         
         //Warp Buttons
