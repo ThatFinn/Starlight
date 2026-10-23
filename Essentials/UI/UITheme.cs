@@ -9,7 +9,6 @@ public class UITheme
     {
         switch (theme)
         {
-            //case StarlightMenuTheme.Starlight: return StarlightTheme();
             case StarlightMenuTheme.Native: return NativeTheme();
             case StarlightMenuTheme.Black: return BlackTheme();
             case StarlightMenuTheme.Melon: return MelonTheme();
@@ -50,9 +49,13 @@ public class UITheme
     {
         var theme = new UITheme();
         theme.ThemeName = "Black";
+        theme.PrimaryColor = new(0f, 0f, 0f, 0.6f);
+        theme.SecondaryColor = new(0f, 0f, 0f, 0.35f);
+        theme.AccentColor = new(0f, 0f, 0f, 0.25f);
+        theme.AutoCompleteBackgroundColor = new(0f, 0f, 0f, 0.098f);
+        theme.AutoCompleteSelectedColor = new(1f, 0.827f, 0f, 0.47f);
         return theme;
     }
-
     
     public string ThemeName;
     public Color PrimaryColor = new(0.106f, 0.106f, 0.114f, 1f);
@@ -66,6 +69,8 @@ public class UITheme
     public Color TextWarningColor = new(1,0,0,1);
     public Color TextGeneralColor = Color.white;
     public Color TextButtonColor = Color.white;
+    public Color AutoCompleteBackgroundColor = new(0f, 0f, 0f, 0.098f);
+    public Color AutoCompleteSelectedColor = new(1f, 0.827f, 0f, 0.47f);
 
     public ColorBlock ButtonColors = new ()
     {
@@ -94,6 +99,15 @@ public class UITheme
         highlightedColor = new Color(0.7f, 0.7f, 0.7f, 1),
         normalColor = new (0.5f, 0.5f, 0.5f, 1),
     };
+    public ColorBlock UnityButtonColors = new ()
+    {
+        fadeDuration = 0.1f, colorMultiplier = 1f, 
+        disabledColor = new Color32(200,200,200, 128),
+        selectedColor = Color.white,
+        pressedColor = new Color32(200,200,200, 255),
+        highlightedColor = Color.white,
+        normalColor = Color.white,
+    };
     public Color GetColor(UIColor color)
     {
         switch (color)
@@ -109,6 +123,8 @@ public class UITheme
             case UIColor.TextWarning: return TextWarningColor;
             case UIColor.Badge: return BadgeColor;
             case UIColor.Space3DBackground: return Space3DBackgroundColor;
+            case UIColor.AutoCompleteBackground: return AutoCompleteBackgroundColor;
+            case UIColor.AutoCompleteSelected: return AutoCompleteSelectedColor;
             case UIColor.None: return Color.white;
             case UIColor.Transparent: return new Color(0f, 0f, 0f, 0f);
             default: return PrimaryColor;
@@ -120,34 +136,38 @@ public class UITheme
         {
             case UIColorBlock.Buttons: return ButtonColors;
             case UIColorBlock.AlternativeButtons: return AlternativeButtonColors;
+            case UIColorBlock.UnityButtons: return UnityButtonColors;
             case UIColorBlock.GrayButtons: return GrayButtonColors;
             case UIColorBlock.White:
-                return new ColorBlock()
-                {
-                    disabledColor = Color.white,
-                    selectedColor = Color.white,
-                    pressedColor = Color.white,
-                    highlightedColor = Color.white,
-                    normalColor = Color.white,
-                };
+            {
+                var block = ColorBlock.defaultColorBlock;
+                block.disabledColor = Color.white;
+                block.selectedColor = Color.white;
+                block.pressedColor = Color.white;
+                block.highlightedColor = Color.white;
+                block.normalColor = Color.white;
+                return block;
+            }
             case UIColorBlock.None:
-                return new ColorBlock()
-                {
-                    disabledColor = new Color(0.78431372549f,0.78431372549f,0.78431372549f,0.501960784314f),
-                    selectedColor = Color.white,
-                    pressedColor = new Color(0.78431372549f,0.78431372549f,0.78431372549f,1f),
-                    highlightedColor = Color.white,
-                    normalColor = Color.white,
-                };
-            case UIColorBlock.Transparent: 
-                return new ColorBlock()
-                {
-                    disabledColor = new Color(0f, 0f, 0f, 0f),
-                    selectedColor = new Color(0f, 0f, 0f, 0f),
-                    pressedColor = new Color(0f, 0f, 0f, 0f),
-                    highlightedColor = new Color(0f, 0f, 0f, 0f),
-                    normalColor = new Color(0f, 0f, 0f, 0f),
-                };
+            {
+                var block = ColorBlock.defaultColorBlock;
+                block.disabledColor = new Color(0.78431372549f,0.78431372549f,0.78431372549f,0.501960784314f);
+                block.selectedColor = Color.white;
+                block.pressedColor = new Color(0.78431372549f,0.78431372549f,0.78431372549f,1f);
+                block.highlightedColor = Color.white;
+                block.normalColor = Color.white;
+                return block;
+            }
+            case UIColorBlock.Transparent:
+            {
+                var block = ColorBlock.defaultColorBlock;
+                block.disabledColor = new Color(0f, 0f, 0f, 0f);
+                block.selectedColor = new Color(0f, 0f, 0f, 0f);
+                block.pressedColor = new Color(0f, 0f, 0f, 0f);
+                block.highlightedColor = new Color(0f, 0f, 0f, 0f);
+                block.normalColor = new Color(0f, 0f, 0f, 0f);
+                return block;
+            }
             default: return ButtonColors;
         }
     }
@@ -168,6 +188,8 @@ public enum UIColor
     TextWarning=80,
     Badge=90,
     Space3DBackground=100,
+    AutoCompleteBackground=110,
+    AutoCompleteSelected=120,
 }
 public enum UIColorBlock
 { 
@@ -177,4 +199,5 @@ public enum UIColorBlock
     AlternativeButtons=30,
     GrayButtons=40,
     White=50,
+    UnityButtons=60,
 }
