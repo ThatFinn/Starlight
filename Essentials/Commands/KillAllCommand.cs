@@ -1,4 +1,5 @@
 ﻿using System;
+using Il2CppMonomiPark.SlimeRancher.Drone;
 
 namespace Starlight.Commands;
 
@@ -33,6 +34,7 @@ internal class KillAllCommand : StarlightCommand
                         sceneContext.GameModel.identifiables.Remove(id);
                     }
                 }
+            DeSpawnGhostDrones(null);
             SendMessage(Tr("cmd.killall.success"));
             return true;
         }
@@ -49,7 +51,20 @@ internal class KillAllCommand : StarlightCommand
                     Object.Destroy(ident.gameObject);
                     sceneContext.GameModel.identifiables.Remove(id);
                 }
+        DeSpawnGhostDrones(type);
         SendMessage(Tr("cmd.killall.successspecific",type.GetName()));
         return true;
+    }
+
+    private static void DeSpawnGhostDrones(IdentifiableType type)
+    {
+        foreach (var drone in Resources.FindObjectsOfTypeAll<ComponentAcqDrone>())
+        {
+            if (!drone) continue;
+            if (!drone.hasStarted) continue;
+            if (!drone.gameObject.scene.IsValid()) continue;
+            if (type && drone.identType != type) continue;
+            try { drone.DeSpawn(); } catch (Exception e) { LogError(e); }
+        }
     }
 }

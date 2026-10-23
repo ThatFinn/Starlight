@@ -1,4 +1,5 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.Damage;
+using Il2CppMonomiPark.SlimeRancher.Drone;
 using Il2CppMonomiPark.SlimeRancher.World;
 
 namespace Starlight.Commands;
@@ -32,6 +33,11 @@ internal class KillCommand : StarlightCommand
             gameObject.GetComponentInParent<Gadget>().DestroyGadget();;
             didAThing = true;
         }
+        else if (gameObject.GetComponentInParent<ComponentAcqDrone>())
+        {
+            gameObject.GetComponentInParent<ComponentAcqDrone>().DeSpawn();
+            didAThing = true;
+        }
         else if (gameObject.GetComponent<Identifiable>())
         {
             DeathHandler.Kill(gameObject, killDamage);
@@ -55,5 +61,4 @@ internal class KillCommand : StarlightCommand
         }
         return didAThing;
     }
-
 }
