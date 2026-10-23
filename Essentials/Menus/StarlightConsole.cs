@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Il2CppInterop.Runtime.Attributes;
 using Il2CppTMPro;
 using Starlight.Enums;
 using Starlight.Enums.Features;
 using Starlight.Managers;
 using Starlight.Storage;
+using Starlight.UI;
+using Starlight.UI.Blueprints;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
@@ -13,26 +16,41 @@ namespace Starlight.Menus;
 
 public class StarlightConsole : StarlightMenu
 {
-    public new static MenuIdentifier GetMenuIdentifier() => new ("console",StarlightMenuFont.Default, StarlightMenuTheme.Black, "Console");
-
+    public new static MenuIdentifier GetMenuIdentifier() => new ("console",StarlightMenuFont.Default, StarlightMenuTheme.Black, "Console",true,true);
     protected override bool createCommands => true;
     protected override bool inGameOnly => false;
 
     internal static readonly LKey OpenKey = LKey.F11;
     internal static readonly LMultiKey OpenKey2 = new (LKey.Tab, LKey.LeftControl);
+    
+    private RectTransform _openMenu;
+    private readonly List<string> _messageHistory = new ();
+    private readonly List<Color> _messageHistoryColor = new ();
+    
+    private Vector2 _currentResolution;
+    
     internal Transform ConsoleContent;
     private TMP_InputField _commandInput;
-    private GameObject _autoCompleteEntryPrefab;
     private Transform _autoCompleteContent;
     private GameObject _autoCompleteScrollView;
-    private GameObject _messagePrefab;
     private int _selectedAutoComplete;
-    private List<string> _commandHistory;
+    private List<string> _commandHistory = new ();
     private int _commandHistoryIdx = -1;
     private Scrollbar _scrollbar;
     private bool _shouldResetTime = false;
-    private bool _scrollCompletlyDown;
+    private bool _scrollCompletelyDown;
     
+    public new static GameObject GetMenuRootObject()
+    {
+        var obj = new GameObject("StarlightConsoleMenu");
+        var rect = obj.AddComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0, 0);
+        rect.anchorMax = new Vector2(1, 1);
+        rect.offsetMin = Vector2.zero; 
+        rect.offsetMax = Vector2.zero;
+        rect.localScale = Vector3.one;
+        return obj;
+    }
     protected override void OnAwake()
     {
         requiredFeatures = new List<FeatureFlag>() { EnableConsole }.ToArray();
@@ -47,34 +65,155 @@ public class StarlightConsole : StarlightMenu
         StarlightLogManager.OnSendMessage += SendMessage;
         StarlightLogManager.OnSendWarning += SendWarning;
         StarlightLogManager.OnSendError += SendError;
+        Send("Hello Console!", Color.green);
+        GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+        OnThemeChange();
     }
 
-    public void Send(string message, Color32 color)
+    public override void OnThemeChange()
     {
-        if (!EnableConsole.HasFlag()) return;
-        if (!StarlightEntryPoint.MenusFinished) return;
+        string currentText = _commandInput != null ? _commandInput.text : "";
+        if(_openMenu)
+            DestroyImmediate(_openMenu.gameObject);
+        _currentResolution = new Vector2(Screen.width, Screen.height);
+        _openMenu = menuBase.Render(currentTheme, currentFontTheme, transform);
+        if (isOpen) transform.SetAsLastSibling();
+        
+        ConsoleContent = transform.GetObjectRecursively<Transform>("ConsoleMenuConsoleContentRec");
+        _commandInput = transform.GetObjectRecursively<Transform>("ConsoleMenuCommandInputRec").GetChild(0).GetComponent<TMP_InputField>();
+        _scrollbar = transform.GetObjectRecursively<Scrollbar>("ConsoleMenuConsoleScrollbarRec");
+        _autoCompleteContent = transform.GetObjectRecursively<Transform>("ConsoleMenuAutoCompleteContentRec");
+        _autoCompleteScrollView = transform.GetObjectRecursively<GameObject>("ConsoleMenuAutoCompleteScrollRectRec");
+
+        _commandInput.onValueChanged.AddListener((Action<string>)((text) =>
+        {
+            if (text.Contains("\n")) _commandInput.text = text.Replace("\n", "");
+            RefreshAutoComplete(text);
+        }));
+
+        if (!string.IsNullOrEmpty(currentText))
+            _commandInput.text = currentText;
+        else
+            RefreshAutoComplete("");
+
+        var texts = _messageHistory.ToArray();
+        var colors = _messageHistoryColor.ToArray();
+        int count = Math.Min(texts.Length, colors.Length);
+        for (int i = 0; i < count; i++)
+            Send(texts[i],colors[i]);
+    }
+
+    [HideFromIl2Cpp]
+    private bool ResolutionChanged => Mathf.Abs(_currentResolution.x - Screen.width) > 0.01f || Mathf.Abs(_currentResolution.y - Screen.height) > 0.01f;
+    
+    private const float PanelHeight = 330f;
+    private const float InputHeight = 27f;
+    private const float Gap = 5f;
+    
+    [HideFromIl2Cpp]
+    private UIBlueprint menuBase => new PanelUIBlueprintV01()
+    {
+        Name="Console",
+        Anchors = new Vector4(0, 1, 1, 1),
+        Pivot = new (0.5f, 1f),
+        Size = new (0, PanelHeight),
+        Color = UIColor.Primary,
+        Children=[
+            new InputUIBlueprintV01()
+            {
+                Name="ConsoleMenuCommandInputRec",
+                Anchors = new Vector4(0, 0, 1, 0),
+                Pivot = new (0.5f, 0f),
+                Size = new (0, InputHeight),
+                PlaceHolderContent = "Enter command...",
+                CustomPlaceHolderColor = Color.white,
+                FontSize = 15.5f,
+                Margins = new Vector4(5, 0, 5, 0),
+            },
+            new VScrollUIBlueprintV01()
+            {
+                Anchors = new Vector4(0, 0, 1, 1),
+                Pivot = new (0.5f, 0.5f),
+                Size = new (-Gap * 2f, -(InputHeight + Gap * 2f)),
+                Position = new Vector2(0, InputHeight / 2f),
+                ContentName = "ConsoleMenuConsoleContentRec",
+                ScrollBarVerticalName = "ConsoleMenuConsoleScrollbarRec",
+            },
+            new VScrollUIBlueprintV01()
+            {
+                Anchors = new Vector4(0, 0, 0, 0),
+                Pivot = new (0f, 1f),
+                Size = new (300, 200),
+                Position = new Vector2(Gap, 0),
+                Name = "ConsoleMenuAutoCompleteScrollRectRec",
+                ContentName = "ConsoleMenuAutoCompleteContentRec",
+                BackgroundColor = UIColor.Primary
+            },
+        ]
+    };
+    [HideFromIl2Cpp]
+    private Button GetAutoCompletePrefab(string text)
+        => new ButtonUIBlueprintV01()
+        {
+            Size = new Vector2(300, 22),
+            ButtonColors = UIColorBlock.White,
+            Color = UIColor.AutoCompleteBackground,
+            Children = [
+                new TextUIBlueprintV01()
+                {
+                    Anchors = new Vector4(0,0,1,1),
+                    Size = Vector2.zero,
+                    Margins = new Vector4(5,1,1,1),
+                    TextContent = text,
+                    DisableAutoTranslation = true,
+                    FontSize = 15,
+                    Alignment = TextAlignmentOptions.Left
+                }
+            ]
+        }.Render(currentTheme,currentFontTheme,_autoCompleteContent).GetComponent<Button>();
+    [HideFromIl2Cpp]
+    private UIBlueprint GetMessagePrefab(string text, Color textColor)
+        => new PanelUIBlueprintV01()
+        {
+            Size = new Vector2(100, 22),
+            Color = UIColor.Transparent,
+            Children = [
+            new TextUIBlueprintV01()
+            {
+                Anchors = new Vector4(0,0,1,1),
+                Size = Vector2.zero,
+                Margins = new Vector4(5,1,1,1),
+                TextContent = text,
+                DisableAutoTranslation = true,
+                CustomColor = textColor,
+                FontSize = 15,
+                Alignment = TextAlignmentOptions.Left
+            }
+            ]
+        };
+    
+    public void Send(string message, Color color)
+    {
         try
         {
             if (message.Contains("\n"))
             {
-                foreach (string singularLine in message.Split('\n')) SendMessage(singularLine);
+                foreach (string singularLine in message.Split('\n')) Send(singularLine,color);
                 return;
             }
-            GameObject instance = Instantiate(_messagePrefab, ConsoleContent);
-            instance.gameObject.SetActive(true);
-            instance.transform.GetChild(0).gameObject.SetActive(true);
-            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
-            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = color;
+
+            if (!_openMenu) return;
+            _messageHistory.Add(message);
+            _messageHistoryColor.Add(color);
+            GetMessagePrefab(message, color).Render(currentTheme, currentFontTheme, ConsoleContent);
             _scrollbar.value = 0f;
-            _scrollCompletlyDown = true;
+            _scrollCompletelyDown = true;
         } catch { }
     }
 
     private void SendMessage(string message) => Send(message, Color.white);
     private void SendError(string message) => Send(message, Color.red);
     private void SendWarning(string message) => Send(message, Color.yellow);
-    
-
 
     protected override void OnClose()
     {
@@ -83,12 +222,20 @@ public class StarlightConsole : StarlightMenu
 
     protected override void OnOpen()
     {
-        RefreshAutoComplete(_commandInput.text);
+        if (ResolutionChanged)
+        {
+            OnThemeChange();
+        }
+        else
+        {
+            RefreshAutoComplete(_commandInput.text);
+        }
+        transform.SetAsLastSibling();
     }
-
 
     void RefreshAutoComplete(string text)
     {
+        if (!_openMenu) return;
         _autoCompleteContent.parent.parent.GetComponent<ScrollRect>().enabled = true; // Make sure that the component is enabled            
 
         if (_selectedAutoComplete > _autoCompleteContent.childCount - 1)
@@ -135,22 +282,23 @@ public class StarlightConsole : StarlightMenu
                     {
                         if (predicted >= maxPredictions) break;
                         predicted++;
-                        GameObject instance = Instantiate(_autoCompleteEntryPrefab, _autoCompleteContent);
-                        TextMeshProUGUI textMesh = instance.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+                        var finalText = "";
                         if (string.IsNullOrEmpty(containing))
-                            textMesh.text =
+                            finalText =
                                 "<alpha=#FF>" + argument +
                                 "<alpha=#67>"; // "alpha=#FF" is the normal argument, and the "alpha=#75" is the uncompleted part. DO NOT CHANGE THE SYSTEM, ONLY THE ALPHA VALUES!!!
                         else
                         {
-                            textMesh.text = "<alpha=#67>"+new Regex(Regex.Escape(containing), RegexOptions.IgnoreCase).Replace(
+                            finalText = "<alpha=#67>"+new Regex(Regex.Escape(containing), RegexOptions.IgnoreCase).Replace(
                                 argument,
                                 "<alpha=#FF>" + 
                                 argument.Substring(argument.ToUpper().IndexOf(containing.ToUpper(), StringComparison.Ordinal),containing.Length) 
                                 + "<alpha=#67>", 1);
                         }
-                        instance.SetActive(true);
-                        instance.GetComponent<Button>().onClick.AddListener((Action)(() =>
+
+                        var instance = GetAutoCompletePrefab(finalText);
+                        instance.gameObject.SetActive(true);
+                        instance.onClick.AddListener((Action)(() =>
                         {
                             _commandInput.text = cmd;
 
@@ -168,66 +316,73 @@ public class StarlightConsole : StarlightMenu
             }
         }
         else
-            foreach (var valuePair in StarlightCommandManager.Commands)
-                if (valuePair.Key.StartsWith(text) && !valuePair.Value.Hidden)
+        {
+            var matchingCommands = StarlightCommandManager.Commands
+                .Where(kv => kv.Key.ToUpper().Contains(text.ToUpper()) && !kv.Value.Hidden)
+                .OrderBy(kv => !kv.Key.ToUpper().StartsWith(text.ToUpper()))
+                .ThenBy(kv => kv.Key)
+                .ToList();
+            foreach (var valuePair in matchingCommands)
+            {
+                var finalText = "";
+                if (string.IsNullOrEmpty(text))
+                    finalText = valuePair.Key;
+                else
                 {
-                    GameObject instance = Object.Instantiate(_autoCompleteEntryPrefab, _autoCompleteContent);
-                    instance.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = valuePair.Key;
-                    instance.SetActive(true);
-                    instance.GetComponent<Button>().onClick.AddListener((Action)(() =>
-                    {
-                        _commandInput.text = valuePair.Key;
-                        _commandInput.MoveToEndOfLine(false, false);
-                    }));
+                    finalText = "<alpha=#67>"+new Regex(Regex.Escape(text), RegexOptions.IgnoreCase).Replace(
+                        valuePair.Key,
+                        "<alpha=#FF>" + 
+                        valuePair.Key.Substring(valuePair.Key.ToUpper().IndexOf(text.ToUpper(), StringComparison.Ordinal),text.Length) 
+                        + "<alpha=#67>", 1);
                 }
+                var instance = GetAutoCompletePrefab(finalText);
+                instance.gameObject.SetActive(true);
+                var key = valuePair.Key;
+                instance.GetComponent<Button>().onClick.AddListener((Action)(() =>
+                {
+                    _commandInput.text = key;
+                    _commandInput.MoveToEndOfLine(false, false);
+                }));
+            }
+        }
 
         _autoCompleteScrollView.SetActive(_autoCompleteContent.childCount != 0);
         _autoCompleteContent.parent.parent.GetComponent<ScrollRect>().enabled = false;
 
     }
 
-
-    protected override void OnLateAwake()
-    {
-        _commandHistory = new List<string>();
-
-        ConsoleContent = transform.GetObjectRecursively<Transform>("ConsoleMenuConsoleContentRec");
-        _messagePrefab = transform.GetObjectRecursively<GameObject>("ConsoleMenuTemplateMessageRec");
-        _commandInput = transform.GetObjectRecursively<TMP_InputField>("ConsoleMenuCommandInputRec");
-        _scrollbar = transform.GetObjectRecursively<Scrollbar>("ConsoleMenuConsoleScrollbarRec");
-        _autoCompleteContent = transform.GetObjectRecursively<Transform>("ConsoleMenuAutoCompleteContentRec");
-        _autoCompleteEntryPrefab = transform.GetObjectRecursively<GameObject>("ConsoleMenuTemplateAutoCompleteEntryRec");
-        _autoCompleteScrollView = transform.GetObjectRecursively<GameObject>("ConsoleMenuAutoCompleteScrollRectRec");
-        //autoCompleteScrollView.GetComponent<ScrollRect>().enabled = false;
-        //autoCompleteScrollView.SetActive(false);
-
-        _commandInput.onValueChanged.AddListener((Action<string>)((text) =>
-        {
-            if (text.Contains("\n")) _commandInput.text = text.Replace("\n", "");
-            RefreshAutoComplete(text);
-        }));
-        
-        foreach (Transform child in transform.parent.GetChildren())
-            child.gameObject.SetActive(false);
-        
-        _messagePrefab.SetActive(false);
-        
-        Send("Hello Console!", Color.green);
-    }
-
-
     protected override void OnUpdate()
     {
+        try 
+        { 
+            while (_messageHistory.Count >= MAX_CONSOLELINES.Get())
+            {
+                _messageHistory.RemoveAt(0);
+                if (_messageHistoryColor.Count > 0)
+                    _messageHistoryColor.RemoveAt(0);
+            }
+            while (_messageHistoryColor.Count > _messageHistory.Count)
+                _messageHistoryColor.RemoveAt(0);
+        } catch { }
+
+        if (!_openMenu) return;
+        
+        if (ResolutionChanged)
+        {
+            OnThemeChange();
+            return;
+        }
+
         try { if (ConsoleContent.childCount >= MAX_CONSOLELINES.Get())
-            Destroy(ConsoleContent.GetChild(0).gameObject);
+            DestroyImmediate(ConsoleContent.GetChild(0).gameObject);
         } catch { }
 
         _commandInput.ActivateInputField();
-        if (_scrollCompletlyDown)
+        if (_scrollCompletelyDown)
             if (_scrollbar.value != 0)
             {
                 _scrollbar.value = 0f;
-                _scrollCompletlyDown = false;
+                _scrollCompletelyDown = false;
             }
 
         if (LKey.Tab.OnKeyDown())
@@ -240,7 +395,6 @@ public class StarlightConsole : StarlightMenu
                     _selectedAutoComplete = 0;
                 }
                 catch { }
-
         }
 
         if (LKey.Enter.OnKeyDown())
@@ -273,7 +427,7 @@ public class StarlightConsole : StarlightMenu
             _selectedAutoComplete = 0;
         }
 
-        if (_scrollbar != null)
+        if (_scrollbar)
         {
             float value = Mouse.current.scroll.ReadValue().y;
             if (Mouse.current.scroll.ReadValue().y != 0)
@@ -289,70 +443,64 @@ public class StarlightConsole : StarlightMenu
             if (_autoCompleteContent.childCount != 0)
             {
                 _autoCompleteContent.GetChild(_selectedAutoComplete).GetComponent<Image>().color =
-                    new Color32(255, 211, 0, 120);
+                    currentTheme.GetColor(UIColor.AutoCompleteSelected);
                 if (_selectedAutoComplete > MAX_AUTOCOMPLETEONSCREEN.Get())
-                    _autoCompleteContent.position = new Vector3(_autoCompleteContent.position.x,
-                        ((744f / 1080f) * Screen.height) - (27 * MAX_AUTOCOMPLETEONSCREEN.Get()) +
-                        (27 * _selectedAutoComplete),
-                        _autoCompleteContent.position.z);
+                    _autoCompleteContent.GetComponent<RectTransform>().anchoredPosition = new Vector2(
+                        _autoCompleteContent.GetComponent<RectTransform>().anchoredPosition.x,
+                        (22f * UIBlueprint.ScaleFactor) * (_selectedAutoComplete - MAX_AUTOCOMPLETEONSCREEN.Get()));
 
                 else
-                    _autoCompleteContent.position = new Vector3(_autoCompleteContent.position.x,
-                        ((744f / 1080f) * Screen.height),
-                        _autoCompleteContent.position.z);
+                    _autoCompleteContent.GetComponent<RectTransform>().anchoredPosition = new Vector2(
+                        _autoCompleteContent.GetComponent<RectTransform>().anchoredPosition.x, 0);
             }
         }
         catch
         {
         }
     }
-
-
+    
     void NextAutoComplete()
     {
-        if (!isOpen) return;
         _selectedAutoComplete += 1;
         if (_selectedAutoComplete > _autoCompleteContent.childCount - 1)
         {
             _selectedAutoComplete = 0;
             _autoCompleteContent.GetChild(_autoCompleteContent.childCount - 1).GetComponent<Image>().color =
-                new Color32(0, 0, 0, 25);
+                currentTheme.GetColor(UIColor.AutoCompleteBackground);
             _autoCompleteContent.GetChild(_selectedAutoComplete).GetComponent<Image>().color =
-                new Color32(255, 211, 0, 120);
+                currentTheme.GetColor(UIColor.AutoCompleteSelected);
         }
         else
         {
             _autoCompleteContent.GetChild(_selectedAutoComplete - 1).GetComponent<Image>().color =
-                new Color32(0, 0, 0, 25);
+                currentTheme.GetColor(UIColor.AutoCompleteBackground);
             _autoCompleteContent.GetChild(_selectedAutoComplete).GetComponent<Image>().color =
-                new Color32(255, 211, 0, 120);
+                currentTheme.GetColor(UIColor.AutoCompleteSelected);
         }
     }
 
     void PrevAutoComplete()
     {
-        if (!isOpen) return;
         _selectedAutoComplete -= 1;
 
         if (_selectedAutoComplete < 0)
         {
             _selectedAutoComplete = _autoCompleteContent.childCount - 1;
-            _autoCompleteContent.GetChild(0).GetComponent<Image>().color = new Color32(0, 0, 0, 25);
+            _autoCompleteContent.GetChild(0).GetComponent<Image>().color = currentTheme.GetColor(UIColor.AutoCompleteBackground);
             _autoCompleteContent.GetChild(_selectedAutoComplete).GetComponent<Image>().color =
-                new Color32(255, 211, 0, 120);
+                currentTheme.GetColor(UIColor.AutoCompleteSelected);
         }
         else
         {
             _autoCompleteContent.GetChild(_selectedAutoComplete + 1).GetComponent<Image>().color =
-                new Color32(0, 0, 0, 25);
+                currentTheme.GetColor(UIColor.AutoCompleteBackground);
             _autoCompleteContent.GetChild(_selectedAutoComplete).GetComponent<Image>().color =
-                new Color32(255, 211, 0, 120);
+                currentTheme.GetColor(UIColor.AutoCompleteSelected);
         }
     }
 
     void Execute()
     {
-        if (!EnableConsole.HasFlag()) return;
         string cmds = _commandInput.text;
         _commandHistory.Add(cmds);
         _commandHistoryIdx = _commandHistory.Count - 1;
@@ -360,6 +508,4 @@ public class StarlightConsole : StarlightMenu
         _autoCompleteContent.DestroyAllChildren();
         StarlightCommandManager.ExecuteByString(cmds);
     }
-
-
 }
