@@ -23,6 +23,9 @@ internal class VScrollUIBlueprintV01 : UIBlueprint
     public float ScrollByMenuKeysPerFrame = 9f;
     public UIColor BackgroundColor = UIColor.Transparent;
     public Color? CustomBackgroundColor = null;
+    public string? ContentName = "Content";
+    public string? ScrollBarVerticalName = "Scrollbar Vertical";
+    public string? ViewportName = "Viewport";
     
     
     protected override void OnRender(UITheme theme, FontTheme fontTheme, RectTransform obj)
@@ -40,7 +43,7 @@ internal class VScrollUIBlueprintV01 : UIBlueprint
         viewPortRect.sizeDelta = Vector2.zero;
         viewPortRect.anchoredPosition = Vector2.zero;
         viewPortRect.offsetMin = new Vector2(0, 0);
-        viewPortRect.offsetMax = new Vector2(UseScrollBar?-25*ScaleFactor:0, 0);
+        viewPortRect.offsetMax = new Vector2(UseScrollBar?-25*ScaleFactorX:0, 0);
         var viewPortImage = viewPortObj.AddComponent<Image>();
         var whiteTexture = new Texture2D(1, 1);
         whiteTexture.SetPixel(0, 0, new Color(0,0,0,1));
@@ -48,10 +51,8 @@ internal class VScrollUIBlueprintV01 : UIBlueprint
         viewPortImage.sprite = whiteTexture.Texture2DToSprite();
         var viewPortMask = viewPortObj.AddComponent<Mask>();
         viewPortMask.showMaskGraphic = false;
-        
     
-    
-        var contentObj = new GameObject("Content");
+        var contentObj = new GameObject(ContentName??"Content");
         var contentRect = contentObj.AddComponent<RectTransform>();
         contentRect.pivot = new Vector2(0.5f, 1f);
         contentRect.anchorMin = new Vector2(0, 1);
@@ -70,11 +71,11 @@ internal class VScrollUIBlueprintV01 : UIBlueprint
             scrollRect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
             var scrollBar = new VScrollbarUIBlueprintV01()
             {
-                mame="Scrollbar Vertical",
+                Name=ScrollBarVerticalName??"Scrollbar Vertical",
                 Size = new (25, Size.y),
                 Anchors = new Vector4(1,0,1,1),
             }.Render(theme,fontTheme,obj);
-            scrollBar.offsetMin = new Vector2(-25*ScaleFactor, 0);
+            scrollBar.offsetMin = new Vector2(-25*ScaleFactorX, 0);
             scrollBar.offsetMax = new Vector2(0, 0);
             scrollRect.verticalScrollbar = scrollBar.GetComponent<Scrollbar>();
         }
@@ -117,5 +118,4 @@ internal class VScrollUIBlueprintV01 : UIBlueprint
             viewport.AddComponent<RoundedUIImage>().CornerRadius = CornerRadius * ScaleFactor;
         }
     }
-    
 }

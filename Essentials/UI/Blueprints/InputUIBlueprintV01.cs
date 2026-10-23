@@ -15,9 +15,11 @@ public class InputUIBlueprintV01 : UIBlueprint
     public TMP_InputField.ContentType ContentType = TMP_InputField.ContentType.Standard;
     public TMP_InputField.LineType LineType = TMP_InputField.LineType.SingleLine;
     public string PlaceHolderContent = "";
+    public Color? CustomPlaceHolderColor = null;
     public bool DisablePlaceHolderAutoTranslation = false;
     public string DefaultValue = "";
     public float FontSize = 20f;
+    public Vector4? Margins = null;
     public bool RestoreOriginalTextOnEscape = true;
     public TMP_FontAsset CustomFont;
     public System.Action<string> OnValueChanged = null;
@@ -28,7 +30,7 @@ public class InputUIBlueprintV01 : UIBlueprint
     {
         IgnoreCorners = true;
         var inputObject = TMP_DefaultControls.CreateInputField(new TMP_DefaultControls.Resources());
-        inputObject.transform.SetParent(obj);
+        inputObject.transform.SetParent(obj, false);
         if(CornerRadius>0)
         {
             var sortGroup = inputObject.AddComponent<SortingGroup>();
@@ -42,6 +44,13 @@ public class InputUIBlueprintV01 : UIBlueprint
         inputRect.offsetMin = Vector2.zero;
         inputRect.offsetMax = Vector2.zero;
         inputRect.anchoredPosition = Vector2.zero;
+        
+        var textArea = inputObject.transform.Find("Text Area") as RectTransform;
+        if (textArea != null && Margins.HasValue)
+        {
+            textArea.offsetMin = new Vector2(Margins.Value.x, Margins.Value.w);
+            textArea.offsetMax = new Vector2(-Margins.Value.z, -Margins.Value.y);
+        }
         
         var inputField = inputObject.GetComponent<TMP_InputField>();
         inputField.contentType = ContentType;
@@ -58,7 +67,7 @@ public class InputUIBlueprintV01 : UIBlueprint
         placeholder.text = DisablePlaceHolderAutoTranslation?PlaceHolderContent:Tr(PlaceHolderContent);
         placeholder.fontSize = FontSize*ScaleFactor;
         placeholder.font = CustomFont ?? fontTheme.DefaultFont;
-        placeholder.color = (CustomTextColor ?? theme.GetColor(TextColor))*new Color(0.2f,0.2f,0.2f,.5f);
+        placeholder.color = CustomPlaceHolderColor ?? (CustomTextColor ?? theme.GetColor(TextColor))*new Color(0.2f,0.2f,0.2f,.5f);
         
         var backgroundImage = inputObject.GetComponent<Image>();
         backgroundImage.color = CustomBackgroundColor ?? theme.GetColor(BackgroundColor);

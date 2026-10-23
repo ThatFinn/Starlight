@@ -41,7 +41,7 @@ public class SliderUIBlueprintV01 : UIBlueprint
         var background = new GameObject("Background");
         var backgroundRect = background.AddComponent<RectTransform>();
         background.transform.SetParent(obj, false);
-        backgroundRect.sizeDelta = new Vector2(Size.x*ScaleFactor, Size.y*ScaleFactor / 2.5f);
+        backgroundRect.sizeDelta = new Vector2(Size.x*ScaleFactorX, Size.y*ScaleFactorY / 2.5f);
         backgroundRect.anchoredPosition = Vector2.zero;
         var backgroundImage = background.AddComponent<Image>();
         backgroundImage.color = bColor;
@@ -51,7 +51,7 @@ public class SliderUIBlueprintV01 : UIBlueprint
         backgroundSortGroup.AddComponent<RoundedUIImage>().CornerRadius = 5 * ScaleFactor;
         
         var fillArea = new GameObject("Fill Area");
-        fillArea.transform.SetParent(obj);
+        fillArea.transform.SetParent(obj, false);
         var fillAreaRect = fillArea.AddComponent<RectTransform>();
         fillAreaRect.sizeDelta = backgroundRect.sizeDelta;
         fillAreaRect.anchorMin = new Vector2(1, .75f);
@@ -64,7 +64,7 @@ public class SliderUIBlueprintV01 : UIBlueprint
         fillRect.anchorMin = Vector2.zero;
         fillRect.anchorMax = new Vector2(1, 1);
         fillRect.anchoredPosition = Vector2.zero;
-        fill.transform.SetParent(fillArea.transform);
+        fill.transform.SetParent(fillArea.transform, false);
         var fillImage = fill.AddComponent<Image>();
         fillImage.color = bColor*new Color(0.75f,0.75f,0.75f,1f);
         slider.fillRect = fillRect;
@@ -75,15 +75,15 @@ public class SliderUIBlueprintV01 : UIBlueprint
         handleSlideAreaRect.anchorMax = new Vector2(1, 1);
         handleSlideAreaRect.offsetMin = new Vector2(0, 0);
         handleSlideAreaRect.offsetMax = new Vector2(0, 0);
-        handleSlideArea.transform.SetParent(obj);
-        handleSlideAreaRect.anchoredPosition = new Vector2(-(HandleWidth / 4f)*ScaleFactor,0);
-        handleSlideAreaRect.sizeDelta = new Vector2((-HandleWidth - (HandleWidth / 2f))*ScaleFactor, 0);
+        handleSlideArea.transform.SetParent(obj, false);
+        handleSlideAreaRect.anchoredPosition = new Vector2(-(HandleWidth / 4f)*ScaleFactorX,0);
+        handleSlideAreaRect.sizeDelta = new Vector2((-HandleWidth - (HandleWidth / 2f))*ScaleFactorX, 0);
         
         var handle = new GameObject("Handle");
         var handleRect = handle.AddComponent<RectTransform>();
-        handle.transform.SetParent(handleSlideArea.transform);
-        handleRect.offsetMin = new Vector2(-(HandleWidth/2f), -10)*ScaleFactor;
-        handleRect.offsetMax = new Vector2(HandleWidth, 10)*ScaleFactor;
+        handle.transform.SetParent(handleSlideArea.transform, false);
+        handleRect.offsetMin = new Vector2(-(HandleWidth/2f)*ScaleFactorX, -10*ScaleFactorY);
+        handleRect.offsetMax = new Vector2(HandleWidth*ScaleFactorX, 10*ScaleFactorY);
         var handleGroup = handle.AddComponent<SortingGroup>();
         handleGroup.enabled = false;
         handleGroup.sortingOrder = Mathf.FloorToInt(5 * ScaleFactor);
@@ -97,13 +97,12 @@ public class SliderUIBlueprintV01 : UIBlueprint
         
         
         var text = new GameObject("Text");
-        text.transform.SetParent(handle.transform);
+        text.transform.SetParent(handle.transform, false);
         var textRect = text.AddComponent<RectTransform>();
         textRect.sizeDelta = Vector2.zero;
         textRect.anchorMin = Vector2.zero;
         textRect.anchorMax = new Vector2(1, 1);
         textRect.anchoredPosition = Vector2.zero;
-        
         
         var txt = text.AddComponent<TextMeshProUGUI>();
         txt.margin = new Vector4(3, 6, 3, 6) * ScaleFactor;
@@ -131,5 +130,4 @@ public class SliderUIBlueprintV01 : UIBlueprint
         call.Invoke(slider.value);
         slider.onValueChanged.AddListener(call);
     }
-
 }

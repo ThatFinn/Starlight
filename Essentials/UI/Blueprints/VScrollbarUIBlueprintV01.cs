@@ -19,8 +19,8 @@ public class VScrollbarUIBlueprintV01 : UIBlueprint
         scrollbar.direction = InvertDirection?Scrollbar.Direction.TopToBottom:Scrollbar.Direction.BottomToTop;
         var backgroundArea = new GameObject("Background");
         var backgroundAreaRect = backgroundArea.AddComponent<RectTransform>();
-        backgroundArea.transform.SetParent(obj);
-        backgroundAreaRect.sizeDelta = new Vector2(Size.x*ScaleFactor / 5, 0);
+        backgroundArea.transform.SetParent(obj, false);
+        backgroundAreaRect.sizeDelta = new Vector2(Size.x*ScaleFactorX / 5, 0);
         backgroundAreaRect.anchoredPosition = Vector2.zero;
         backgroundAreaRect.anchorMin = new Vector2(0.5f, 0);
         backgroundAreaRect.anchorMax = new Vector2(0.5f, 1);
@@ -30,7 +30,7 @@ public class VScrollbarUIBlueprintV01 : UIBlueprint
         
         var slidingArea = new GameObject("Sliding Area");
         var slidingAreaRect = slidingArea.AddComponent<RectTransform>();
-        slidingArea.transform.SetParent(obj);
+        slidingArea.transform.SetParent(obj, false);
         slidingAreaRect.anchorMin = new Vector2(0, 0);
         slidingAreaRect.anchorMax = new Vector2(1, 1);
         slidingAreaRect.offsetMin = new Vector2(0, 0);
@@ -38,12 +38,12 @@ public class VScrollbarUIBlueprintV01 : UIBlueprint
         
         var handle = new GameObject("Handle");
         var handleRect = handle.AddComponent<RectTransform>();
-        handle.transform.SetParent(slidingArea.transform);
+        handle.transform.SetParent(slidingArea.transform, false);
         handleRect.anchorMin = new Vector2(0, 0);
         handleRect.anchorMax = new Vector2(1, 1);
         handleRect.offsetMin = new Vector2(0, 0);
         handleRect.offsetMax = new Vector2(0, 0);
-        handleRect.sizeDelta = new Vector2(-4*ScaleFactor, 0);
+        handleRect.sizeDelta = new Vector2(-4*ScaleFactorX, 0);
         handle.AddComponent<Image>().sprite = HandleSprite ?? EmbeddedResourceEUtil.LoadSprite("Assets.scrollV.png");
         
         scrollbar.handleRect = handleRect;

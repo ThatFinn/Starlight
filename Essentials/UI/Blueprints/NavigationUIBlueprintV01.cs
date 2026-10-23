@@ -1,4 +1,4 @@
-using Il2CppTMPro;
+﻿using Il2CppTMPro;
 using UnityEngine.UI;
 
 namespace Starlight.UI.Blueprints;
@@ -21,14 +21,21 @@ public class NavigationUIBlueprintV01 : UIBlueprint
     public int ButtonCornerRadius = 40;
     public FontStyles ButtonFontStyle = FontStyles.Bold;
 
+    public int ActiveTab = 0;
+
+    /// <summary>
+    /// Called with the new index whenever a tab is chosen
+    /// </summary>
+    public System.Action<int> OnTabChanged = null;
+
     protected override void OnRender(UITheme theme, FontTheme fontTheme, RectTransform obj)
     {
 
         _panels = new List<RectTransform>();
         _buttons = new List<RectTransform>();
-        _activeTab = 0;
+        _activeTab = ActiveTab;
         var panelContainer = new GameObject("Panels");
-        panelContainer.transform.SetParent(obj);
+        panelContainer.transform.SetParent(obj, false);
         CustomChildHolder = panelContainer.AddComponent<RectTransform>();
         CustomChildHolder.sizeDelta = TabSize;
         CustomChildHolder.anchoredPosition = Vector2.zero;
@@ -40,14 +47,13 @@ public class NavigationUIBlueprintV01 : UIBlueprint
         bcLayout.childControlHeight = true;
         bcLayout.childControlWidth = true;
         bcLayout.spacing = ButtonSpacing;
-        bcLayout.padding = new RectOffset((int)(HorizontalPaddingPercentage/100f * Size.x * ScaleFactor), (int)(HorizontalPaddingPercentage/100f * Size.x * ScaleFactor), (int)(TopPadding * ScaleFactor), 0);
-        buttonContainer.transform.SetParent(obj);
+        bcLayout.padding = new RectOffset((int)(HorizontalPaddingPercentage/100f * Size.x * ScaleFactorX), (int)(HorizontalPaddingPercentage/100f * Size.x * ScaleFactorX), (int)(TopPadding * ScaleFactorY), 0);
+        buttonContainer.transform.SetParent(obj, false);
         bcRect.anchorMin = new Vector2(0, 1);
         bcRect.anchorMax = new Vector2(1, 1);
-        bcRect.sizeDelta = new Vector2(0, (ButtonHeight+TopPadding)*ScaleFactor);
+        bcRect.sizeDelta = new Vector2(0, (ButtonHeight+TopPadding)*ScaleFactorY);
         bcRect.anchoredPosition = new Vector2(0, bcRect.sizeDelta.y / -2);
-        
-        
+
         if(Tabs!=null)
             for (var i = 0; i < Tabs.Count; i++)
             {
@@ -62,7 +68,7 @@ public class NavigationUIBlueprintV01 : UIBlueprint
                         new TextUIBlueprintV01()
                         {
                             Color = ButtonTextColor,
-                            TextContent = Tabs[i].mame,
+                            TextContent = Tabs[i].Name,
                             DisableAutoTranslation = ButtonDisableAutoTranslation,
                             Alignment = TextAlignmentOptions.Center,
                             FontStyle = ButtonFontStyle,
@@ -87,12 +93,14 @@ public class NavigationUIBlueprintV01 : UIBlueprint
             for (var i = 0; i < ChildrenWithButtons.Count; i++)
                 try { ChildrenWithButtons[i].Render(theme, fontTheme, bcRect); } catch (Exception e) { LogError(e); } 
         
-        ExecuteInTicks(() => { try { _buttons[0].GetComponent<Button>().interactable = false; } catch { } },1);
+        ExecuteInTicks(() => { try { _buttons[_activeTab].GetComponent<Button>().interactable = false; } catch { } },1);
     }
 
     private void SetActiveTab(int index)
     {
         _activeTab = index;
+        ActiveTab = index;
+        try { OnTabChanged?.Invoke(index); } catch (Exception e) { LogError(e); }
         for (var i = 0; i < _panels.Count; i++)
             if(_panels[i])
                 _panels[i].gameObject.SetActive(i == _activeTab);
@@ -101,4 +109,3 @@ public class NavigationUIBlueprintV01 : UIBlueprint
                 _buttons[i].GetComponent<Button>().interactable = i != _activeTab;
     }
 }
-
