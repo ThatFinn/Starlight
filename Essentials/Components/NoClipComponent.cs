@@ -1,4 +1,4 @@
-using Il2CppKinematicCharacterController;
+﻿using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Starlight.Commands;
 using Starlight.Enums;
@@ -22,7 +22,10 @@ internal class NoClipComponent : MonoBehaviour
             return baseSpeed;
         }
     }
-    bool isSprint => LKey.LeftShift.OnKey();
+    bool isSprint => LKey.LeftShift.OnKey() || (Gamepad.current != null && Gamepad.current.leftStickButton.isPressed);
+    
+    // If your stick drift is stronger than this, I am sorry for you :P
+    private const float StickDeadzone = 0.15f;
     internal static Transform player => sceneContext.player.transform;
     internal static KCCSettings playerSettings => KinematicCharacterSystem.Settings;
     internal static SRCharacterController playerController => player.GetComponent<SRCharacterController>();
@@ -51,27 +54,51 @@ internal class NoClipComponent : MonoBehaviour
 
     private void Update()
     {
+        var step = speed * Time.deltaTime;
+        var move = Vector3.zero;
+
         if(NoClipCommand.horizontal!=null)
         {
             float horizontal = NoClipCommand.horizontal.ReadValue<float>();
             float vertical = NoClipCommand.vertical.ReadValue<float>();
             if(horizontal>0.01f||horizontal<-0.01f)
-                player.position += transform.right * (horizontal*speed * Time.deltaTime);
+                move += transform.right * (horizontal*step);
             if(vertical>0.01f||vertical<-0.01f)
-                player.position += transform.forward * (vertical*speed * Time.deltaTime);
+                move += transform.forward * (vertical*step);
         }
         else
         {
             if (LKey.A.OnKey() || LKey.LeftArrow.OnKey())
-                player.position += -transform.right * (speed * Time.deltaTime);
+                move += -transform.right * step;
             if (LKey.D.OnKey() || LKey.RightArrow.OnKey())
-                player.position += transform.right * (speed * Time.deltaTime);
+                move += transform.right * step;
             if (LKey.W.OnKey() || LKey.UpArrow.OnKey())
-                player.position += transform.forward * (speed * Time.deltaTime);
+                move += transform.forward * step;
             if (LKey.S.OnKey() || LKey.DownArrow.OnKey())
-                player.position += -transform.forward * (speed * Time.deltaTime);
+                move += -transform.forward * step;
         }
+        
+        if (LKey.Space.OnKey()) move += Vector3.up * step;
+        if (LKey.LeftControl.OnKey() || LKey.C.OnKey()) move += Vector3.down * step;
+
+        var pad = Gamepad.current;
+
+        if (pad != null)
+        {
+            var stick = pad.leftStick.ReadValue();
+
+            if (stick.sqrMagnitude > StickDeadzone * StickDeadzone)
+            {
+                move += transform.right * (stick.x * step);
+                move += transform.forward * (stick.y * step);
+            }
             
+            move += Vector3.up * (pad.rightTrigger.ReadValue() * step);
+            move += Vector3.down * (pad.leftTrigger.ReadValue() * step);
+        }
+
+        if (move != Vector3.zero) player.position += move;
+
         if (Mouse.current.scroll.ReadValue().y > 0)
         {
             baseSpeed += (speedAdjust * Time.deltaTime);
