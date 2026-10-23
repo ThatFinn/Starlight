@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -142,10 +142,38 @@ public static class StarlightPackageManager
         return list;
     }
 
+    private static readonly List<StarlightPackageInfo> _registered = new();
+
+    /// <summary>
+    /// Registers a new package to the mods menu
+    /// </summary>
+    public static void RegisterPackage(StarlightPackageInfo info)
+    {
+        if (string.IsNullOrWhiteSpace(info.ID)) return;
+
+        UnregisterPackage(info.ID);
+        _registered.Add(info);
+    }
+
+    /// <summary>
+    /// Removes a registered entry from the mods menu
+    /// </summary>
+    /// <returns>
+    /// True when one was removed.
+    /// </returns>
+    public static bool UnregisterPackage(string id)
+        => id is not null && _registered.RemoveAll(info => info.ID == id) > 0;
+
+    /// <summary>
+    /// All entries registered with <see cref="RegisterPackage"/>
+    /// </summary>
+    public static List<StarlightPackageInfo> GetAllRegisteredInfos() => new(_registered);
+
     public static List<StarlightPackageInfo> GetAllInfos()
     {
         var list = GetAllExpansionInfos();
         list.AddRange(GetAllMelonInfos());
+        list.AddRange(_registered);
         return list;
     }
     public static List<StarlightPackageInfo> GetAllMelonInfos() => MelonBase.RegisteredMelons.Select(GetPackageInfoFromMelon).Where(info => info.HasValue).Select(info => info.Value).ToList();
@@ -155,13 +183,14 @@ public static class StarlightPackageManager
 
     public static StarlightPackageInfo? GetPackageInfoFromID(string id)
     {
-        return id.StartsWith("melon.") ? GetAllMelonInfos().FirstOrDefault(info => info.ID == id) : GetAllExpansionInfos().FirstOrDefault(info => info.ID == id);
+        var found = id.StartsWith("melon.") ? GetAllMelonInfos().FirstOrDefault(info => info.ID == id) : GetAllExpansionInfos().FirstOrDefault(info => info.ID == id);
+        
+        return found.ID is not null ? found : _registered.FirstOrDefault(info => info.ID == id);
     }
 
     public static MelonBase GetMelonFromID(string id) => GetPackageInfoFromID(id)?.MainClass as MelonBase;
     public static StarlightExpansionVXX GetExpansionFromID(string id) => GetPackageInfoFromID(id)?.MainClass as StarlightExpansionVXX;
     public static StarlightExpansionV01 GetExpansionV1FromID(string id) => GetPackageInfoFromID(id)?.MainClass as StarlightExpansionV01;
-    
     
     public static void LoadExpansions(string dllPath)
     {

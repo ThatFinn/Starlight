@@ -38,14 +38,31 @@ public class PackagePrefs
         try
         {
             var dataToSave = new Dictionary<string, object>();
+            
+            if (File.Exists(path))
+            {
+                try
+                {
+                    string json = File.ReadAllText(path);
+                    var existingData = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+                    if (existingData != null)
+                    {
+                        foreach (var kvp in existingData)
+                            dataToSave[kvp.Key] = kvp.Value;
+                    }
+                }
+                catch (Exception) {  }
+            }
+            
             foreach (var pref in _entries)
                 dataToSave[pref.key] = pref.dynamicValue;
             
             var directory = Path.GetDirectoryName(path);
             if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
-            string json = JsonConvert.SerializeObject(dataToSave, Formatting.Indented);
-            File.WriteAllText(path, json);
+            
+            string newJson = JsonConvert.SerializeObject(dataToSave, Formatting.Indented);
+            File.WriteAllText(path, newJson);
         }
         catch (Exception e) { LogError(e); }
     }
@@ -93,7 +110,14 @@ public class PackagePrefs
         {
             try
             {
-                var loadedValue = JsonConvert.DeserializeObject<T>(value);
+                T loadedValue;
+                if (value == null)
+                    loadedValue = default;
+                else if (typeof(T) == typeof(string))
+                    loadedValue = (T)(object)value;
+                else
+                    loadedValue = JsonConvert.DeserializeObject<T>(value);
+                
                 pref.value = loadedValue;
                 pref.dynamicValue = loadedValue;
                 pref.stringifiedValue = loadedValue?.ToString();
