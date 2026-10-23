@@ -1,6 +1,10 @@
-﻿using Il2CppTMPro;
+using Il2CppTMPro;
 using Starlight.Enums;
 using Starlight.Storage;
+using Starlight.UI;
+using Starlight.UI.Blueprints;
+using Il2CppInterop.Runtime.Attributes;
+using Starlight.Managers;
 
 namespace Starlight.Popups;
 
@@ -8,6 +12,7 @@ namespace Starlight.Popups;
 public class StarlightTextViewerPopUp : StarlightPopUp
 {
     private string _text;
+    private RectTransform _openThing;
     public new static void PreAwake(GameObject obj, List<object> objects)
     {
         var comp = obj.AddComponent<StarlightTextViewerPopUp>();
@@ -15,24 +20,47 @@ public class StarlightTextViewerPopUp : StarlightPopUp
         comp.ReloadFont();
         
     }
+    
+    [HideFromIl2Cpp] private PanelUIBlueprintV01 blueprint => new ()
+    {
+        Color = UIColor.Primary, CornerRadius = 60, Size = new Vector2(1330, 840),
+        Children =
+        [
+            new PanelUIBlueprintV01
+            {
+                Color = UIColor.Secondary, CornerRadius = 30, Size = new Vector2(1290, 800),
+                Children = [
+                    new TextUIBlueprintV01
+                    {
+                        Name = "TextViewerText",
+                        TextContent = _text, Alignment = TextAlignmentOptions.TopLeft, FontSize = 30, Color = UIColor.TextCategory, 
+                        Size = new Vector2(1250, 760), Margins = new Vector4(20,20,20,20)
+                    }
+                ]
+            }
+        ]
+    };
+    
+    
     protected override void OnOpen()
     {
-        var textMesh = gameObject.GetObjectRecursively<TextMeshProUGUI>("TextViewerText");
-        textMesh.text = (_text);
+        var fontEnum = StarlightMenuFont.Native;
+        try { fontEnum = StarlightSaveManager.data.fonts[MenuEUtil.GetOpenMenu().GetMenuIdentifier().saveKey]; } catch { }
+        _openThing = blueprint.Render(_theme.GetTheme(), fontEnum.GetFontTheme(), transform);
     }
     
     public static void Open(string text)
     {
         if (!MenuEUtil.isAnyMenuOpen)
         {
-            _Open("TextViewer",typeof(StarlightTextViewerPopUp),StarlightMenuTheme.Starlight,new List<object>(){text});
+            OpenSelf(typeof(StarlightTextViewerPopUp),StarlightMenuTheme.Starlight,new List<object>(){text});
             return;
         }
-        _Open("TextViewer",typeof(StarlightTextViewerPopUp),MenuEUtil.GetOpenMenu().GetTheme(),new List<object>(){text});
+        OpenSelf(typeof(StarlightTextViewerPopUp),MenuEUtil.GetOpenMenu().GetTheme(),new List<object>(){text});
     }
     public static void Open(string text, StarlightMenuTheme theme)
     {
-        _Open("TextViewer",typeof(StarlightTextViewerPopUp),theme,new List<object>(){text});
+        OpenSelf(typeof(StarlightTextViewerPopUp),theme,new List<object>(){text});
     }
     protected override void OnUpdate()
     {

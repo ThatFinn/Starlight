@@ -35,7 +35,7 @@ internal class StarlightTestDevMenu : StarlightMenu
                 Tabs = [
                     new PanelUIBlueprintV01
                     {
-                        mame = "Tab1",
+                        Name = "Tab1",
                         Children = [
                             new VScrollUIBlueprintV01
                             {
@@ -59,7 +59,7 @@ internal class StarlightTestDevMenu : StarlightMenu
                     },
                     new PanelUIBlueprintV01
                     {
-                        mame = "Tab2",
+                        Name = "Tab2",
                         Children = [
                             new PanelUIBlueprintV01 { Color = UIColor.Accent, CornerRadius = 0, Size = new Vector2(10,520) },
                             new VScrollUIBlueprintV01
@@ -80,7 +80,7 @@ internal class StarlightTestDevMenu : StarlightMenu
                     },
                     new PanelUIBlueprintV01
                     {
-                        mame = "Tab3",
+                        Name = "Tab3",
                         Children = [
                             new SliderUIBlueprintV01()
                             {
@@ -102,19 +102,18 @@ internal class StarlightTestDevMenu : StarlightMenu
                     },
                     new PanelUIBlueprintV01
                     {
-                        mame = "Test",
+                        Name = "Test",
                         Children = [
-                            new CheckboxUIBlueprintV01()
+                            new VScrollUIBlueprintV01
                             {
-                                Size =  new Vector2(50,50), CornerRadius = 10, Position = new Vector2(0,-200),
-                                DefaultValue=true
-                            },
-                            new InputUIBlueprintV01()
-                            {
-                                Size =  new Vector2(200,50), CornerRadius = 10,
-                                DefaultValue = "SomeValue", PlaceHolderContent = "hii"
-                            },
-                            
+                                Size = new Vector2(500,500), CornerRadius = 10,
+                                Children = [
+                                    new ButtonUIBlueprintV01 { Size = new Vector2(600,70), CornerRadius = 30, OnClick = () => { Starlight.Popups.StarlightTextViewerPopUp.Open("This is a text viewer popup test"); }, Children = [new TextUIBlueprintV01 { TextContent = "Text Viewer", DisableAutoTranslation = true, Alignment = TextAlignmentOptions.Center, FontSize = 30, Color = UIColor.TextButton, Anchors = new Vector4(0,0,1,1) }] },
+                                    new ButtonUIBlueprintV01 { Size = new Vector2(600,70), CornerRadius = 30, OnClick = () => { Starlight.Popups.StarlightConfirmationViewerPopUp.Open("This is a confirmation test", () => { }, () => { }); }, Children = [new TextUIBlueprintV01 { TextContent = "Confirmation", DisableAutoTranslation = true, Alignment = TextAlignmentOptions.Center, FontSize = 30, Color = UIColor.TextButton, Anchors = new Vector4(0,0,1,1) }] },
+                                    new ButtonUIBlueprintV01 { Size = new Vector2(600,70), CornerRadius = 30, OnClick = () => { Starlight.Popups.StarlightGridMenuListPopUp.Open(new System.Collections.Generic.Dictionary<string, (string, UnityEngine.Sprite)>() { {"test1", ("Grid 1", null)}, {"test2", ("Grid 2", null)}, {"test3", ("Grid 3", null)}, {"test4", ("Grid 4", null)} }, (s) => { }); }, Children = [new TextUIBlueprintV01 { TextContent = "Grid List", DisableAutoTranslation = true, Alignment = TextAlignmentOptions.Center, FontSize = 30, Color = UIColor.TextButton, Anchors = new Vector4(0,0,1,1) }] },
+                                    new ButtonUIBlueprintV01 { Size = new Vector2(600,70), CornerRadius = 30, OnClick = () => { Starlight.Popups.StarlightVMenuListPopUp.Open(new System.Collections.Generic.Dictionary<string, (string, UnityEngine.Sprite)>() { {"test1", ("VList 1", null)}, {"test2", ("VList 2", null)} }, (s) => { }); }, Children = [new TextUIBlueprintV01 { TextContent = "V Menu List", DisableAutoTranslation = true, Alignment = TextAlignmentOptions.Center, FontSize = 30, Color = UIColor.TextButton, Anchors = new Vector4(0,0,1,1) }] },
+                                ]
+                            }
                         ]
                     }
                 ]
@@ -130,7 +129,6 @@ internal class StarlightTestDevMenu : StarlightMenu
         ]
     };
     
-    internal static readonly LKey OpenKey = LKey.F8;
     public new static GameObject GetMenuRootObject()
     {
         var obj = new GameObject("StarlightTestDevMenu");

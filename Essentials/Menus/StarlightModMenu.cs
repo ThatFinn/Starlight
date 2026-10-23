@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using Il2CppInterop.Runtime.Attributes;
 using Il2CppTMPro;
@@ -24,7 +24,6 @@ internal class StarlightModMenu : StarlightMenu
     protected override bool createCommands => true;
     protected override bool inGameOnly => false;
     
-    //internal static readonly Dictionary<MelonPreferences_Entry, SystemAction> EntriesWithActions = new ();
     private readonly List<Key> _allPossibleUnityKeys = new ();
     private readonly List<KeyCode> _allPossibleUnityKeyCodes = new ();
     private readonly List<LKey> _allPossibleLKey = new ();
@@ -88,23 +87,23 @@ internal class StarlightModMenu : StarlightMenu
                 Tabs = [
                     new PanelUIBlueprintV01
                     {
-                        mame = "modmenu.category.modmenu",
+                        Name = "modmenu.category.modmenu",
                         Children = [
                             new VScrollUIBlueprintV01
                             {
-                                Size = new Vector2(660,520), Position = new Vector2(-332.5f,0), mame="ModMenuModsScrollRec",
+                                Size = new Vector2(660,520), Position = new Vector2(-332.5f,0), Name="ModMenuModsScrollRec",
                                 Children = GetAllModButtons()
                             },
                             new PanelUIBlueprintV01 { Color = UIColor.Accent, Size = new Vector2(10,520) },
                             new TextUIBlueprintV01
                             {
-                                Size = new Vector2(660,520), CornerRadius = 10, Position = new Vector2(332.5f,0), mame="ModMenuInfoTextRec",
+                                Size = new Vector2(660,520), CornerRadius = 10, Position = new Vector2(332.5f,0), Name="ModMenuInfoTextRec",
                                 TextContent = "nada", FontSize = 17, ClickableLinks = true,
                                 Margins= new Vector4(10,10,10,10),
                             },
                             new ButtonUIBlueprintV01()
                             {
-                                OnClick = (() => { Close(); MenuEUtil.GetMenu<StarlightThemeMenu>().OpenC(this); }), mame="ModMenuThemeMenuButtonRec",
+                                OnClick = (() => { Close(); MenuEUtil.GetMenu<StarlightThemeMenu>().OpenC(this); }), Name="ModMenuThemeMenuButtonRec",
                                 Size = new (420, 45), Position = new (453, -237), CornerRadius = 20,
                                 Children =
                                 [
@@ -122,16 +121,16 @@ internal class StarlightModMenu : StarlightMenu
                     },
                     new PanelUIBlueprintV01
                     {
-                        mame = "modmenu.category.modconfig",
+                        Name = "modmenu.category.modconfig",
                         Children = [
                             new VScrollUIBlueprintV01
                             {
-                                Size = new Vector2(1330,520), Position = new Vector2(0f,0), mame="ModMenuModConfigScrollRec",
+                                Size = new Vector2(1330,520), Position = new Vector2(0f,0), Name="ModMenuModConfigScrollRec",
                                 Children = GetAllModConfigs()
                             },
                             new TextUIBlueprintV01
                             {
-                                Size = new Vector2(1330,50), Position  =new (0,-320), mame ="ModMenuModConfigWarningRec",
+                                Size = new Vector2(1330,50), Position  =new (0,-320), Name ="ModMenuModConfigWarningRec",
                                 TextContent="modmenu.warning.restart", Color = UIColor.TextWarning, FontSize = 30,
                                 Alignment = TextAlignmentOptions.Center
                             }
@@ -139,7 +138,7 @@ internal class StarlightModMenu : StarlightMenu
                     }
                 ],
                 ChildrenWithButtons = [
-                    new ButtonUIBlueprintV01()
+                    /*new ButtonUIBlueprintV01()
                     {
                         OnClick = () =>
                             {
@@ -167,7 +166,7 @@ internal class StarlightModMenu : StarlightMenu
                                 FontStyle = FontStyles.Bold,
                             }
                         ]
-                    }
+                    }*/
                 ]
             },
             new PanelUIBlueprintV01
@@ -236,7 +235,7 @@ internal class StarlightModMenu : StarlightMenu
                     [
                         new TextUIBlueprintV01()
                         {
-                            mame = "NameAndDescription",
+                            Name = "NameAndDescription",
                             TextContent = final, Margins = new Vector4(5, 1, 500, 1), FontSize = 24, Size = new Vector2(0, 0),
                             Anchors = new Vector4(0, 0, 1, 1), Alignment = TextAlignmentOptions.Left
                         }
@@ -306,7 +305,7 @@ internal class StarlightModMenu : StarlightMenu
                     [
                         new TextUIBlueprintV01()
                         {
-                            mame = "NameAndDescription",
+                            Name = "NameAndDescription",
                             TextContent = final, Margins = new Vector4(5, 1, 500, 1), FontSize = 24, Size = new Vector2(0, 0),
                             Anchors = new Vector4(0, 0, 1, 1), Alignment = TextAlignmentOptions.Left
                         }
@@ -348,11 +347,17 @@ internal class StarlightModMenu : StarlightMenu
         foreach (var info in StarlightPackageManager.GetAllExpansionInfos())
             try { entries.Add(info.Name,ProcessPackage(info,null,false, null)); }
             catch (Exception e) { LogError(e); }
+        // Manual Registration
+        var generated = new HashSet<string>();
+        foreach (var info in StarlightPackageManager.GetAllRegisteredInfos())
+            try { if (entries.TryAdd(info.Name,ProcessPackage(info,null,false, null))) generated.Add(info.Name); }
+            catch (Exception e) { LogError(e); }
         // Rotten
         foreach (var pair in StarlightPackageManager.GetAllRottenInfos())
             try { entries.Add(pair.Key.Name,ProcessPackage(pair.Key,null,true, pair.Value)); }
             catch (Exception e) { LogError(e); }
         var sorted = entries.OrderByDescending(x => x.Key == BuildInfo.Name).
+            ThenBy(x => generated.Contains(x.Key)).
             ThenBy(x => x.Key).Select(x => x.Value).ToList();
         return sorted.ToNetList();
     }
@@ -380,7 +385,8 @@ internal class StarlightModMenu : StarlightMenu
             button.Children.Add(new PanelUIBlueprintV01()
             {
                 Size=new Vector2(50,50), Position = new Vector2(266,0),
-                Color=UIColor.None,Sprite = ConvertEUtil.BytesToTexture2D(EncodedAssets.MelonIcon.RawAssetBytes).CopyWithoutMipmaps().Texture2DToSprite(),
+                //ConvertEUtil.BytesToTexture2D(EncodedAssets.MelonIcon.RawAssetBytes).CopyWithoutMipmaps().Texture2DToSprite(),
+                Color=UIColor.None,Sprite = EmbeddedResourceEUtil.LoadSprite("Assets.mlIcon.png").CopyWithoutMipmaps(),
                 CornerRadius = 10
                 //anchors = new Vector4(0,0.5f,0,0.5f),
             });

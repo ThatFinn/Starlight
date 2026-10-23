@@ -1,8 +1,6 @@
-using Starlight.Components;
+﻿using Starlight.Components;
 using Starlight.Enums;
 using Starlight.Managers;
-using Starlight.Prism;
-using Starlight.Prism.Data;
 using Starlight.Prism.Data.Native;
 using Starlight.Storage;
 using Starlight.UI;
@@ -17,7 +15,7 @@ internal class StarlightStudioMenu : StarlightMenu
     public new static MenuIdentifier GetMenuIdentifier() => new ("starlightstudiomenu",StarlightMenuFont.Native,StarlightMenuTheme.Starlight, "StarlightStudioMenu",true,true);
 
     private RectTransform _openThing;
-    protected override bool createCommands => true;
+    protected override bool createCommands => false;
     protected override bool inGameOnly => false;
     
     private StarlightSlimeRenderer _slimeRenderer;
@@ -66,8 +64,7 @@ internal class StarlightStudioMenu : StarlightMenu
         hdData.volumeAnchorOverride = _previewCamera.transform;
         hdData.clearColorMode = HDAdditionalCameraData.ClearColorMode.Color;
         hdData.backgroundColorHDR = new Color(0, 0, 0, 0); 
-        
-        
+
         var rotation = Quaternion.Euler(_viewAngle);
         var positionOffset = rotation * Vector3.back * _distance;
         
@@ -113,10 +110,9 @@ internal class StarlightStudioMenu : StarlightMenu
         {
             _volume.profile = Instantiate(StarlightVolumeProfileManager.Presets["POTATO"]);
             //if (_volume.profile.TryGet<VisualEnvironment>(out var visualEnv ))
-            //    visualEnv.skyType.value = 0; 
-            //_volume.profile.Remove<GradientSky>();
         } catch { }
-        _slimeRenderer.RenderAppearance(PrismNativeBaseSlime.Angler.GetPrismBaseSlime(),1);
+        var angler = PrismNativeBaseSlime.Angler.Find();
+        if (angler != null) _slimeRenderer.RenderAppearance(angler, 1);
         _openThing = new PanelUIBlueprintV01()
         {
             Color = UIColor.Primary, CornerRadius = 90, Size = new Vector2(1330, 840),
@@ -131,7 +127,7 @@ internal class StarlightStudioMenu : StarlightMenu
                     Tabs = [
                         new PanelUIBlueprintV01()
                         {
-                            mame = "Pink",
+                            Name = "Pink",
                             Children = [
                                 new PanelUIBlueprintV01()
                                 {

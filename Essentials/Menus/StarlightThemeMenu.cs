@@ -97,6 +97,7 @@ public class StarlightThemeMenu : StarlightMenu
                             contentRec.GetChild(i).GetComponent<Image>().color = contentRec.GetChild(i) == button.transform ? Color.green : Color.red;
                     StarlightSaveManager.data.themes[identifier.saveKey] = theme;
                     StarlightSaveManager.Save();
+                    try { identifier.GetMenu().OnThemeChange(); } catch (Exception e) { LogError(e); }
                 }));
                 var texture = new Texture2D(3, 1, TextureFormat.RGBA32, false)
                 { filterMode = FilterMode.Point, wrapMode = TextureWrapMode.Clamp };

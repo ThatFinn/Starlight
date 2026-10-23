@@ -1,14 +1,13 @@
-﻿using System;
+using System;
 using System.Reflection;
 using Il2CppTMPro;
 using Starlight.Enums;
 using Starlight.Enums.Sounds;
-using Starlight.Patches.Context;
 using Starlight.Storage;
 
 namespace Starlight;
 /// <summary>
-/// Abstract menu class
+/// Abstract popup class
 /// </summary>
 [InjectIntoIL]
 public abstract class StarlightPopUp : MonoBehaviour
@@ -18,7 +17,7 @@ public abstract class StarlightPopUp : MonoBehaviour
     public static void PreAwake(GameObject obj,List<object> objects) {}
     private void DisableBlock()
     {
-        if(block!=null)
+        if(block)
             Destroy(block.gameObject);
     }
     
@@ -34,35 +33,43 @@ public abstract class StarlightPopUp : MonoBehaviour
         foreach (var text in gameObject.GetAllChildrenOfType<TMP_Text>())
             text.font = font;
     }
-    protected static void _Open(string identifier,Type type,StarlightMenuTheme theme,List<object> objects)
+    public StarlightMenuTheme _theme = StarlightMenuTheme.Starlight;
+
+    protected static void OpenSelf(Type type,StarlightMenuTheme theme,List<object> objects)
     {
-        var asset = SystemContextPatch.bundle.LoadAsset(SystemContextPatch.getPopUpPath(identifier,theme));
-        var instance = GameObject.Instantiate(asset, StarlightEntryPoint.StarlightStuff.transform);
+        var instance = new GameObject("PopUp");
+        var rect = instance.AddComponent<RectTransform>();
+        rect.SetParent(StarlightEntryPoint.StarlightStuff.transform, false);
+        rect.anchorMin = Vector2.zero;
+        rect.anchorMax = Vector2.one;
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+        rect.localScale = Vector3.one;
+
         ExecuteInTicks((() =>
         {
-            for (int i = 0; i < StarlightEntryPoint.StarlightStuff.transform.childCount; i++)
+            try
             {
-                Transform child = StarlightEntryPoint.StarlightStuff.transform.GetChild(i);
-                if (child.name == instance.name)
-                {
-                    try
-                    {
-                        var methodInfo = type.GetMethod(nameof(StarlightPopUp.PreAwake), BindingFlags.Static | BindingFlags.Public);
-                        if (methodInfo != null)
-                            methodInfo.Invoke(null, [child.gameObject, objects]);
-                        child.gameObject.SetActive(true);
-                    }catch (Exception e) { LogError(e); }
-                }
+                var methodInfo = type.GetMethod(nameof(StarlightPopUp.PreAwake),
+                    BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+                if (methodInfo != null)
+                    methodInfo.Invoke(null, [instance, objects]);
+
+                var popup = instance.GetComponent<StarlightPopUp>();
+                if (popup != null)
+                    popup._theme = theme;
+            }
+            catch (Exception e)
+            {
+                LogError(e);
             }
             AudioEUtil.PlaySound(MenuSound.OpenPopup);
         }), 1);
     }
-    protected virtual void OnOpen() {}
     public void Awake()
     {
         MenuEUtil.OpenPopUpBlock(this);
         MenuEUtil.OpenPopUps.Add(this);
-        
     }
 
     private void Start()
@@ -73,7 +80,16 @@ public abstract class StarlightPopUp : MonoBehaviour
     protected void Update()
     {
         OnUpdate();
-    } protected virtual void OnUpdate() {}
+    }
     
+    protected virtual void OnOpen()
+    {
+        
+    }
+
+    protected virtual void OnUpdate()
+    {
+        
+    }
 }
 

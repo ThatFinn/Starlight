@@ -1,10 +1,12 @@
-﻿
 using System;
 using Il2CppTMPro;
 using Starlight.Enums;
 using Starlight.Enums.Sounds;
 using Starlight.Storage;
-using UnityEngine.UI;
+using Starlight.UI;
+using Starlight.UI.Blueprints;
+using Il2CppInterop.Runtime.Attributes;
+using Starlight.Managers;
 
 namespace Starlight.Popups;
 
@@ -25,37 +27,70 @@ public class StarlightGridMenuListPopUp : StarlightPopUp
         comp._onSelect = (Action<string>) objects[1];
         comp.ReloadFont();
     }
+    
+    [HideFromIl2Cpp] private PanelUIBlueprintV01 blueprint 
+    {
+        get
+        {
+            var bp = new PanelUIBlueprintV01
+            {
+                Color = UIColor.Primary, CornerRadius = 60, Size = new Vector2(1330, 840),
+                Children =
+                [
+                    new PanelUIBlueprintV01
+                    {
+                        Color = UIColor.Secondary, CornerRadius = 30, Size = new Vector2(1290, 800),
+                        Children = [
+                            new GridScrollUIBlueprintV01
+                            {
+                                Size = new Vector2(1270, 780), CornerRadius = 30,
+                                CellSize = new Vector2(165, 165),
+                                Spacing = new Vector2(13, 15),
+                                Children = []
+                            }
+                        ]
+                    }
+                ]
+            };
+            var scroll = (GridScrollUIBlueprintV01)((PanelUIBlueprintV01)bp.Children[0]).Children[0];
+            foreach (var entry in _entries)
+            {
+                var key = entry.Key;
+                var value = entry.Value;
+                scroll.Children.Add(new ButtonUIBlueprintV01
+                {
+                    Size = new Vector2(165, 165), CornerRadius = 30,
+                    OnClick = () => { AudioEUtil.PlaySound(MenuSound.Click); OnPress(key); },
+                    Children = [
+                        new PanelUIBlueprintV01 { Size = new Vector2(85, 85), Position = new Vector2(0, 30), Color = UIColor.None, Sprite = value.Item2 },
+                        new TextUIBlueprintV01 { TextContent = value.Item1, Alignment = TextAlignmentOptions.Center, FontSize = 25, FontAutoSizeMax = 25, FontAutoSizeMin = 5, EnableAutoSizing = true, Position = new Vector2(0, -45), Size = new Vector2(155, 60) }
+                    ]
+                });
+            }
+            return bp;
+        }
+    }
+    
+    private RectTransform _openThing;
+    
     protected override void OnOpen()
     {
-        var content = gameObject.GetObjectRecursively<Transform>("MenuListContentRec");
-        var prefab = gameObject.GetObjectRecursively<Button>("MenuListTemplateEntry");
-        foreach (var entry in _entries)
-        {
-            var value = entry.Value;
-            var instance = GameObject.Instantiate(prefab, content.transform);
-            instance.gameObject.SetActive(true);
-            instance.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = (value.Item1);
-            instance.transform.GetChild(1).GetComponent<Image>().sprite = value.Item2;
-            instance.onClick.AddListener((Action)(() =>
-            {
-                AudioEUtil.PlaySound(MenuSound.Click);
-                OnPress(entry.Key);
-            }));
-        }
-
+        var fontEnum = StarlightMenuFont.Native;
+        try { fontEnum = StarlightSaveManager.data.fonts[MenuEUtil.GetOpenMenu().GetMenuIdentifier().saveKey]; } catch { }
+        _openThing = blueprint.Render(_theme.GetTheme(), fontEnum.GetFontTheme(), transform);
     }
     public static void Open(Dictionary<string, (string, Sprite)> entries,Action<string> onSelect)
     {
         if (!MenuEUtil.isAnyMenuOpen)
         {
-            _Open("GridMenuList",typeof(StarlightGridMenuListPopUp),StarlightMenuTheme.Starlight,new List<object>(){entries,onSelect});
+            OpenSelf(typeof(StarlightGridMenuListPopUp),StarlightMenuTheme.Starlight,new List<object>(){entries,onSelect});
             return;
         }
-        _Open("GridMenuList",typeof(StarlightGridMenuListPopUp),MenuEUtil.GetOpenMenu().GetTheme(),new List<object>(){entries,onSelect});
+        OpenSelf(typeof(StarlightGridMenuListPopUp),MenuEUtil.GetOpenMenu().GetTheme(),new List<object>(){entries,onSelect});
     }
     public static void Open(Dictionary<string, (string, Sprite)> entries,Action<string> onSelect, StarlightMenuTheme theme)
     {
-        _Open("GridMenuList",typeof(StarlightGridMenuListPopUp),theme,new List<object>(){entries,onSelect});
+        OpenSelf(typeof(StarlightGridMenuListPopUp),theme,new List<object>(){entries,onSelect});
     }
     protected override void OnUpdate()
     {
