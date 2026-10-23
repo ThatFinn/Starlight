@@ -252,4 +252,84 @@ public static class SaveFileEUtil
         if (failedSome) return SomeSaveIDFailed;
         return NoError;
     }
+    
+    public static Summary GetSummaryBySlotIndex(int slotIndex)
+    {
+        if (!gameContext || autoSaveDirector == null) return null;
+        try
+        {
+            Summary latestSummary = null;
+            foreach (var summary in autoSaveDirector.EnumerateAllSaveGamesIncludingBackups().ToList())
+            {
+                if (summary.IsInvalid) continue;
+                if (summary.SaveSlotIndex != slotIndex) continue;
+                latestSummary = summary;
+            }
+            return latestSummary;
+        }
+        catch (Exception e)
+        {
+            if (DebugLogging.HasFlag()) LogError(e);
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Skips the intro cutscene of the next new game that is created
+    /// </summary>
+    public static void SkipNextIntro() => Patches.MainMenu.SkipIntro.Enabled = true;
+
+    public static StarlightError LoadSaveBySlotIndex(int slotIndex)
+    {
+        if (!gameContext || autoSaveDirector == null) return GameNotLoadedYet;
+        
+        var summary = GetSummaryBySlotIndex(slotIndex);
+        if (summary == null) return NoValidSummaries;
+        
+        try
+        {
+            autoSaveDirector.Load(summary.SaveIdentifier,false);
+            return NoError;
+        }
+        catch (Exception e)
+        {
+            LogError(e);
+            return SaveInvalidGeneral;
+        }
+    }
+
+    public static StarlightError DeleteSaveBySlotIndex(int slotIndex)
+    {
+        if (!gameContext || autoSaveDirector == null || autoSaveDirector._storageProvider == null) return GameNotLoadedYet;
+        
+        try
+        {
+            var summariesToDelete = new List<Summary>();
+            foreach (var summary in autoSaveDirector.EnumerateAllSaveGamesIncludingBackups().ToList())
+                if (summary.SaveSlotIndex == slotIndex)
+                    summariesToDelete.Add(summary);
+            
+            if (summariesToDelete.Count == 0) return NoValidSaves;
+
+            foreach (var summary in summariesToDelete)
+            {
+                try
+                {
+                    autoSaveDirector.DeleteGame(summary.Name);
+                    autoSaveDirector._storageProvider.DeleteGameData(summary.SaveName);
+                }
+                catch (Exception e)
+                {
+                    if (DebugLogging.HasFlag()) LogError(e);
+                }
+            }
+            
+            return NoError;
+        }
+        catch (Exception e)
+        {
+            LogError(e);
+            return SaveInvalidGeneral;
+        }
+    }
 }

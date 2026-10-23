@@ -1,4 +1,6 @@
 using System.IO;
+using Il2CppMonomiPark.SlimeRancher.Platform;
+using Starlight.Storage;
 
 namespace Starlight.Patches.Saving;
 
@@ -29,4 +31,29 @@ internal static class RedirectSaveFilesPatch
         return false; 
     }
     
+}
+[HarmonyDontLogOnFail,HarmonyPatch(typeof(SystemContext), nameof(SystemContext.GetUserManager))]
+internal static class RedirectSaveFilesPatch2
+{
+    private static EmptyUserManager _userManager = null;
+
+    private static EmptyUserManager userManager
+    {
+        get
+        {
+            if (_userManager == null)
+            {
+                var manager = new EmptyUserManager();
+                manager.userChanger = new EmptyUserChanger().TryCast<IUserChanger>();
+                _userManager = manager;
+            }
+            return _userManager;
+        }
+    }
+    public static bool Prefix(SystemContext __instance, ref IUserManager __result)
+    {
+        if (!RedirectSaveFiles.HasFlag()) return true;
+        __result = userManager.TryCast<IUserManager>();
+        return false; 
+    }
 }
