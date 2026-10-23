@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -13,6 +13,7 @@ using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
 using MelonLoader;
 using MelonLoader.Utils;
+using Starlight.EmberMode;
 using Starlight.Components;
 using Starlight.Components.Debug;
 using Starlight.Enums;
@@ -21,18 +22,13 @@ using Starlight.Storage.Prefs;
 using Starlight.Managers;
 using Starlight.Menus;
 using Starlight.Menus.Debug;
-using Starlight.Menus.Development;
 using Starlight.Patches.General;
 using Starlight.Patches.InGame;
-using Starlight.Prism;
 using Starlight.Storage;
 using Starlight.UI;
 using Starlight.UI.Blueprints;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Users;
 
 namespace Starlight;
-
 
 // Starlight Build information. Please do not edit anything other than version numbers.
 public static class BuildInfo
@@ -42,7 +38,7 @@ public static class BuildInfo
     public const string Author = "ThatFinn";
     public const string CoAuthors = "Shark (py8)";
     public const string Contributors = "PinkTarr, shizophrenicgopher, Atmudia";
-    public const string CodeVersion = "4.0.4";
+    public const string CodeVersion = "4.1.0";
     public const string DownloadLink = "https://starlight.sr2.dev/";
     public const string SourceCode = "https://github.com/ThatFinn/Starlight";
     public const string Nexus = "https://www.nexusmods.com/slimerancher2/mods/60";
@@ -54,7 +50,7 @@ public static class BuildInfo
     /// For dev versions, use "-dev". Do not add a build number!<br />
     /// Add "+metadata" only in dev builds!
     /// </summary>
-    public const string DisplayVersion = "4.0.4";
+    public const string DisplayVersion = "4.1.0";
 
     // Allow Metadata, Check Update Link
     internal static readonly Dictionary<string, (bool, string)> PreInfo = new()
@@ -71,7 +67,6 @@ public class StarlightEntryPoint : MelonMod
     internal static readonly Dictionary<Assembly, (Dictionary<StarlightExpansionVXX,StarlightPackageInfo>, HarmonyLib.Harmony)> Expansions = new();
     internal static readonly List<StarlightExpansionV01> ExpansionV01S = new();
     internal static readonly List<(string, Assembly, string, string)> BrokenExpansions = new();
-
 
     internal static bool GameContextStarted;
     
@@ -114,6 +109,7 @@ public class StarlightEntryPoint : MelonMod
 
     internal static string onSaveLoadCommand => _prefs.GetEntry<string>("onSaveLoadCommand").value;
     internal static string onMainMenuLoadCommand => _prefs.GetEntry<string>("onMainMenuLoadCommand").value;
+    internal static string onStartupCommand => _prefs.GetEntry<string>("onStartupCommand").value;
     internal static bool starlightLogToMlLog => _prefs.GetEntry<bool>("StarlightLogToMLLog").value;
     internal static bool mLLogToStarlightLog => _prefs.GetEntry<bool>("mLLogToStarlightLog").value;
     internal static bool autoUpdate => _prefs.GetEntry<bool>("autoUpdate").value;
@@ -121,8 +117,7 @@ public class StarlightEntryPoint : MelonMod
     internal static float consoleMaxSpeed => _prefs.GetEntry<float>("consoleMaxSpeed").value;
     internal static float noclipAdjustSpeed => _prefs.GetEntry<float>("noclipAdjustSpeed").value;
     internal static float noclipSpeedMultiplier => _prefs.GetEntry<float>("noclipSpeedMultiplier").value;
-    internal static bool enableDebugDirector => _prefs.GetEntry<bool>("enableDebugDirector").value;
-    internal static bool allowAllDevicesAtOnce => _prefs.GetEntry<bool>("allowAllDevicesAtOnce").value;
+    internal static bool enableEmberMode => _prefs.HasEntry("enableEmberMode") ? _prefs.GetEntry<bool>("enableEmberMode").value : false;
     internal static bool enableMarketViewer => _prefs.GetEntry<bool>("enableMarketViewer").value;
     public override void OnEarlyInitializeMelon()
     {
@@ -145,10 +140,9 @@ public class StarlightEntryPoint : MelonMod
         {
             if (!string.IsNullOrWhiteSpace(s2))
                 if (s2.Contains("Support Module Loaded")&&s2.EndsWith("MelonLoader\\Dependencies\\SupportModules\\Il2Cpp.dll")) 
-                    Log("The following message is incorrectly labeled as an error. It does nothing and thus should NOT be reported and can be safely ignored. This is NOT an error:");
+                    Log("The following message by Il2CppInterop is incorrectly labeled as an error. It does nothing and thus should NOT be reported and can be safely ignored. This is NOT an error:");
         };
 
-        
         var launchArgs = Environment.GetCommandLineArgs();
         var usedArgs = new List<string>();
         foreach (var arg in launchArgs)
@@ -218,7 +212,6 @@ public class StarlightEntryPoint : MelonMod
         catch (Exception e) { LogError(e); }
         foreach (var pair in Expansions)
             PatchGame(pair.Value.Item2,pair.Key);
-        
 
         Application.add_logMessageReceived(new Action<string, string, LogType>(AppLogUnity));
         try { AddLanguages(EmbeddedResourceEUtil.LoadString("translations.csv")); }
@@ -228,9 +221,7 @@ public class StarlightEntryPoint : MelonMod
             try { expansion.OnInitialize(); }
             catch (Exception e) { LogError(e); }
     }
-    
-    
-    
+
     public override void OnLateInitializeMelon()
     {
         if (Get<GameObject>("StarlightPrefabHolder"))
@@ -263,9 +254,6 @@ public class StarlightEntryPoint : MelonMod
             try { expansion.OnLateInitialize(); }
             catch (Exception e) { LogError(e); }
     }
-    
-    
-    
 
     private static bool IsDisplayVersionValid()
     {
@@ -344,12 +332,17 @@ public class StarlightEntryPoint : MelonMod
         
         if (!_prefs.HasEntry("disableFixSaves"))
             _prefs.AddEntry("disableFixSaves", false, "Disable Save Fixing","This disables the save fixer", false,false);
-        if (!_prefs.HasEntry("enableDebugDirector"))
-            _prefs.AddEntry("enableDebugDirector", false, "Debug Menu","Enable a debug menu, usable in-game", false,false, ((_, newValue) => StarlightDebugUI.isEnabled = newValue));
+
+        if (EnableEmberMode.HasFlag())
+            if (!_prefs.HasEntry("enableEmberMode"))
+                _prefs.AddEntry("enableEmberMode", false, "[Experimental] Enable EmberMode", "Toggles the EmberMode menu bar", false, false, ((_, newValue) => {
+                    if (newValue) EmberModeUI.Enable();
+                    else EmberModeUI.Disable();
+                }));
         if (!_prefs.HasEntry("enableMarketViewer"))
             _prefs.AddEntry("enableMarketViewer", true, "Show Market Viewer next to Market",null);
-        if (!_prefs.HasEntry("allowAllDevicesAtOnce"))
-            _prefs.AddEntry("allowAllDevicesAtOnce", false, "[Experimental] Allow all input devices at once",null, false,false);
+        if (!_prefs.HasEntry("skipEngagementPrompt"))
+            _prefs.AddEntry("skipEngagementPrompt", false, "Skip 'Press any button to continue' on startup","WARNING: This breaks controller and keyboard input in the main menu", false,true);
         
         if (!_prefs.HasEntry("mLLogToStarlightLog"))
             _prefs.AddEntry("mLLogToStarlightLog", false, "Send MLLogs to console",null, false, false);
@@ -360,7 +353,13 @@ public class StarlightEntryPoint : MelonMod
             _prefs.AddEntry("onSaveLoadCommand", "", "Command to execute, when save is loaded", null,false, false);
         if (!_prefs.HasEntry("onMainMenuLoadCommand"))
             _prefs.AddEntry("onMainMenuLoadCommand", "", "Command to execute, when main menu is loaded",null,false);
-        
+        if (!_prefs.HasEntry("onStartupCommand"))
+            _prefs.AddEntry("onStartupCommand", "", "Command to execute, when the game starts",null,false);
+
+        if (onSaveLoadCommand == null) _prefs.SetEntry("onSaveLoadCommand", "");
+        if (onMainMenuLoadCommand == null) _prefs.SetEntry("onMainMenuLoadCommand", "");
+        if (onStartupCommand == null) _prefs.SetEntry("onStartupCommand", "");
+
         if (!_prefs.HasEntry("noclipSpeedMultiplier"))
             _prefs.AddEntry("noclipSpeedMultiplier", 2f, "NoClip sprint speed multiplier", null,false, false);
         if (!_prefs.HasEntry("noclipAdjustSpeed"))
@@ -376,9 +375,7 @@ public class StarlightEntryPoint : MelonMod
             ApplyFromMelon<bool>("autoUpdate");
             ApplyFromMelon<bool>("forceUsePrism");
             ApplyFromMelon<bool>("disableFixSaves");
-            ApplyFromMelon<bool>("enableDebugDirector");
             ApplyFromMelon<bool>("enableMarketViewer");
-            ApplyFromMelon<bool>("allowAllDevicesAtOnce");
             ApplyFromMelon<bool>("mLLogToStarlightLog");
             ApplyFromMelon<bool>("StarlightLogToMLLog");
             ApplyFromMelon<string>("onSaveLoadCommand");
@@ -400,7 +397,6 @@ public class StarlightEntryPoint : MelonMod
             }
         }
     }
-    
 
     // Adapted logging code from Atmudia
     private static void AppLogUnity(string message, string trace, LogType type)
@@ -511,10 +507,6 @@ public class StarlightEntryPoint : MelonMod
         }
     }
 
-    
-
-
-
     public override void OnApplicationQuit()
     {
         try { if (systemContext.SceneLoader.IsCurrentSceneGroupGameplay()) autoSaveDirector.SaveGame(); } catch { }
@@ -542,7 +534,8 @@ public class StarlightEntryPoint : MelonMod
                 entryStream.CopyTo(ms);
                 File.WriteAllBytes(tempPath, ms.ToArray());*/
                 //var bytes = EmbeddedResourceEUtil.LoadResource("Assets.NotoSans.ttf")
-                var bytes = Starlight.EncodedAssets.NotoSansFont.RawAssetBytes;
+                //var bytes = Starlight.EncodedAssets.NotoSansFont.RawAssetBytes;
+                var bytes = EmbeddedResourceEUtil.LoadResource("Assets.NotoSans.zip");
                 File.WriteAllBytes(tempPath, bytes);
                 var tempFont = new Font(tempPath);
                 NotoSansFont = TMP_FontAsset.CreateFontAsset(tempFont);
@@ -619,10 +612,6 @@ public class StarlightEntryPoint : MelonMod
                 }*/
                 break;
         }
-
-        if (isPrismInUse)
-            try { PrismShortcuts.OnSceneWasLoaded(buildIndex, sceneName); }
-            catch (Exception e) { LogError(e); }
         
         switch (sceneName)
         {
@@ -672,6 +661,10 @@ public class StarlightEntryPoint : MelonMod
             case "ZoneCore": StarlightCallEventManager.ExecuteStandard(CallEvent.OnSceneZoneCoreLoad); break;
         }
 
+        if (sceneName is "PlayerCore" or "ZoneCore")
+            try { NativeEUtil.ReleaseForSceneLoad(); }
+            catch (Exception e) { LogError(e); }
+
         StarlightCommandManager.OnSceneWasLoaded(buildIndex, sceneName);
         StarlightCounterGateManager.OnSceneWasLoaded(buildIndex, sceneName);
         SpawnEUtil.OnSceneWasLoaded(buildIndex, sceneName);
@@ -703,13 +696,9 @@ public class StarlightEntryPoint : MelonMod
         foreach (var pair in Menus) pair.Key.ReloadFont();
     }
 
-
     public override void OnSceneWasInitialized(int buildIndex, string sceneName)
     {
         if (DebugLogging.HasFlag()) Log("WasInitialized Scene: " + sceneName);
-        if (isPrismInUse)
-            try { PrismShortcuts.OnSceneWasInitialized(buildIndex, sceneName); }
-            catch (Exception e) { LogError(e); }
 
         if (sceneName == "MainMenuUI")
         {
@@ -847,6 +836,7 @@ public class StarlightEntryPoint : MelonMod
     {
         try
         {
+            if (BaseUIAddSliders.Count > 0)
             foreach (var ui in new List<BaseUI>(BaseUIAddSliders))
             {
                 if (!ui) continue;
@@ -895,6 +885,9 @@ public class StarlightEntryPoint : MelonMod
                 try { StarlightCommandManager.Update(); }
                 catch (Exception e) { LogError(e); }
 
+                try { StarlightKeybindManager.Update(); }
+                catch (Exception e) { LogError(e); }
+
                 if (DevMode.HasFlag()) 
                     try {StarlightDebugUI.DebugStatsManager.Update(); }
                     catch (Exception e) { LogError(e); }
@@ -903,10 +896,6 @@ public class StarlightEntryPoint : MelonMod
                     try { if (StarlightNativeDebugUI.OpenKey.OnKeyDown()) MenuEUtil.GetMenu<StarlightNativeDebugUI>().Toggle(); }
                     catch (Exception e) { LogError(e); }
 
-                if (DevTestMenu.HasFlag())
-                    try { if (StarlightTestDevMenu.OpenKey.OnKeyDown()) MenuEUtil.GetMenu<StarlightTestDevMenu>().Toggle(); }
-                    catch (Exception e) { LogError(e); }
-                
                 
                 foreach (var pair in Menus)
                     try { pair.Key.AlwaysUpdate(); }
@@ -925,20 +914,6 @@ public class StarlightEntryPoint : MelonMod
         }
         catch (Exception e) { LogError(e); }
 
-        if(allowAllDevicesAtOnce)
-            try
-            {
-                var allHardware = InputSystem.devices;
-                foreach (var user in InputUser.all)
-                    if (user.pairedDevices.Count != allHardware.Count)
-                    {
-                        user.UnpairDevices();
-                        foreach (var device in allHardware)
-                            InputUser.PerformPairingWithDevice(device, user);
-                    }
-            }
-            catch (Exception e) { LogError(e); }
-
         foreach (var expansion in ExpansionV01S)
             try { expansion.OnUpdate(); }
             catch (Exception e) { LogError(e); }
@@ -953,6 +928,8 @@ public class StarlightEntryPoint : MelonMod
 
     public override void OnGUI()
     {
+        try { EmberModeUI.OnGUI(); }
+        catch (Exception e) { LogError(e); }
         foreach (var expansion in ExpansionV01S)
             try { expansion.OnGUI(); }
             catch (Exception e) { LogError(e); }
