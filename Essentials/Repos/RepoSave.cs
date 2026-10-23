@@ -1,4 +1,4 @@
-namespace Starlight.Repos;
+/*namespace Starlight.Repos;
 
 [System.Serializable]
 internal class RepoSave
@@ -15,4 +15,4 @@ internal class RepoSave
         this.identifier = identifier;
         this.url = url;
     }
-}
+}*/

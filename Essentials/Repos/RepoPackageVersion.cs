@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿/*using System.Diagnostics.CodeAnalysis;
 
 namespace Starlight.Repos;
 
@@ -13,4 +13,4 @@ internal class RepoPackageVersion
     public string github_tag;
     public string download_url;
     public string branch = "release";
-}
+}*/
