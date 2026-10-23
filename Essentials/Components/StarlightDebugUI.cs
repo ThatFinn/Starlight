@@ -1,13 +1,9 @@
-﻿using System;
+using System;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppMonomiPark.SlimeRancher.Regions;
 using Il2CppMonomiPark.SlimeRancher.UI.Debug;
 using Il2CppTMPro;
-using Starlight.Enums;
-using Starlight.Managers;
 using Starlight.Storage;
-using UnityEngine.InputSystem;
-using UnityEngine.Rendering.UI;
 
 namespace Starlight;
 
@@ -15,7 +11,7 @@ namespace Starlight;
 internal class StarlightDebugUI : MonoBehaviour
 { 
 	static GameObject player;
-	internal static bool isEnabled;
+
 	internal Font _helpFont;
 
 	internal class DebugStatsManager
@@ -138,72 +134,15 @@ internal class StarlightDebugUI : MonoBehaviour
     }
 	private void Awake()
 	{
-		isEnabled = StarlightEntryPoint.enableDebugDirector;
+
 		_helpFont = Font.CreateDynamicFontFromOSFont("Consolas", 18);
 	}
 
 	private void Update()
 	{
-		if (!isEnabled) return;
-		
-		if (StarlightCounterGateManager.disableCheats) return;
-		if (MenuEUtil.isAnyMenuOpen) return;
-		if (MenuEUtil.isAnyPopUpOpen) return;
-		if (Time.timeScale == 0)  return;
-		if (!inGame) return;
-		if (StarlightWarpManager.WarpTo != null) return;
-		switch (systemContext.SceneLoader.CurrentSceneGroup.name) { case "StandaloneStart": case "CompanyLogo": case "LoadScene": return; }
-
-		if (LKey.Alpha0.OnKeyDown()) StarlightCommandManager.ExecuteByString("upgrade set * 10", true);
-		if (LKey.Alpha7.OnKeyDown()) StarlightCommandManager.ExecuteByString("infenergy true", true);
-		if (LKey.Alpha8.OnKeyDown()) StarlightCommandManager.ExecuteByString("infhealth", true);
-		if (LKey.Alpha9.OnKeyDown()) autoSaveDirector.SaveAllNow();
-		if (LKey.P.OnKeyDown()) StarlightCommandManager.ExecuteByString("pedia unlock * false", true);
-		if (LKey.K.OnKeyDown()) StarlightCommandManager.ExecuteByString("clearinv", true);
-		if (LKey.L.OnKeyDown()) StarlightCommandManager.ExecuteByString("refillinv", true);
-		if (LKey.N.OnKeyDown()) StarlightCommandManager.ExecuteByString("noclip", true);
-		if (LKey.U.OnKeyDown()) GUIUtility.systemCopyBuffer = Warp.CurrentLocation().ToString();
-		if (LKey.J.OnKeyDown()) try { Warp.FromString(GUIUtility.systemCopyBuffer.Trim()).WarpPlayerThere(); } catch {}
-		if (LKey.KeypadPlus.OnKeyDown()) StarlightCommandManager.ExecuteByString("newbucks 1000", true);
-		if (LKey.KeypadMinus.OnKeyDown()) StarlightCommandManager.ExecuteByString("newbucks -1000", true);
-		if (LKey.LeftBracket.OnKeyDown()) StarlightCommandManager.ExecuteByString("fastforward -1", true);
-		if (LKey.RightBracket.OnKeyDown()) StarlightCommandManager.ExecuteByString("fastforward 1", true);
-		if (ExperimentalKeyCodes.HasFlag())
-		{
-		}
 	}
 	private void OnGUI()
 	{
-		if (isEnabled)
-		{
-			GUI.skin.label.font = _helpFont;
-			GUI.skin.label.alignment = TextAnchor.UpperRight;
-			string text = "<b>DEBUG MODE INFO" + 
-							"\n\nGIVE ALL PERSONAL UPGRADES     0 " +
-							"\nGIVE ALL PEDIA ENTRIES     P " + 
-							"\nTOGGLE INFINITE ENERGY     7 " +
-							"\nTOGGLE INFINITE HEALTH     8 " +
-							"\nFORCE SAVE     9 " +
-							"\n\nCLEAR INVENTORY     K " +
-							"\nREFILL INVENTORY     L " +
-							"\nTOGGLE NOCLIP     N " +
-							"\n\nSAVE LOCATION     U " +
-							"\nGOTO LOCATION     J " +
-							"\n\nADD 1000 CREDITS     KeyPad+ " +
-							"\nREMOVE 1000 CREDITS     KeyPad- " +
-							"\nDECREMENT TIME OF DAY     [ " +
-							"\nINCREMENT TIME OF DAY     ] </b>";
-			if (StarlightCounterGateManager.disableCheats) text = "<b>DEBUG MODE DISABLED BECAUSE OF CHEATS</b>";
-			switch (systemContext.SceneLoader.CurrentSceneGroup.name) { case "StandaloneStart": case "CompanyLogo": case "LoadScene": return; }
-			for (int i = -2; i <= 2; i += 2)
-				for (int j = -2; j <= 2; j += 2)
-				{
-					GUI.skin.label.normal.textColor = Color.black;
-					GUI.Label(new Rect((float)i, (float)j, (float)Screen.width, (float)Screen.height), text);
-				}
-			GUI.skin.label.normal.textColor = Color.white;
-			GUI.Label(new Rect(0f, 0f, (float)Screen.width, (float)Screen.height), text);
-		}
 	}
 	/***
 	 * InputActionMap "Debug" have these:
