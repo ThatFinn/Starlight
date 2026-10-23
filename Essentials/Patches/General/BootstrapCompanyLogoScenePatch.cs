@@ -1,4 +1,4 @@
-using Il2CppMonomiPark.SlimeRancher.UI;
+﻿using Il2CppMonomiPark.SlimeRancher.UI;
 using UnityEngine.UI;
 
 namespace Starlight.Patches.General;
@@ -11,7 +11,7 @@ internal static class BootstrapCompanyLogoScenePatch
     {
         GameObject obj = new GameObject("MLIcon", typeof(RectTransform).IL2CPPTypeof(), typeof(Image).IL2CPPTypeof());
         Image img = obj.GetComponent<Image>();
-        img.sprite = ConvertEUtil.BytesToTexture2D(EncodedAssets.MelonIcon.RawAssetBytes).CopyWithoutMipmaps().Texture2DToSprite();
+        img.sprite = EmbeddedResourceEUtil.LoadSprite("Assets.mlIcon.png").CopyWithoutMipmaps();//ConvertEUtil.BytesToTexture2D(EncodedAssets.MelonIcon.RawAssetBytes).CopyWithoutMipmaps().Texture2DToSprite();
         img.preserveAspect = true;
         var rt = obj.GetComponent<RectTransform>();
         rt.SetParent(__instance.transform, false);
