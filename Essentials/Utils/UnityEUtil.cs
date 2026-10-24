@@ -84,6 +84,7 @@ public static class UnityEUtil
     
     public static T? Get<T>(string name) where T : Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault(x => x.name == name);
     public static T? GetAny<T>() where T : Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault();
+    public static T? GetOrAny<T>(string preferredName) where T : Object => Get<T>(preferredName) ?? GetAny<T>();
     public static List<T> GetAll<T>() where T : Object => Resources.FindObjectsOfTypeAll<T>().ToList();
     public static List<T> GetAll<T>(string name) where T : Object => Resources.FindObjectsOfTypeAll<T>().Where(x => x.name == name).ToList();
     
