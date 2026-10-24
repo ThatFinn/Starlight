@@ -7,13 +7,64 @@ namespace Starlight;
 
 public static class ContextShortcuts
 {
-    internal static GameObject PrefabHolder;
+    private static GameObject? _prefabHolder;
+    
+    internal static GameObject PrefabHolder
+    {
+        get
+        {
+            if (_prefabHolder) return _prefabHolder!;
+
+            _prefabHolder = Get<GameObject>("StarlightPrefabHolder");
+            if (_prefabHolder) return _prefabHolder!;
+
+            _prefabHolder = new GameObject("StarlightPrefabHolder");
+            _prefabHolder.SetActive(false);
+            Object.DontDestroyOnLoad(_prefabHolder);
+            return _prefabHolder;
+        }
+    }
     public static SystemContext systemContext => SystemContext.Instance;
     public static GameContext gameContext => GameContext.Instance;
     public static SceneContext sceneContext => SceneContext.Instance;
     internal static Damage _killDamage;
     public static Damage killDamage => _killDamage;
     public static AutoSaveDirector autoSaveDirector => gameContext.AutoSaveDirector;
+    
+    public static LookupDirector lookupDirector => gameContext.LookupDirector;
+    
+    public static SlimeDefinitions slimeDefinitions => gameContext.SlimeDefinitions;
+
+    private static SlimeAppearanceDirector? _appearanceDirector;
+    
+    public static SlimeAppearanceDirector? appearanceDirector
+    {
+        get
+        {
+            if (_appearanceDirector != null) return _appearanceDirector;
+
+            _appearanceDirector = Get<SlimeAppearanceDirector>("MainSlimeAppearanceDirector") ?? GetAny<SlimeAppearanceDirector>();
+            return _appearanceDirector;
+        }
+    }
+    
+    public static bool IsGameReady
+    {
+        get
+        {
+            try
+            {
+                return gameContext != null
+                    && autoSaveDirector != null
+                    && autoSaveDirector._configuration != null
+                    && lookupDirector != null;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
 
     public static void Log(string txt) => MelonLogger.Msg(txt);
     public static void Log(object obj) => MelonLogger.Msg(obj);
