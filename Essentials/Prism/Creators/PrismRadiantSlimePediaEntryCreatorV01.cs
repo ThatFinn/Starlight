@@ -1,5 +1,4 @@
-using Il2CppMonomiPark.SlimeRancher.Pedia;
-using Starlight.Prism.Data;
+﻿using Il2CppMonomiPark.SlimeRancher.Pedia;
 using Starlight.Prism.Data.Pedia;
 using Starlight.Prism.Lib;
 using Starlight.Prism.Wrappers;
@@ -53,7 +52,7 @@ public class PrismRadiantSlimePediaEntryCreatorV01
             foreach (var detail in Details)
                 details.Add(detail.ConvertToNativeType());
         entry._details = details.ToArray();
-        PrismLibPedia.PediaEntryLookup[CategoryType].Add(entry);
+        PrismLibPedia.AddEntry(CategoryType, entry);
         
         var prismEntry = new PrismRadiantSlimePediaEntry(entry, false);
 
@@ -65,7 +64,7 @@ public class PrismRadiantSlimePediaEntryCreatorV01
                 prismEntry.AddAdditionalFact(additionalFact);
         
         if (PrismLibPedia.PediaCategories.ContainsKey(CategoryType))
-            PrismLibPedia.PediaCategories[CategoryType].GetRuntimeCategory();
+            PrismLibPedia.PediaCategories[CategoryType].GetTypedRuntimeCategory();
         return prismEntry;
     }
 }
