@@ -1,9 +1,7 @@
 using System;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Economy;
-using Il2CppNoise;
 using Starlight.Storage;
-using Random = UnityEngine.Random;
 
 namespace Starlight.Prism.Patches;
 

@@ -1,4 +1,3 @@
-using Il2CppSystem.Linq;
 using UnityEngine.Localization;
 
 namespace Starlight.Prism.Wrappers;

@@ -1,4 +1,3 @@
-using System;
 
 namespace Starlight.Prism.Colliders;
 

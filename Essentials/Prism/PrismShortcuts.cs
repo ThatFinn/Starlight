@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Il2CppMonomiPark.SlimeRancher.Pedia;
 using Il2CppMonomiPark.SlimeRancher.UI;
-using Starlight.Prism.Data;
 using Starlight.Prism.Data.Market;
 using Starlight.Prism.Data.Native;
 using Starlight.Prism.Lib;

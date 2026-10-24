@@ -1,6 +1,5 @@
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppMonomiPark.SlimeRancher.Pedia;
-using Starlight.Prism.Data;
 using Starlight.Prism.Data.Pedia;
 using Starlight.Prism.Lib;
 using UnityEngine.Localization;

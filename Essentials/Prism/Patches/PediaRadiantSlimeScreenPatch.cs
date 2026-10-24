@@ -1,4 +1,3 @@
-using Il2CppMonomiPark.SlimeRancher.Slime;
 using Il2CppMonomiPark.SlimeRancher.UI.Pedia;
 using Starlight.Storage;
 using UnityEngine.UI;
