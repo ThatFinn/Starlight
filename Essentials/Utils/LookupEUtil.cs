@@ -5,6 +5,7 @@ using Il2CppMonomiPark.SlimeRancher.Input;
 using Il2CppMonomiPark.SlimeRancher.Player.Component;
 using Il2CppMonomiPark.SlimeRancher.Weather;
 using Starlight.Enums;
+using Starlight.Prism.Lib;
 using UnityEngine.InputSystem;
 
 namespace Starlight.Utils;
@@ -38,7 +39,7 @@ public static class LookupEUtil
 
 
     
-    public static IdentifiableType[] identifiableTypes => autoSaveDirector._configuration.IdentifiableTypes.GetAllMembersHashSet().Where(type => !string.IsNullOrEmpty(type.ReferenceId)).ToArray();
+    public static IdentifiableType[] identifiableTypes => MembersOf(autoSaveDirector?._configuration?.IdentifiableTypes).ToArray();
 
     public static IdentifiableType[] vaccableTypes => _FromGroupList("VaccableNonLiquids");
     
@@ -53,13 +54,13 @@ public static class LookupEUtil
             return list.ToArray();
         }
     }
-    public static GadgetDefinition[] gadgetTypes => _FromGGroupList("GadgetGroup");
-    public static ToyDefinition[] toyTypes => _FromTGroupList("ToyGroup");
-    public static LiquidDefinition[] liquidTypes => _FromLGroupList("LiquidGroup");
+    public static GadgetDefinition[] gadgetTypes => _FromGroupList<GadgetDefinition>("GadgetGroup");
+    public static ToyDefinition[] toyTypes => _FromGroupList<ToyDefinition>("ToyGroup");
+    public static LiquidDefinition[] liquidTypes => _FromGroupList<LiquidDefinition>("LiquidGroup");
     
-    public static SlimeDefinition[] baseSlimeTypes => _FromSGroupList("BaseSlimeGroup");
-    public static SlimeDefinition[] slimeTypes => _FromSGroupList("SlimesGroup");
-    public static SlimeDefinition[] largoTypes => _FromSGroupList("LargoGroup");
+    public static SlimeDefinition[] baseSlimeTypes => _FromGroupList<SlimeDefinition>("BaseSlimeGroup");
+    public static SlimeDefinition[] slimeTypes => _FromGroupList<SlimeDefinition>("SlimesGroup");
+    public static SlimeDefinition[] largoTypes => _FromGroupList<SlimeDefinition>("LargoGroup");
     public static IdentifiableType[] plortTypes => _FromGroupList("PlortGroup");
     public static IdentifiableType[] foodTypes => _FromGroupList("FoodGroup");
     public static IdentifiableType[] meatFoodTypes => _FromGroupList("MeatGroup");
@@ -70,65 +71,65 @@ public static class LookupEUtil
     public static IdentifiableType[] craftTypes => _FromGroupList("CraftGroup");
 
     
-    static IdentifiableType[] _FromGroupList(string name)
+    /// <summary>
+    /// Members of a group by name
+    /// </summary>
+    public static IdentifiableType[] GetGroupMembers(string groupName) => MembersOf(Groups.Find(groupName)).ToArray();
+
+    static IdentifiableType[] _FromGroupList(string name) => GetGroupMembers(name);
+
+    static T[] _FromGroupList<T>(string name) where T : IdentifiableType
     {
-        if (IdentifiableTypeGroupList == null) return Array.Empty<IdentifiableType>();
-        if(!allIdentifiableTypeGroups.ContainsKey(name)) return  Array.Empty<IdentifiableType>();
-        return allIdentifiableTypeGroups[name].GetAllMembersHashSet().Where(type => !string.IsNullOrEmpty(type.ReferenceId)).ToArray();
-    }
-    
-    static LiquidDefinition[] _FromLGroupList(string name)
-    {
-        if (IdentifiableTypeGroupList == null) return Array.Empty<LiquidDefinition>();
-        if(!allIdentifiableTypeGroups.ContainsKey(name)) return  Array.Empty<LiquidDefinition>();
-        var list = new List<LiquidDefinition>();
-        foreach (var type in allIdentifiableTypeGroups[name].GetAllMembersHashSet())
+        var list = new List<T>();
+        foreach (var type in MembersOf(Groups.Find(name)))
         {
-            if (string.IsNullOrEmpty(type.ReferenceId)) continue;
-            var def = type.TryCast<LiquidDefinition>();
-            if(def!=null) list.Add(def);
+            var def = type.TryCast<T>();
+            if (def != null) list.Add(def);
         }
         return list.ToArray();
     }
-    static ToyDefinition[] _FromTGroupList(string name)
+
+    /// <summary>
+    /// Every type in a group that has a usable reference id
+    /// </summary>
+    static IEnumerable<IdentifiableType> MembersOf(IdentifiableTypeGroup? group)
     {
-        if (IdentifiableTypeGroupList == null) return Array.Empty<ToyDefinition>();
-        if(!allIdentifiableTypeGroups.ContainsKey(name)) return  Array.Empty<ToyDefinition>();
-        var list = new List<ToyDefinition>();
-        foreach (var type in allIdentifiableTypeGroups[name].GetAllMembersHashSet())
+        if (group == null) yield break;
+
+        var visited = new HashSet<IntPtr>();
+        var pending = new Stack<IdentifiableTypeGroup>();
+        pending.Push(group);
+
+        while (pending.Count > 0)
         {
-            if (string.IsNullOrEmpty(type.ReferenceId)) continue;
-            var def = type.TryCast<ToyDefinition>();
-            if(def!=null) list.Add(def);
+            var current = pending.Pop();
+            if (!visited.Add(current.Pointer)) continue;
+
+            if (current._memberTypes != null)
+            {
+                foreach (var type in current._memberTypes)
+                {
+                    if (type == null || string.IsNullOrEmpty(type.ReferenceId)) continue;
+                    yield return type;
+                }
+            }
+
+            if (current._memberGroups == null) continue;
+            foreach (var nested in current._memberGroups)
+                if (nested != null) pending.Push(nested);
         }
-        return list.ToArray();
     }
-    static GadgetDefinition[] _FromGGroupList(string name)
-    {
-        if (IdentifiableTypeGroupList == null) return Array.Empty<GadgetDefinition>();
-        if(!allIdentifiableTypeGroups.ContainsKey(name)) return  Array.Empty<GadgetDefinition>();
-        var list = new List<GadgetDefinition>();
-        foreach (var type in allIdentifiableTypeGroups[name].GetAllMembersHashSet())
-        {
-            if (string.IsNullOrEmpty(type.ReferenceId)) continue;
-            var def = type.TryCast<GadgetDefinition>();
-            if(def!=null) list.Add(def);
-        }
-        return list.ToArray();
-    }
-    static SlimeDefinition[] _FromSGroupList(string name)
-    {
-        if (IdentifiableTypeGroupList == null) return Array.Empty<SlimeDefinition>();
-        if(!allIdentifiableTypeGroups.ContainsKey(name)) return Array.Empty<SlimeDefinition>();
-        var list = new List<SlimeDefinition>();
-        foreach (var type in allIdentifiableTypeGroups[name].GetAllMembersHashSet())
-        {
-            if (string.IsNullOrEmpty(type.ReferenceId)) continue;
-            var def = type.TryCast<SlimeDefinition>();
-            if(def!=null) list.Add(def);
-        }
-        return list.ToArray();
-    }
+
+    /// <summary>
+    /// Finds any identifiable type by reference id
+    /// </summary>
+    public static IdentifiableType GetIdentifiableTypeByRefID(string referenceId) => identifiableTypes.GetEntryByRefID(referenceId);
+
+    /// <summary>
+    /// Finds a base (non-largo) slime definition by reference id
+    /// </summary>
+    public static SlimeDefinition GetBaseSlimeByRefID(string referenceId) => baseSlimeTypes.GetEntryByRefID(referenceId);
+
     public static ToyDefinition GetEntryByRefID(this ToyDefinition[]? idents, string referenceID)
     {
         if (string.IsNullOrWhiteSpace(referenceID)) return null;
