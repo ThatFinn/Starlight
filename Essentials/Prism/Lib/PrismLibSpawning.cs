@@ -235,7 +235,7 @@ public static class PrismLibSpawning
                                     foreach (var m in cons.Slimeset.Members)
                                     {
                                         if (m.IdentType.name.ToLower() != "pink" &&
-                                            !PrismLibSaving.SavedIdents.ContainsValue(m.IdentType))
+                                            !SaveRegistry.Contains(m.IdentType))
                                         {
                                             hasNonPink = true;
                                             break;

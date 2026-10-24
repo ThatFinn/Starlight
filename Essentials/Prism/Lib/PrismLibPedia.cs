@@ -1,6 +1,5 @@
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
+﻿using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppMonomiPark.SlimeRancher.Pedia;
-using Starlight.Prism.Data;
 using Starlight.Prism.Data.Pedia;
 using Starlight.Prism.Wrappers;
 using UnityEngine.Localization;
@@ -26,7 +25,60 @@ public static class PrismLibPedia
     private static readonly Dictionary<PrismPediaDetailType, PediaDetailSection> PediaDetailSectionLookup = new ();
     private static readonly Dictionary<PrismPediaFactSetType, PediaHighlightSet> PediaPrismFactSetLookup = new ();
 
+    /// <summary>
+    /// Adds a pedia entry to a category
+    /// </summary>
+    /// <returns> True when it was added </returns>
+    internal static bool AddEntry(PrismPediaCategoryType type, PediaEntry entry)
+    {
+        if (entry == null || !PediaEntryLookup.TryGetValue(type, out var entries)) return false;
+        
+        var id = Id(entry);
 
+        foreach (var existing in entries)
+            if (existing != null && Id(existing) == id)
+            {
+                LogWarning($"Prism: Pedia entry '{id}' already exists in {type}, dropping the duplicate");
+                return false;
+            }
+
+        entries.Add(entry);
+        return true;
+    }
+
+    /// <summary>
+    /// Whether a category already has an entry with this persistence id
+    /// </summary>
+    internal static bool AlreadyPresent(PediaRuntimeCategory category, PediaEntry entry)
+    {
+        if (category == null || entry == null) return false;
+        
+        var id = Id(entry);
+
+        if (string.IsNullOrEmpty(id)) return false;
+
+        var items = category._items;
+
+        if (items == null) return false;
+
+        for (var i = 0; i < items.Count; i++)
+        {
+            var existing = items[i];
+
+            if (existing != null && !existing.Pointer.Equals(entry.Pointer) && Id(existing) == id) return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// The key the save's translation table uses
+    /// </summary>
+    private static string Id(PediaEntry entry)
+    {
+        try { return entry.PersistenceId ?? entry.name; }
+        catch { return entry.name; }
+    }
 
     /// <summary>
     /// Gets the pedia entries for a given category
@@ -101,8 +153,7 @@ public static class PrismLibPedia
         IdentifiablePediaEntryPrefab = Get<IdentifiablePediaEntry>("Pink");
         if (IdentifiablePediaEntryPrefab == null) IdentifiablePediaEntryPrefab = GetAny<IdentifiablePediaEntry>();
         if (IdentifiablePediaEntryPrefab != null) IdentifiablePediaEntryPrefab.hideFlags = HideFlags.DontUnloadUnusedAsset; 
-        
-        
+
         if(SupportRadiant.HasFlag()) RadiantStuff();
         
         FixedPediaEntryPrefab = Get<FixedPediaEntry>("PrismaPlorts");
