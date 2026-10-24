@@ -4,6 +4,7 @@ using Il2CppMonomiPark.SlimeRancher.SceneManagement;
 using Il2CppMonomiPark.SlimeRancher.Weather;
 using Il2CppMonomiPark.SlimeRancher.World;
 using Il2CppMonomiPark.UnitPropertySystem;
+using Starlight.Prism.Lib;
 using UnityEngine.Localization;
 
 namespace Starlight.Utils;
@@ -49,14 +50,14 @@ public static class NamingEUtil
     
     //IdentifiableType
     public static string GetName(this IdentifiableType type, bool addQuotesIfSpaces = true) => _GN(type, type.LocalizedName,addQuotesIfSpaces);
-    public static string GetCompactName(this IdentifiableType type) => _GCN(type, type.LocalizedName);
-    public static string GetCompactUpperName(this IdentifiableType type) => _GCUN(type, type.LocalizedName);
+    public static string GetCompactName(this IdentifiableType type) => ContentNames.CommandNameOf(type) ?? _GCN(type, type.LocalizedName);
+    public static string GetCompactUpperName(this IdentifiableType type) => ContentNames.CommandNameOf(type)?.ToUpper() ?? _GCUN(type, type.LocalizedName);
     
     
     //Identifiable
     public static string GetName(this Identifiable identifiable, bool addQuotesIfSpaces = true) => _GN(identifiable.identType, identifiable.identType.LocalizedName, addQuotesIfSpaces);
-    public static string GetCompactName(this Identifiable identifiable) => _GCN(identifiable.identType, identifiable.identType.LocalizedName);
-    public static string GetCompactUpperName(this Identifiable identifiable) => _GCUN(identifiable.identType, identifiable.identType.LocalizedName);
+    public static string GetCompactName(this Identifiable identifiable) => identifiable.identType.GetCompactName();
+    public static string GetCompactUpperName(this Identifiable identifiable) => identifiable.identType.GetCompactUpperName();
     
     
     //WeatherPatternDefinition

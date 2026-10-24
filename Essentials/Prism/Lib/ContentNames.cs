@@ -23,6 +23,49 @@ public static class ContentNames
     /// </summary>
     public static string SourceModTag => TagFor(SourceModId);
 
+    /// <summary>
+    /// The name of the mod whose content is being created
+    /// </summary>
+    public static string? SourceModName { get; set; }
+
+    /// <summary>
+    /// What commands call each created type, by the type's pointer
+    /// </summary>
+    private static readonly Dictionary<IntPtr, string> CommandNames = new();
+
+    /// <summary>
+    /// What commands call a created type
+    /// </summary>
+    public static string? CommandNameOf(IdentifiableType? type) =>
+        type == null ? null : CommandNames.GetValueOrDefault(type.Pointer);
+
+    /// <summary>
+    /// Registers a command name
+    /// </summary>
+    internal static void RegisterCommandName(IdentifiableType type, string referenceId)
+    {
+        var dot = referenceId.IndexOf('.');
+        var prefix = dot < 0 ? string.Empty : referenceId[..dot];
+        var name = dot < 0 ? referenceId : referenceId[(dot + 1)..];
+
+        if (!name.StartsWith(ModdedPrefix, StringComparison.Ordinal)) return;
+        name = name[ModdedPrefix.Length..];
+
+        var tag = SourceModTag;
+        if (tag.Length > 0 && name.EndsWith(tag, StringComparison.Ordinal))
+            name = name[..^tag.Length];
+
+        if (name.Length == 0) return;
+
+        if (prefix == "SlimeDefinition")
+        {
+            var slime = type.TryCast<SlimeDefinition>();
+            name += slime != null && slime.IsLargo ? "Largo" : "Slime";
+        }
+
+        CommandNames[type.Pointer] = name;
+    }
+
     private static readonly char[] Separators = { '_', '-', ' ', '.' };
 
     /// <summary>

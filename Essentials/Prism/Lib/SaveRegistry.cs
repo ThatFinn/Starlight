@@ -56,6 +56,7 @@ public static class SaveRegistry
         }
 
         Registered[referenceId] = type;
+        ContentNames.RegisterCommandName(type, referenceId);
 
         var config = autoSaveDirector._configuration;
         if (!config._identifiableTypes.IsMember(type))
