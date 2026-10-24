@@ -10,6 +10,7 @@ public class LoadingGameSessionData
     public readonly ISaveReferenceTranslation ISaveReferenceTranslation;
     public readonly SaveReferenceTranslation SaveReferenceTranslation;
     public GameV10 GameV10;
+    public GameV11 GameV11;
     public readonly dynamic GameState;
     public readonly GameModel GameModel;
 
@@ -21,11 +22,13 @@ public class LoadingGameSessionData
         this.SaveReferenceTranslation = saveReferenceTranslation;
         this.GameState = gameState;
         this.GameModel = gameModel;
-        try { ApplyGameV10(); } catch { }
+        try { ApplyGameVersions(); } catch { }
     }
-    void ApplyGameV10()
+    void ApplyGameVersions()
     {
-        if(GameState is GameV10 gameV10)
+        if(GameState is GameV11 gameV11)
+            this.GameV11 = gameV11;
+        else if(GameState is GameV10 gameV10)
             this.GameV10 = gameV10;
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Persist;
@@ -10,6 +9,7 @@ public class SavingGameSessionData
     public readonly ISaveReferenceTranslation ISaveReferenceTranslation;
     public readonly SaveReferenceTranslation SaveReferenceTranslation;
     public GameV10 GameV10;
+    public GameV11 GameV11;
     public readonly dynamic GameState;
     public readonly GameModel GameModel;
     public readonly GameMetadata GameMetadata;
@@ -24,11 +24,13 @@ public class SavingGameSessionData
         this.GameState = gameState;
         this.GameModel = gameModel;
         this.SavedGameInfoProvider = savedGameInfoProvider;
-        try { ApplyGameV10(); } catch { }
+        try { ApplyGameVersions(); } catch { }
     }
-    void ApplyGameV10()
+    void ApplyGameVersions()
     {
-        if(GameState is GameV10 gameV10)
+        if(GameState is GameV11 gameV11)
+            this.GameV11 = gameV11;
+        else if(GameState is GameV10 gameV10)
             this.GameV10 = gameV10;
     }
 }
