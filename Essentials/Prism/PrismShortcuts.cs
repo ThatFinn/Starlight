@@ -48,16 +48,7 @@ public static class PrismShortcuts
     internal static Sprite UnavailableIcon;
     
     
-    private static SlimeAppearanceDirector _mainAppearanceDirector;
-
-    public static SlimeAppearanceDirector mainAppearanceDirector
-    {
-        get
-        {
-            if (_mainAppearanceDirector == null) _mainAppearanceDirector = Get<SlimeAppearanceDirector>("MainSlimeAppearanceDirector");
-            return _mainAppearanceDirector;
-        }
-    }
+    public static SlimeAppearanceDirector mainAppearanceDirector => appearanceDirector;
     internal static readonly Dictionary<string, List<Action>> OnSceneLoaded = new ();
     internal static void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
@@ -271,7 +262,7 @@ public static class PrismShortcuts
         }
         if (PrismUnknownFoods.TryGetValue(customOrNativeFood.ReferenceId, out var food)) return food;
         var newFood = new PrismVeggieFood(customOrNativeFood, !customOrNativeFood.ReferenceId.Contains("Modded"));
-        PrismVeggieFoods.Add(customOrNativeFood.ReferenceId, newFood);
+        PrismUnknownFoods.Add(customOrNativeFood.ReferenceId, newFood);
         return newFood;
         
     }
