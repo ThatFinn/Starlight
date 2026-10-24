@@ -27,7 +27,7 @@ public static class StringEUtil
     }
 
     /// <summary>
-    /// The part after the last occurraence of the separator, or the whole string if there is none
+    /// The part after the last occurrence of the separator, or the whole string if there is none
     /// </summary>
     public static string AfterLast(this string value, char separator)
     {
