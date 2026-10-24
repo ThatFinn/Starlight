@@ -14,6 +14,8 @@ global using Exception = System.Exception;
 global using Object = UnityEngine.Object;
 global using File = System.IO.File;
 global using SystemAction = System.Action;
+
+global using static Starlight.Utils.Il2CppArrayEUtil;
 global using Il2CppSystemAction = Il2CppSystem.Action;
 global using CommandType = Starlight.Enums.CommandType;
 global using static Starlight.StarlightFeatureFlags;
