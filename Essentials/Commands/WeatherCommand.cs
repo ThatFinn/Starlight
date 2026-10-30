@@ -6,7 +6,7 @@ namespace Starlight.Commands;
 internal class WeatherCommand : StarlightCommand
 {
     public override string ID => "weather";
-    public override string Usage => "weather <list/modify/set> [state] [action/intensity]";
+    public override string Usage => "weather <clear/rain/thunder> | weather <list/modify/set> [state] [action/intensity]";
     public override CommandType type => CommandType.Cheat;
     
     public override List<string> GetAutoComplete(int argIndex, string[] args)
@@ -14,7 +14,7 @@ internal class WeatherCommand : StarlightCommand
         switch (argIndex)
         {
             case 0:
-                return new List<string> { "list", "modify", "set" };
+                return new List<string> { "clear", "rain", "thunder", "list", "modify", "set" };
             case 1:
                 switch (args[0])
                 {
@@ -51,6 +51,9 @@ internal class WeatherCommand : StarlightCommand
         
         WeatherDirector weatherDirector = Get<WeatherDirector>("WeatherVFX");
         if (weatherDirector == null) return SendError(Tr("cmd.weather.nodirector")); 
+        
+        if (args.Length == 1 && (args[0] == "clear" || args[0] == "rain" || args[0] == "thunder"))
+            return ExecuteShortcut(args[0]);
 
         if (args.Length >= 1 && args[0] == "set")
         {
@@ -165,6 +168,54 @@ internal class WeatherCommand : StarlightCommand
         }
     }
 
+    private static readonly string[] ThunderWords = { "THUNDER", "STORM", "LIGHTNING" };
+
+    private bool ExecuteShortcut(string shortcut)
+    {
+        var directors = GetAllInScene<WeatherDirector>();
+        if (directors.Count == 0)
+        {
+            var fallback = Get<WeatherDirector>("WeatherVFX");
+            if (fallback == null) return SendError(Tr("cmd.weather.nodirector"));
+            directors.Add(fallback);
+        }
+
+        var param = new WeatherModel.ZoneWeatherParameters { WindDirection = new Vector3(45f, 0, 30f) };
+
+        if (shortcut == "clear")
+        {
+            StopEveryState(directors, param);
+            SendMessage(Tr("cmd.weather.successsetnone"));
+            return true;
+        }
+
+        var def = FindShortcutState(shortcut);
+        if (def == null) return SendNotValidWeather(shortcut);
+
+        StopEveryState(directors, param);
+        foreach (var director in directors) director.RunState(def.Cast<IWeatherState>(), param);
+        SendMessage(Tr("cmd.weather.successset", $"\"{def.GetCompactName()}\""));
+        return true;
+    }
+
+    private static WeatherStateDefinition FindShortcutState(string shortcut)
+    {
+        var matches = new List<WeatherStateDefinition>();
+
+        foreach (var state in LookupEUtil.weatherStateDefinitions)
+        {
+            var compact = state.GetCompactUpperName();
+            var thunder = false;
+            foreach (var word in ThunderWords) thunder |= compact.Contains(word);
+
+            if (shortcut == "thunder" ? thunder : compact.Contains("RAIN") && !thunder) matches.Add(state);
+        }
+
+        foreach (var state in matches)
+            if (state.GetCompactUpperName().Contains("MED")) return state;
+
+        return matches.Count > 0 ? matches[0] : null;
+    }
 
     private static readonly Dictionary<int, string[]> Vocabulary = new()
     {
