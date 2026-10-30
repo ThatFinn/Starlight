@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 
 namespace Starlight.Commands;
@@ -5,16 +6,24 @@ namespace Starlight.Commands;
 internal sealed class TimeCommand : StarlightCommand
 {
     public override string ID => "time";
-    public override string Usage => "time <get/set> [day] [hour]";
+    public override string Usage => "time <get/set> [day] [hour/day/noon/night/midnight]";
     public override CommandType type => CommandType.Cheat;
 
     readonly List<string> arg0List = new List<string> { "get", "set" };
+
+    static readonly Dictionary<string, float> Presets = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["day"]      = 9f,
+        ["noon"]     = 12f,
+        ["night"]    = 22f,
+        ["midnight"] = 0f
+    };
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0) return arg0List;
         if (argIndex >= 1 && args[0] == "set")
-            return new List<string> { "0:00", "6:00", "9:00", "12:00", "18:00", "22:00" };
+            return new List<string> { "day", "noon", "night", "midnight", "0:00", "6:00", "9:00", "12:00", "18:00", "22:00" };
         return null;
     }
 
@@ -57,6 +66,8 @@ internal sealed class TimeCommand : StarlightCommand
     {
         hour = 0;
         if (string.IsNullOrWhiteSpace(input)) return false;
+        if (Presets.TryGetValue(input.Trim(), out hour)) return true;
+
         var split = input.Split(':');
         if (split.Length > 2) return false;
         if (!float.TryParse(split[0], NumberStyles.Float, CultureInfo.InvariantCulture, out hour)) return false;
