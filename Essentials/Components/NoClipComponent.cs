@@ -46,6 +46,9 @@ internal class NoClipComponent : MonoBehaviour
 
     private void Awake()
     {
+        playerController.ResetVelocity(false);
+        playerController.BaseVelocity = Vector3.zero;
+
         playerMotor.enabled = false;
         playerSettings.AutoSimulation = false;
         playerMotor.SetCapsuleCollisionsActivation(false);
@@ -98,6 +101,9 @@ internal class NoClipComponent : MonoBehaviour
         }
 
         if (move != Vector3.zero) player.position += move;
+
+        // What the player is doing now is what shots and thrown items should carry, not the last thing the motor did
+        playerController.BaseVelocity = Time.deltaTime > 0f ? move / Time.deltaTime : Vector3.zero;
 
         if (Mouse.current.scroll.ReadValue().y > 0)
         {
