@@ -40,17 +40,24 @@ internal class GiveCommand : StarlightCommand
         if (args.Length >= 3) if (!TryParseBool(args[2], out makeRadiant)) return false;
         if (args.Length >= 4) if (!TryParseBool(args[3], out allowOverflow)) return false;
 
+        var radiant = SupportRadiant.HasFlag() && makeRadiant;
+        if (radiant)
+        {
+            var slime = ident.TryCast<SlimeDefinition>();
+            if (slime == null || !slime.GetRadiantAppearance()) return SendError(Tr("cmd.give.notradiant", itemName));
+        }
+
         var requestInfo = new StarlightSlotItemInfo()
         {
             IdentifiableType = ident,
-            IsRadiant = SupportRadiant.HasFlag() && makeRadiant
+            IsRadiant = radiant
         };
         var optimalSlot = InventoryEUtil.GetStarlightSlotItemPossibleSlot(requestInfo);
         if (optimalSlot == -1)
             return SendError(Tr("cmd.give.nospace"));
         
         var finalInfo = InventoryEUtil.GetStarlightSlotInfo(optimalSlot);
-        finalInfo.IsRadiant = makeRadiant;
+        finalInfo.IsRadiant = radiant;
         finalInfo.IdentifiableType = ident;
         finalInfo.Count += amount;
         InventoryEUtil.SetStarlightSlotInfo(optimalSlot,finalInfo);
