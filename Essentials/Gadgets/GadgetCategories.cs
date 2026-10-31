@@ -1,5 +1,7 @@
 ﻿using System;
+using Il2CppMonomiPark.SlimeRancher.UI.Fabricator;
 using Il2CppMonomiPark.SlimeRancher.UI.Gadget;
+using Il2CppMonomiPark.SlimeRancher.UI.Pedia;
 using UnityEngine.Localization;
 
 namespace Starlight.Gadgets;
@@ -77,7 +79,16 @@ public static class GadgetCategories
 
         try
         {
-            group._memberTypes?.Add(type);
+            var alreadyAdded = false;
+            if (group._memberTypes != null)
+            {
+                for (var i = 0; i < group._memberTypes.Count; i++)
+                {
+                    if (group._memberTypes[i] != null && group._memberTypes[i].Pointer == type.Pointer) { alreadyAdded = true; break; }
+                }
+            }
+
+            if (!alreadyAdded) group._memberTypes?.Add(type);
             
             if (!defer)
             {
@@ -152,6 +163,8 @@ public static class GadgetCategories
             if (icon != null) category._icon = icon;
 
             configuration.Categories.Add(category);
+
+            RegisterFabricatorTab(name, title, group, icon);
             return category;
         }
         catch (Exception exception)
@@ -267,4 +280,96 @@ public static class GadgetCategories
 
         return null;
     }
+
+    private sealed record Tab(string Name, LocalizedString Title, IdentifiableTypeGroup Group, Sprite Icon);
+
+    private static readonly List<Tab> FabricatorTabs = new();
+
+    internal static void RegisterFabricatorTab(string name, LocalizedString title, IdentifiableTypeGroup group, Sprite icon)
+    {
+        if (group == null) return;
+
+        FabricatorTabs.Add(new Tab(name, title, group, icon));
+        MirrorToFabricator();
+    }
+    
+    public static int MirrorToFabricator()
+    {
+        if (FabricatorTabs.Count == 0) return 0;
+
+        var added = 0;
+
+        try
+        {
+            foreach (var configuration in Resources.FindObjectsOfTypeAll<FabricateMenuConfiguration>())
+            {
+                if (configuration == null || configuration.Categories == null || configuration.Categories.Count == 0) continue;
+
+                var template = FindFabricatorTemplate(configuration);
+                if (template == null) continue;
+
+                foreach (var tab in FabricatorTabs)
+                {
+                    if (FabricatorLists(configuration, tab.Group)) continue;
+
+                    var category = Object.Instantiate(template);
+                    category.hideFlags |= HideFlags.HideAndDontSave;
+                    category.name = tab.Name;
+                    category._gadgetSubGroup = tab.Group;
+
+                    if (tab.Title != null) category._title = tab.Title;
+                    if (tab.Icon != null) category._icon = tab.Icon;
+
+                    configuration.Categories.Add(category);
+                    added++;
+                }
+            }
+        }
+        catch (Exception exception)
+        {
+            LogError($"Gadget Category: the fabricator's categories could not be extended: {exception}");
+        }
+
+        return added;
+    }
+
+    private static bool FabricatorLists(FabricateMenuConfiguration configuration, IdentifiableTypeGroup group)
+    {
+        for (var i = 0; i < configuration.Categories.Count; i++)
+        {
+            var listed = configuration.Categories[i]?.TryCast<GadgetFabricateCategory>();
+            if (listed != null && listed._gadgetSubGroup != null && listed._gadgetSubGroup.Pointer == group.Pointer) return true;
+        }
+
+        return false;
+    }
+
+    private static GadgetFabricateCategory FindFabricatorTemplate(FabricateMenuConfiguration configuration)
+    {
+        for (var i = 0; i < configuration.Categories.Count; i++)
+        {
+            var category = configuration.Categories[i]?.TryCast<GadgetFabricateCategory>();
+            if (category != null && category._gadgetSubGroup != null) return category;
+        }
+
+        return null;
+    }
+}
+
+[HarmonyPatch(typeof(PediaBlueprintsScreen), "Start")]
+internal static class PediaBlueprintsMirrorPatch
+{
+    private static void Prefix() => GadgetCategories.MirrorToFabricator();
+}
+
+[HarmonyPatch(typeof(FabricatorCategoryList), "FindCategoriesToShow")]
+internal static class FabricatorCategoryListMirrorPatch
+{
+    private static void Prefix() => GadgetCategories.MirrorToFabricator();
+}
+
+[HarmonyPatch(typeof(FabricatorContent), "Start")]
+internal static class FabricatorContentMirrorPatch
+{
+    private static void Prefix() => GadgetCategories.MirrorToFabricator();
 }
