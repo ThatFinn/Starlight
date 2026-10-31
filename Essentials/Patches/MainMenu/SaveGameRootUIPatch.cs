@@ -30,6 +30,7 @@ internal static class SaveGameRootUIPatch
     {
         if (!_ui) return;
         if (!_exportButton.gameObject.active) return;
+        if (NewSaveRow.IsRow(_ui._selectedModelIndex)) return;
         var dataBehaviours = _ui.FetchButtonBehaviorData();
         var load = dataBehaviours[_ui._selectedModelIndex];
         var loadGameBehaviorModel = load.TryCast<LoadGameBehaviorModel>();
@@ -41,7 +42,9 @@ internal static class SaveGameRootUIPatch
                 var filePath = ofn.lpstrFile;
                 if (string.IsNullOrEmpty(filePath)) return;
                 var savefile = StarlightSaveFileV01.Load(File.ReadAllBytes(filePath));
-                var error = SaveFileEUtil.ImportSaveV01(savefile, _ui._selectedModelIndex + 1, true);
+                var slot = NewSaveRow.SlotOf(_ui._selectedModelIndex);
+
+                var error = SaveFileEUtil.ImportSaveV01(savefile, slot, true);
                 if (error != StarlightError.NoError)
                 {
                     Log(Tr("messages.save.import.error",error));
