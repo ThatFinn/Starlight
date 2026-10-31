@@ -142,6 +142,61 @@ public static class Groups
     }
 
     /// <summary>
+    /// How many times the type exists
+    /// </summary>
+    public static int Found(IdentifiableTypeGroup group, IdentifiableType type)
+    {
+        var walked = 0;
+
+        try
+        {
+            var walker = group.GetAllMembers().GetEnumerator().Cast<Il2CppSystem.Collections.IEnumerator>();
+            while (walker.MoveNext())
+            {
+                var member = walker.Current?.TryCast<IdentifiableType>();
+                if (member != null && member.Pointer == type.Pointer) walked++;
+            }
+        }
+        catch { }
+
+        return walked;
+    }
+
+    /// <summary>
+    /// How many times walking the group finds each type
+    /// </summary>
+    public static Dictionary<IntPtr, (IdentifiableType Type, int Count)> WalkCounts(IdentifiableTypeGroup group)
+    {
+        var counts = new Dictionary<IntPtr, (IdentifiableType, int)>();
+
+        try
+        {
+            var walker = group.GetAllMembers().GetEnumerator().Cast<Il2CppSystem.Collections.IEnumerator>();
+            while (walker.MoveNext())
+            {
+                var member = walker.Current?.TryCast<IdentifiableType>();
+                if (member == null) continue;
+
+                counts[member.Pointer] = counts.TryGetValue(member.Pointer, out var seen) ? (member, seen.Item2 + 1) : (member, 1);
+            }
+        }
+        catch { }
+
+        return counts;
+    }
+
+    private static int Count(Il2CppSystem.Collections.Generic.List<IdentifiableType>? list, IdentifiableType type)
+    {
+        var count = 0;
+        if (list == null) return 0;
+
+        for (var i = 0; i < list.Count; i++)
+            if (list[i] != null && list[i].Pointer == type.Pointer) count++;
+
+        return count;
+    }
+
+    /// <summary>
     /// Finds an <see cref="IdentifiableTypeGroup"/> by name
     /// </summary>
     /// <returns> The group, or null if the game has no group with that name </returns>
@@ -187,7 +242,140 @@ public static class Groups
         if (runtime != null && !runtime.IsMember(type))
             runtime._memberTypes.Add(type);
 
+        Normalize(type);
         return true;
+    }
+
+    /// <summary>
+    /// Makes the type a member of every group's runtime copy that holds the template, where it isn't yet
+    /// </summary>
+    internal static int JoinAsTemplate(IdentifiableType type, IdentifiableType template)
+    {
+        var joined = 0;
+
+        foreach (var group in GetAll<IdentifiableTypeGroup>())
+        {
+            var runtime = group?.GetRuntimeObject();
+            if (runtime == null || !runtime.IsMember(template) || runtime.IsMember(type)) continue;
+
+            runtime.AddMember(type);
+            joined++;
+        }
+
+        return joined;
+    }
+
+    private static bool Holds(IdentifiableTypeGroup parent, IdentifiableTypeGroup child, HashSet<IntPtr> seen)
+    {
+        foreach (var children in new[] { parent._memberGroups, parent.GetRuntimeObject()?._memberGroups })
+        {
+            if (children == null) continue;
+
+            for (var i = 0; i < children.Count; i++)
+            {
+                var candidate = children[i];
+                if (candidate == null || !seen.Add(candidate.Pointer)) continue;
+                if (candidate.Pointer == child.Pointer || Holds(candidate, child, seen)) return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Makes a group part of another
+    /// </summary>
+    /// <returns> True if the child was added </returns>
+    public static bool AddChild(IdentifiableTypeGroup parent, IdentifiableTypeGroup child)
+    {
+        ArgumentNullException.ThrowIfNull(parent);
+        ArgumentNullException.ThrowIfNull(child);
+
+        if (parent.Pointer == child.Pointer || Holds(parent, child, new HashSet<IntPtr>())) return false;
+
+        parent._memberGroups?.Add(child);
+
+        var runtime = parent.GetRuntimeObject();
+        if (runtime?._memberGroups != null)
+        {
+            var listed = false;
+            for (var i = 0; i < runtime._memberGroups.Count; i++)
+                if (runtime._memberGroups[i] != null && runtime._memberGroups[i].Pointer == child.Pointer) { listed = true; break; }
+
+            if (!listed) runtime._memberGroups.Add(child);
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Whether the group lists the type itself, not just through a group inside it
+    /// </summary>
+    private static bool ListsDirectly(IdentifiableTypeGroup group, IdentifiableType type) =>
+        Count(group._memberTypes, type) > 0 || (group.GetRuntimeObject() is { } runtime && Count(runtime._memberTypes, type) > 0);
+
+    private static bool ReachesThroughChild(IdentifiableTypeGroup group, IdentifiableType type, HashSet<IntPtr> seen)
+    {
+        foreach (var children in new[] { group._memberGroups, group.GetRuntimeObject()?._memberGroups })
+        {
+            if (children == null) continue;
+
+            for (var i = 0; i < children.Count; i++)
+            {
+                var child = children[i];
+                if (child == null || !seen.Add(child.Pointer)) continue;
+                if (ListsDirectly(child, type) || ReachesThroughChild(child, type, seen)) return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static int RemoveRepeats(Il2CppSystem.Collections.Generic.List<IdentifiableType>? list, IdentifiableType type)
+    {
+        if (list == null) return 0;
+
+        var seen = false;
+        var removed = 0;
+
+        for (var i = 0; i < list.Count; i++)
+        {
+            if (list[i] == null || list[i].Pointer != type.Pointer) continue;
+
+            if (!seen) { seen = true; continue; }
+
+            list.RemoveAt(i--);
+            removed++;
+        }
+
+        return removed;
+    }
+
+    /// <summary>
+    /// Makes sure walking any group finds the type once
+    /// </summary>
+    /// <returns> How many listings were removed </returns>
+    public static int Normalize(IdentifiableType type)
+    {
+        ArgumentNullException.ThrowIfNull(type);
+
+        var removed = 0;
+
+        foreach (var group in GetAll<IdentifiableTypeGroup>())
+        {
+            if (group == null) continue;
+
+            removed += RemoveRepeats(group._memberTypes, type);
+            removed += RemoveRepeats(group.GetRuntimeObject()?._memberTypes, type);
+
+            if (!ListsDirectly(group, type)) continue;
+            if (Found(group, type) < 2) continue;
+
+            if (Count(group._memberTypes, type) > 0) { RemoveRepeats(group._memberTypes, type); group._memberTypes.Remove(type); removed++; }
+            if (group.GetRuntimeObject() is { } runtime && Count(runtime._memberTypes, type) > 0) { runtime._memberTypes.Remove(type); removed++; }
+        }
+
+        return removed;
     }
 
     /// <summary>
@@ -273,7 +461,7 @@ public static class Groups
         foreach (var group in GetAll<IdentifiableTypeGroup>())
         {
             if (group == null || string.IsNullOrEmpty(group.name)) continue;
-            if (!group.IsMember(template) || group.IsMember(type)) continue;
+            if (!ListsDirectly(group, template) || group.IsMember(type)) continue;
 
             if (Add(type, group)) joined++;
         }

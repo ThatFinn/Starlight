@@ -97,6 +97,7 @@ public static class LookupEUtil
         if (group == null) yield break;
 
         var visited = new HashSet<IntPtr>();
+        var listed  = new HashSet<IntPtr>();
         var pending = new Stack<IdentifiableTypeGroup>();
         pending.Push(group);
 
@@ -110,7 +111,17 @@ public static class LookupEUtil
                 foreach (var type in current._memberTypes)
                 {
                     if (type == null || string.IsNullOrEmpty(type.ReferenceId)) continue;
-                    yield return type;
+                    if (listed.Add(type.Pointer)) yield return type;
+                }
+            }
+            
+            var runtimeMembers = RuntimeMembersOf(current);
+            if (runtimeMembers != null)
+            {
+                foreach (var type in runtimeMembers)
+                {
+                    if (type == null || string.IsNullOrEmpty(type.ReferenceId)) continue;
+                    if (listed.Add(type.Pointer)) yield return type;
                 }
             }
 
@@ -118,6 +129,15 @@ public static class LookupEUtil
             foreach (var nested in current._memberGroups)
                 if (nested != null) pending.Push(nested);
         }
+    }
+
+    /// <summary>
+    /// The members the game has added to a group's runtime copy, or null if it has none yet
+    /// </summary>
+    static Il2CppSystem.Collections.Generic.List<IdentifiableType>? RuntimeMembersOf(IdentifiableTypeGroup group)
+    {
+        try { return group.GetRuntimeObject()?._memberTypes; }
+        catch { return null; }
     }
 
     /// <summary>

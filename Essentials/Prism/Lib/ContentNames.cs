@@ -60,7 +60,9 @@ public static class ContentNames
         if (prefix == "SlimeDefinition")
         {
             var slime = type.TryCast<SlimeDefinition>();
-            name += slime != null && slime.IsLargo ? "Largo" : "Slime";
+            var kind  = slime != null && slime.IsLargo ? "Largo" : "Slime";
+            
+            if (!name.EndsWith(kind, StringComparison.OrdinalIgnoreCase)) name += kind;
         }
 
         CommandNames[type.Pointer] = name;

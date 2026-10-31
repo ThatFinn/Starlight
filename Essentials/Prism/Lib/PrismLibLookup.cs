@@ -1,4 +1,4 @@
-using Starlight.Prism.Data.Native;
+﻿using Starlight.Prism.Data.Native;
 using Starlight.Prism.Wrappers;
 
 namespace Starlight.Prism.Lib;
@@ -156,6 +156,12 @@ public static class PrismLibLookup
     /// <returns>Whether or not the largo combination exists</returns>
     public static bool DoesLargoComboExist(this PrismBaseSlime slime1, PrismBaseSlime slime2)
     {
+        if (slime1 == null || slime2 == null) return false;
+        var first = slime1.GetSlimeDefinition();
+        var second = slime2.GetSlimeDefinition();
+        if (first != null && second != null && Starlight.Prism.Creators.PrismLargoCreatorV02.Find(first, second) != null)
+            return true;
+
         try
         {
             if (gameContext.SlimeDefinitions.GetLargoByBaseSlimes(slime1, slime2) != null)

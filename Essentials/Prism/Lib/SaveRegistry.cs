@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Starlight.Prism.Lib;
 
@@ -111,22 +111,35 @@ public static class SaveRegistry
             MissingPersistenceIds.Add(referenceId);
             return;
         }
+        
+        var position = -1;
+        var index = persistence._primaryIndex;
+        var at = 0;
+
+        try
+        {
+            for (; at < index.Count; at++)
+            {
+                if (!string.Equals(index[at], referenceId, StringComparison.Ordinal)) continue;
+                position = at;
+                break;
+            }
+        }
+        catch (Exception ex)
+        {
+            LogError($"Prism: Entry {at} of {index.Count} in the game's persistence index can't be read, so '{referenceId}' waits", ex);
+            MissingPersistenceIds.Add(referenceId);
+            return;
+        }
 
         MissingPersistenceIds.Remove(referenceId);
 
-        if (!persistence._primaryIndex.Contains(referenceId))
-            persistence._primaryIndex = persistence._primaryIndex.AddToNew(referenceId);
-        
-        var position = -1;
-        for (var i = 0; i < persistence._primaryIndex.Count; i++)
+        if (position < 0)
         {
-            if (!string.Equals(persistence._primaryIndex[i], referenceId, StringComparison.Ordinal)) continue;
-            position = i;
-            break;
+            persistence._primaryIndex = index.AddToNew(referenceId);
+            position = index.Count;
         }
 
-        if (position < 0) return;
-        
         persistence._reverseIndex[referenceId] = position;
     }
 
