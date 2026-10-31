@@ -1,4 +1,4 @@
-using Starlight.Components;
+﻿using Starlight.Components;
 using Starlight.Prism.Wrappers;
 using Starlight.Storage;
 
@@ -13,8 +13,13 @@ internal static class GordoEatAwakePatch
     {
         ExecuteInTicks(() =>
         {
-            var ident = __instance.GetComponent<GordoIdentifiable>().identType;
-            if (Gordos.ContainsKey(ident))
+            if (__instance == null) return;
+
+            var identifiable = __instance.GetComponent<GordoIdentifiable>();
+            if (identifiable == null) return;
+
+            var ident = identifiable.identType;
+            if (ident != null && Gordos.ContainsKey(ident))
             {
                 var renderer = __instance.gameObject.GetObjectRecursively<GameObject>("Vibrating").AddComponent<StarlightSlimeRenderer>();
                 var obj = renderer.RenderAppearance(Gordos[ident]).transform;
