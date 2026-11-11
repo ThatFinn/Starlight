@@ -66,6 +66,8 @@ public static class Groups
         public const string FruitQuantumCloud  = "FruitQuantumCloudGroup";
         /// <inheritdoc cref="FruitQuantumCloud"/>
         public const string VeggieQuantumCloud = "VeggieQuantumCloudGroup";
+        /// <inheritdoc cref="FruitQuantumCloud"/>
+        public const string MeatQuantumCloud   = "MeatQuantumCloudGroup";
 
         /// <summary>
         /// Grown "common" chickens
@@ -117,6 +119,16 @@ public static class Groups
         /// </summary>
         /// <remarks> Not the slime sea, general water (?) </remarks>
         public const string SlimesSinkInShallowWater = "SlimesSinkInShallowWaterGroup";
+
+        /// <summary>
+        /// All liquids
+        /// </summary>
+        public const string Liquid = "LiquidGroup";
+
+        /// <summary>
+        /// The water liquid
+        /// </summary>
+        public const string Water = "WaterGroup";
     }
     
     private static readonly Dictionary<string, IdentifiableTypeGroup> Cache = new(StringComparer.Ordinal);
