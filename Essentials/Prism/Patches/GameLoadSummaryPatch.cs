@@ -16,8 +16,7 @@ internal static class GameLoadSummaryPatch
     {
         try
         {
-            foreach (var actor in PrismLibSaving.SavedIdents)
-                PrismLibSaving.RefreshIfNotFound(autoSaveDirector._saveReferenceTranslation,actor.Value);
+            SaveRegistry.RefreshAll();
         } catch { }
     }
 }
