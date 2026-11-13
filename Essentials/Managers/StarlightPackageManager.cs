@@ -382,7 +382,11 @@ public static class StarlightPackageManager
                                 type = type, assembly = assembly, info = info, harmony = hInstance, instance = instance
                             });
                         }
-                        else StarlightEntryPoint.BrokenExpansions.Add((type.FullName, assembly, message, errorMessage));
+                        else
+                        {
+                            LogError($"Expansion '{type.FullName}' in {info.DLLName} was not loaded: {message}");
+                            StarlightEntryPoint.BrokenExpansions.Add((type.FullName, assembly, message, errorMessage));
+                        }
                     }
                     catch (Exception e)
                     {
