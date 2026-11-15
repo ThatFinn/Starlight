@@ -17,6 +17,9 @@ internal static class PageArt
     private static readonly Dictionary<System.IntPtr, Sprite> Supplied = new();
     private static readonly Dictionary<System.IntPtr, Sprite> SuppliedRadiant = new();
 
+    private static readonly Dictionary<System.IntPtr, (string Guid, Color From, Color To)> Recolours = new();
+    private static readonly HashSet<System.IntPtr> Recolouring = new();
+
     /// <summary>
     /// Whether any picture was supplied at all
     /// </summary>
@@ -63,6 +66,84 @@ internal static class PageArt
     }
 
     /// <summary>
+    /// Whether a page has full art of its own
+    /// </summary>
+    internal static bool HasOwnFullArt(PediaEntry entry)
+    {
+        var art = entry.FullArtReference;
+        return art != null && art.RuntimeKeyIsValid();
+    }
+
+    /// <summary>
+    /// Registers a recolour
+    /// </summary>
+    /// <param name="type"> The created thing </param>
+    /// <param name="art"> The native picture </param>
+    /// <param name="from"> The native colour </param>
+    /// <param name="to"> The colour it becomes </param>
+    internal static void RegisterRecolour(IdentifiableType type, AssetReferenceT<Sprite>? art, Color from, Color to)
+    {
+        var guid = art?.AssetGUID;
+        if (type == null || string.IsNullOrEmpty(guid)) return;
+
+        Recolours[type.Pointer] = (guid, from, to);
+    }
+
+    /// <summary>
+    /// Recolours a Slimepedia page picture
+    /// </summary>
+    /// <param name="type"> The created thing </param>
+    /// <param name="ready"> Called with the picture once it is made </param>
+    internal static void Recolour(IdentifiableType type, System.Action<Sprite> ready)
+    {
+        if (type == null || !Recolours.TryGetValue(type.Pointer, out var recolour) || !Recolouring.Add(type.Pointer)) return;
+
+        StartCoroutine(MakeRecoloured(type, recolour.Guid, recolour.From, recolour.To, ready));
+    }
+
+    private static System.Collections.IEnumerator MakeRecoloured(IdentifiableType type, string guid, Color from, Color to, System.Action<Sprite> ready)
+    {
+        var handle = Addressables.LoadAssetAsync<Sprite>(new AssetReferenceT<Sprite>(guid).RuntimeKey);
+        while (!handle.IsDone) yield return null;
+
+        Sprite? made = null;
+        var keepLoaded = false;
+
+        try
+        {
+            var native = handle.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded ? handle.Result : null;
+            if (native == null)
+            {
+                LogWarning($"Prism: Couldn't load the picture to recolour for '{type.name}'");
+            }
+            else
+            {
+                made = native.Recolour(from, to);
+                
+                keepLoaded = made != null && made.Pointer == native.Pointer;
+            }
+        }
+        catch (Exception ex)
+        {
+            LogError($"Prism: Failed to recolour the picture for '{type.name}'", ex);
+        }
+
+        if (!keepLoaded) Addressables.Release(handle);
+
+        if (made == null)
+        {
+            Recolouring.Remove(type.Pointer);
+            yield break;
+        }
+
+        Recolours.Remove(type.Pointer);
+        Register(type, made);
+
+        try { ready(made); }
+        catch (Exception ex) { LogError($"Prism: Failed to show the recoloured picture for '{type.name}'", ex); }
+    }
+
+    /// <summary>
     /// A new reference to the same picture
     /// </summary>
     internal static AssetReferenceT<Sprite>? OwnFullArt(AssetReferenceT<Sprite>? source)
@@ -106,12 +187,8 @@ internal static class PageArt
 }
 
 /// <summary>
-/// Draws a created entry's icon on the pedia's page
+/// Draws a created entry's picture on the pedia's page, or its icon while it has none
 /// </summary>
-/// <remarks>
-/// Created entries have <c>_requiresFullArt</c> false,
-/// which sort of marks them, native entries always require their art and are ignored
-/// </remarks>
 [PrismPatch()]
 [HarmonyPatch(typeof(PediaEntryIconAndHighlights), nameof(PediaEntryIconAndHighlights.SetPediaEntry))]
 internal static class PediaFullArtFallbackPatch
@@ -123,15 +200,25 @@ internal static class PediaFullArtFallbackPatch
         try
         {
             var picture = PageArt.For(entry);
-
-            // Native entries
-            if (picture == null && entry.RequiresFullArt) return;
-
-            picture ??= entry.Icon;
-            if (picture == null) return;
+            if (picture == null && (entry.RequiresFullArt || PageArt.HasOwnFullArt(entry))) return;
 
             var image = __instance._primaryIcon;
             if (image == null) return;
+
+            var type = picture == null ? entry.TryCast<IdentifiablePediaEntry>()?.IdentifiableType : null;
+            if (type != null)
+            {
+                PageArt.Recolour(type, made =>
+                {
+                    if (__instance == null || image == null || __instance._currentEntry == null || __instance._currentEntry.Pointer != entry.Pointer) return;
+                    PageArt.Show(image, made);
+                });
+
+                picture = PageArt.For(entry);
+            }
+
+            picture ??= entry.Icon;
+            if (picture == null) return;
 
             PageArt.Show(image, picture);
         }
