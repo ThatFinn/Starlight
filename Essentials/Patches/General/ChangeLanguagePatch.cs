@@ -12,6 +12,8 @@ internal class ChangeLanguagePatch
     {
         FixLanguage(__instance, locale);
         ExecuteInTicks((() => { FixLanguage(__instance, locale);}), 10);
+
+        ExecuteInTicks(Prism.Creators.PrismLargoCreatorV02.RenameAll, 30);
     }
 
     static void FixLanguage(LocalizationDirector director, UnityEngine.Localization.Locale curLocale)
@@ -21,10 +23,10 @@ internal class ChangeLanguagePatch
         LoadLanguage(code);
 
         StarlightLanguageManager.StarlightToSRLanguage.Clear();
-        StarlightLanguageManager.AddedTranslations.Clear();
+        StarlightLanguageManager.ForgetStarlightEntries();
         foreach (var str in StarlightLanguageManager.StarlightReplaceOnLanguageChange)
         {
-            var localized = AddTranslation(Tr(str.Key), str.Value.Item1, str.Value.Item2);
+            var localized = StarlightLanguageManager.AddStarlightEntry(Tr(str.Key), str.Value.Item1, str.Value.Item2);
 
             var original = str.Value.Item3;
 

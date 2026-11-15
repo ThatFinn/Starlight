@@ -160,10 +160,20 @@ internal static class StarlightLanguageManager
         StringTableEntry stringTableEntry = table2.AddEntry(key, localized);
         return new LocalizedString(table2.SharedData.TableCollectionName, stringTableEntry.SharedEntry.Id);
         }
+    /// <summary>
+    /// Adds an entry made from one of Starlight's own translations
+    /// </summary>
+    internal static LocalizedString AddStarlightEntry(string localized, string key, string table)
+    {
+        var localizedString = AddTranslation(localized, key, table, out var usedKey);
+        if (usedKey != null) StarlightEntries.Add((table, usedKey));
+
+        return localizedString;
+    }
+
     internal static LocalizedString AddTranslationFromStarlight(string starlightTranslationID, string key = null, string table = "Actor")
     {
-        var localizedString = AddTranslation(Translation(starlightTranslationID), key, table, out var usedKey);
-        if (usedKey != null) StarlightEntries.Add((table, usedKey));
+        var localizedString = AddStarlightEntry(Translation(starlightTranslationID), key, table);
 
         StarlightToSRLanguage.TryAdd(starlightTranslationID,localizedString);
         StarlightReplaceOnLanguageChange.TryAdd(starlightTranslationID, (key, table, localizedString));
@@ -181,6 +191,23 @@ internal static class StarlightLanguageManager
                 entries.Remove(key);
 
         StarlightEntries.Clear();
+    }
+
+    /// <summary>
+    /// Changes the text of an added entry
+    /// </summary>
+    internal static void UpdateTranslation(string localized, string key, string table = "Actor")
+    {
+        if (!InjectTranslations.HasFlag() || string.IsNullOrWhiteSpace(key)) return;
+
+        if (AddedTranslations.TryGetValue(table, out var entries)) entries[key] = localized;
+
+        var table2 = LocalizationUtil.GetTable(table);
+        StringTableEntry entry = null;
+        try { entry = table2.GetEntry(key); } catch { }
+
+        if (entry != null) entry.Value = localized;
+        else table2.AddEntry(key, localized);
     }
 
     internal static void SetTranslation(string localized, string key, string table)
