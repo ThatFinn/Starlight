@@ -6,6 +6,7 @@ using UnityEngine.Localization;
 
 namespace Starlight.Prism.Creators;
 
+[System.Obsolete("PrismPlortCreatorV01 does not work after version 1.3.0, use the V02 creators instead")]
 public class PrismPlortCreatorV01
 {
     private PrismPlort _createdPlort;

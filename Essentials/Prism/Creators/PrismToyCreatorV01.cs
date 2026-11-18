@@ -6,6 +6,7 @@ using UnityEngine.Localization;
 namespace Starlight.Prism.Creators;
 
 //WIP
+[System.Obsolete("PrismToyCreatorV01 does not work after version 1.3.0, use the V02 creators instead")]
 internal class PrismToyCreatorV01
 {
     private PrismToy _createdToy;

@@ -8,6 +8,7 @@ using UnityEngine.Localization;
 
 namespace Starlight.Prism.Creators;
 
+[System.Obsolete("PrismBaseSlimeCreatorV01 does not work after version 1.3.0, use the V02 creators instead")]
 public class PrismBaseSlimeCreatorV01
 {
     private PrismBaseSlime _createdSlime;

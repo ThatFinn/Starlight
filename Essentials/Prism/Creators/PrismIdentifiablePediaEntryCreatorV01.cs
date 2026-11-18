@@ -6,6 +6,7 @@ using UnityEngine.Localization;
 
 namespace Starlight.Prism.Creators;
 
+[System.Obsolete("PrismIdentifiablePediaEntryCreatorV01 does not work after version 1.3.0, use the V02 creators instead")]
 public class PrismIdentifiablePediaEntryCreatorV01
 {
     PrismIdentifiablePediaEntry _createdPediaEntry;
