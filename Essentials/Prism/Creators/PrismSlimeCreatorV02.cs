@@ -198,6 +198,15 @@ public static class PrismSlimeCreatorV02
         var vacColor = request.VacColor ?? request.Palette?.Middle ?? definition.color;
         vacColor.a = 1f;
         definition.color = vacColor;
+
+        if (request.VacColor.HasValue)
+        {
+            var palette = appearance._colorPalette;
+            palette.Ammo = vacColor;
+            appearance._colorPalette = palette;
+            appearance._splatColor = vacColor;
+        }
+
         if (request.Icon != null) definition.icon = request.Icon;
         PageArt.ClearFullArt(definition);
 
