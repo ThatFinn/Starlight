@@ -204,7 +204,7 @@ public static class PrismSlimeCreatorV02
         if (request.Palette == null && request.Icon == null && request.FullArt == null)
             PageArt.KeepFullArtFrom(definition, appearanceSource);
         
-        if (request.Palette.HasValue && request.FullArt == null)
+        if (request.Palette.HasValue && request.Icon == null && request.FullArt == null)
             PageArt.RegisterRecolour(definition, appearanceSource.FullArtReference ?? baseAppearance._fullArt, baseAppearance._colorPalette.Middle, request.Palette.Value.Middle);
         
         if (request.Palette.HasValue && request.Icon == null)
