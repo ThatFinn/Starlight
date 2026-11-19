@@ -133,7 +133,7 @@ public static class Groups
         /// <summary>
         /// The game's group of every gadget
         /// </summary>
-        private const string GadgetGroupName = "GadgetGroup";
+        public const string GadgetGroupName = "GadgetGroup";
     }
     
     private static readonly Dictionary<string, IdentifiableTypeGroup> Cache = new(StringComparer.Ordinal);
