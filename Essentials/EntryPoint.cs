@@ -119,6 +119,13 @@ public class StarlightEntryPoint : MelonMod
     internal static float noclipSpeedMultiplier => _prefs.GetEntry<float>("noclipSpeedMultiplier").value;
     internal static bool enableEmberMode => _prefs.HasEntry("enableEmberMode") ? _prefs.GetEntry<bool>("enableEmberMode").value : false;
     internal static bool enableMarketViewer => _prefs.GetEntry<bool>("enableMarketViewer").value;
+    internal static bool prismEnableSpawning => !_prefs.HasEntry("prismEnableSpawning") || _prefs.GetEntry<bool>("prismEnableSpawning").value;
+    internal static bool prismEnablePedia => !_prefs.HasEntry("prismEnablePedia") || _prefs.GetEntry<bool>("prismEnablePedia").value;
+    internal static bool prismEnableGardens => !_prefs.HasEntry("prismEnableGardens") || _prefs.GetEntry<bool>("prismEnableGardens").value;
+    internal static bool prismEnableStyleVariants => !_prefs.HasEntry("prismEnableStyleVariants") || _prefs.GetEntry<bool>("prismEnableStyleVariants").value;
+    internal static bool prismShowModdedPlorts => !_prefs.HasEntry("prismShowModdedPlorts") || _prefs.GetEntry<bool>("prismShowModdedPlorts").value;
+    internal static bool prismSecondMarketScreen => !_prefs.HasEntry("prismSecondMarketScreen") || _prefs.GetEntry<bool>("prismSecondMarketScreen").value;
+    internal static bool prismStructureArtwork => !_prefs.HasEntry("prismStructureArtwork") || _prefs.GetEntry<bool>("prismStructureArtwork").value;
     public override void OnEarlyInitializeMelon()
     {
         Instance = this;
@@ -224,17 +231,7 @@ public class StarlightEntryPoint : MelonMod
 
     public override void OnLateInitializeMelon()
     {
-        if (Get<GameObject>("StarlightPrefabHolder"))
-        {
-            PrefabHolder = Get<GameObject>("StarlightPrefabHolder");
-        }
-        else
-        {
-            PrefabHolder = new GameObject();
-            PrefabHolder.SetActive(false);
-            PrefabHolder.name = "StarlightPrefabHolder";
-            Object.DontDestroyOnLoad(PrefabHolder);
-        }
+        _ = PrefabHolder;
 
         if (LKeyInputAcquirer.Instance == null)
         {
@@ -366,6 +363,23 @@ public class StarlightEntryPoint : MelonMod
             _prefs.AddEntry("noclipAdjustSpeed", 235f, "NoClip scroll speed", null,false, false);
         if (!_prefs.HasEntry("consoleMaxSpeed"))
             _prefs.AddEntry("consoleMaxSpeed", 0.75f, "Console scroll speed", null,false, false);
+        if (AllowPrism.HasFlag())
+        {
+            if (!_prefs.HasEntry("prismEnableSpawning"))
+                _prefs.AddEntry("prismEnableSpawning", true, "Prism: Spawn created content", "Configures spawners for content created with Prism", false, false);
+            if (!_prefs.HasEntry("prismEnablePedia"))
+                _prefs.AddEntry("prismEnablePedia", true, "Prism: Pedia entries", "Gives content created with Prism pedia entries", false, false);
+            if (!_prefs.HasEntry("prismEnableGardens"))
+                _prefs.AddEntry("prismEnableGardens", true, "Prism: Gardens accept created produce", "Lets gardens grow produce created with Prism", false, false);
+            if (!_prefs.HasEntry("prismEnableStyleVariants"))
+                _prefs.AddEntry("prismEnableStyleVariants", true, "Prism: Style variants", "Generates style variants for content created with Prism", false, false);
+            if (!_prefs.HasEntry("prismShowModdedPlorts"))
+                _prefs.AddEntry("prismShowModdedPlorts", true, "Prism: Show modded plorts", "Lists plorts created with Prism on the plort market board", false, false);
+            if (!_prefs.HasEntry("prismSecondMarketScreen"))
+                _prefs.AddEntry("prismSecondMarketScreen", true, "Prism: Second market screen", "Adds a second market screen when one is not enough", false, false);
+            if (!_prefs.HasEntry("prismStructureArtwork"))
+                _prefs.AddEntry("prismStructureArtwork", true, "Prism: Draw body parts with their own texture", "Draws a slime's body parts with their own texture, at the cost of the slime's squash", false, false);
+        }
         //if(DevMode.HasFlag()) if (!_prefs.HasEntry("testLKey")) _prefs.AddEntry("testLKey", LKey.None, "Test LKey", null,false, false);
         
         if (!prefExisted)
@@ -478,6 +492,10 @@ public class StarlightEntryPoint : MelonMod
                 {
                     var isPrismPatch = type.GetCustomAttribute<PrismPatch>() != null;
                     if (!isPrismInUse && isPrismPatch) continue;
+                    // TODO:
+                    // The continue below only skips the flag loop,
+                    // so [FeatureFlagDependentPatch] patches always register
+                    // Not changing it to prevent other issues deriving from that fix
                     var ffPatch = type.GetCustomAttribute<FeatureFlagDependentPatch>();
                     if(ffPatch!=null&&ffPatch.Flags!=null)
                         foreach (var flag in ffPatch.Flags)
@@ -857,6 +875,8 @@ public class StarlightEntryPoint : MelonMod
                         .GetComponent<Scrollbar>();
                     rect.verticalScrollbar = scrollBar;
                     rect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
+                    var scrollBarRect = scrollBar.GetComponent<RectTransform>();
+                    scrollBarRect.sizeDelta = new Vector2(scrollBarRect.sizeDelta.x, 0f);
                     scrollBar.GetComponent<RectTransform>().localPosition += new Vector3(Screen.width / 250f, 0, 0);
                     scrollBar.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
                     scrollBar.GetComponent<RectTransform>().localRotation = Quaternion.identity;
