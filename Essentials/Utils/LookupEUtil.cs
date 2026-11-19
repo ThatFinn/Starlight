@@ -190,7 +190,7 @@ public static class LookupEUtil
         if (string.IsNullOrWhiteSpace(name)) return null;
         if (idents == null||idents.Length==0) return null;
         name = name.ToUpper();
-        foreach (IdentifiableType type in identifiableTypes) if (type.name.ToUpper() == name) return type;
+        foreach (IdentifiableType type in idents) if (type.name.ToUpper() == name) return type;
         name=name.Replace("_", "").Replace(" ","");
         foreach (IdentifiableType type in idents) if (type.GetCompactUpperName() == name) return type;
         return null;
