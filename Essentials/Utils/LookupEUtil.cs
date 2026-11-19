@@ -200,7 +200,7 @@ public static class LookupEUtil
         if (string.IsNullOrWhiteSpace(referenceID)) return null;
         if (group == null) return null;
         referenceID = referenceID.ToUpper();
-        foreach (var type in group.GetAllMembersHashSet()) if (type.ReferenceId == referenceID) return type;
+        foreach (var type in group.GetAllMembersHashSet()) if (type.ReferenceId.ToUpper() == referenceID) return type;
         return null;
     }
     public static IdentifiableType GetEntryByName(this IdentifiableTypeGroup group, string name)
