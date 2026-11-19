@@ -33,7 +33,6 @@ public static class InputEUtil
         return LKeyInputAcquirer.Instance.OnKey(multiKey);
     }
     
-    
     /// <summary>
     /// Returns true the **first frame** when the keycode become pressed
     /// </summary>
@@ -59,9 +58,6 @@ public static class InputEUtil
         return LKeyInputAcquirer.Instance.OnKeyDown(multiKey);
     }
 
-    
-    
-    
     /// <summary>
     /// Returns true the **first frame** when the keycode is released it was pressed
     /// </summary>
@@ -87,8 +83,6 @@ public static class InputEUtil
         return LKeyInputAcquirer.Instance.OnKeyUp(multiKey);
     }
     
-    
-
     internal static bool TryConvertEventToKey(Event e, out LKey key)
     {
         key = LKey.None;
@@ -245,8 +239,8 @@ public static class InputEUtil
 
                 // Hiragana
                 // The fallback font doesnt support it
-                
-                 /*
+                    
+                /*
                 case 'あ': key = LKey.あ; return true; case 'い': key = LKey.い; return true;
                 case 'う': key = LKey.う; return true; case 'え': key = LKey.え; return true;
                 case 'お': key = LKey.お; return true; case 'か': key = LKey.か; return true;
@@ -271,7 +265,7 @@ public static class InputEUtil
                 case 'ろ': key = LKey.ろ; return true; case 'わ': key = LKey.わ; return true;
                 case 'を': key = LKey.を; return true; case 'ん': key = LKey.ん; return true;
                 */
-                
+                    
             }
         }
 
@@ -343,7 +337,6 @@ public static class InputEUtil
         return false;
     }
     
-
     /// <summary>
     /// Returns true if mouse button is currently pressed
     /// </summary>
@@ -386,5 +379,3 @@ public static class InputEUtil
     /// </summary>
     public static bool OnKeyUp(this Key key) => key.ToKeyCode().OnKeyUp();
 }
-
-            

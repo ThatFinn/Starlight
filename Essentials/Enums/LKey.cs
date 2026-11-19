@@ -54,13 +54,13 @@ public enum LKey
     KeypadDivide = 811, KeypadMultiply = 812, KeypadMinus = 813,
     KeypadPlus = 814, KeypadEnter = 815, KeypadPeriod = 816,
 
-    // Cyrillic 
+    // Cyrillic
     А = 901, Б = 902, В = 903, Г = 904, Д = 905, Е = 906, Ё = 907, Ж = 908,
     З = 909, И = 910, Й = 911, К = 912, Л = 913, М = 914, Н = 915, О = 916,
     П = 917, Р = 918, С = 919, Т = 920, У = 921, Ф = 922, Х = 923, Ц = 924,
     Ч = 925, Ш = 926, Щ = 927, Ъ = 928, Ы = 929, Ь = 930, Э = 931, Ю = 932, Я = 933,
 
-    // Hiragana 
+    // Hiragana
     //The fallback font doesn't support it :/
     /*あ = 1001, い = 1002, う = 1003, え = 1004, お = 1005,
     か = 1006, き = 1007, く = 1008, け = 1009, こ = 1010,

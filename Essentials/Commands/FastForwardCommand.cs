@@ -19,7 +19,7 @@ internal class FastForwardCommand : StarlightCommand
     {
         if (!inGame) return SendLoadASaveFirst();
         if (!args.IsBetween(0,1)) return SendUsage();
-         
+        
         double timeToFastForwardTo = sceneContext.TimeDirector.GetNextDawn();
         if (args.Length == 1)
         {

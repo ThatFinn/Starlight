@@ -13,7 +13,6 @@ public class PrismBaseSlimeCreatorV01
 {
     private PrismBaseSlime _createdSlime;
     
-    
     public string Name;
     public Sprite Icon;
     public Sprite RadiantIcon;
@@ -37,7 +36,6 @@ public class PrismBaseSlimeCreatorV01
     public bool SupportRadiant = true;
     public int RadiantBagSize = 1500;
     
-    
     public PrismBaseSlimeCreatorV01(string name, Sprite icon, LocalizedString localized)
     {
         this.Name = name;
@@ -59,9 +57,6 @@ public class PrismBaseSlimeCreatorV01
         }
         return true;
     }
-
-
-
 
     private void Duplicate(SlimeAppearance appearance, SlimeAppearance baseAppearance)
     {
@@ -95,7 +90,7 @@ public class PrismBaseSlimeCreatorV01
                 {
                     var newElementMaterial = new SlimeAppearanceMaterials();
                     newElementMaterial.OverrideDefaults = elementMaterial.OverrideDefaults;
-                
+                    
                     var newElementMaterialsMaterials = new List<Material>();
                     foreach (var mat in elementMaterial.Materials)
                         newElementMaterialsMaterials.Add(Object.Instantiate(mat));
@@ -162,7 +157,7 @@ public class PrismBaseSlimeCreatorV01
     {
         if (!IsValid()) return null;
         if (_createdSlime != null) return _createdSlime;
-        if (!FeatureFlag.SupportRadiant.HasFlag()) SupportRadiant = false; 
+        if (!FeatureFlag.SupportRadiant.HasFlag()) SupportRadiant = false;
         
         var slimeDef = Object.Instantiate( PrismNativeBaseSlime.Pink.GetPrismBaseSlime().GetSlimeDefinition());
         slimeDef.hideFlags = HideFlags.DontUnloadUnusedAsset;
@@ -197,7 +192,7 @@ public class PrismBaseSlimeCreatorV01
         if (basePrefab == null) basePrefab = PrismNativeBaseSlime.Pink.GetPrismBaseSlime().GetPrefab();
         slimeDef.prefab = CreatePrefab("slime"+Name, basePrefab);
         if(slimeDef.prefab.HasComponent<SlimeEat>())
-            slimeDef.prefab.GetComponent<SlimeEat>().SlimeDefinition = slimeDef; 
+            slimeDef.prefab.GetComponent<SlimeEat>().SlimeDefinition = slimeDef;
         slimeDef.prefab.GetComponent<SlimeAppearanceApplicator>().SlimeDefinition = slimeDef;
         slimeDef.prefab.GetComponent<IdentifiableActor>().identType = slimeDef;
         var slimeDiet = PrismLibDiet.CreateNewDiet();
@@ -214,16 +209,13 @@ public class PrismBaseSlimeCreatorV01
         for (int i = 0; i < FavouriteToys.Count; i++)
             slimeDef.FavoriteToyIdents[i] = FavouriteToys[i].ToyDef;
         
-        
-        
-        if(!DisableVaccable) 
+        if(!DisableVaccable)
             slimeDef.Prism_AddToGroup("VaccableBaseSlimeGroup");
         slimeDef.Prism_AddToGroup("SmallSlimeGroup");
         if(!DisableEdibleByTarrs)
             slimeDef.Prism_AddToGroup("EdibleSlimeGroup");
         slimeDef.Prism_AddToGroup("IdentifiableTypesGroup");
         if(!DisableSinkInShallowWater) slimeDef.Prism_AddToGroup("SlimesSinkInShallowWaterGroup");
-        
         
         appearance._colorPalette = new SlimeAppearance.Palette { Ammo = VacColor, Bottom = VacColor, Middle = VacColor, Top = VacColor };
         appearance._splatColor = VacColor;
@@ -242,7 +234,7 @@ public class PrismBaseSlimeCreatorV01
         if (!DisableEdibleByTarrs)
             PrismNativeBaseSlime.Tarr.GetPrismBaseSlime().RefreshEatMap();
         var prismSlime = new PrismBaseSlime(slimeDef, false);
-        prismSlime.AllowLargos = CanLargofy;;
+        prismSlime.AllowLargos = CanLargofy;
         prismSlime.DisableAutoModdedLargos = DisableAutoModdedLargos;
         prismSlime.NonNativeBagSize = RadiantBagSize;
         if (CanLargofy&&CreateAllLargos)
@@ -274,8 +266,6 @@ public class PrismBaseSlimeCreatorV01
             });
         }
 
-        
-        
         if(Plort!=null)
             PrismLibDiet.AddEatProduction(prismSlime, Plort);
         
@@ -283,5 +273,4 @@ public class PrismBaseSlimeCreatorV01
         PrismShortcuts.PrismBaseSlimes.Add(slimeDef.ReferenceId,_createdSlime);
         return _createdSlime;
     }
-
 }

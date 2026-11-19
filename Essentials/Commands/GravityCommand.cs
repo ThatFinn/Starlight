@@ -22,5 +22,3 @@ internal class GravityCommand : StarlightCommand
         catch { return SendNotValidVector3(args[0],args[1],args[2]); }
     }
 }
-
-

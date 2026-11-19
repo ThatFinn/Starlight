@@ -38,7 +38,6 @@ public class PrismGordoCreatorV01
         return true;
     }
 
-
     private static IdentifiableType baseType = null;
     
     public PrismGordo CreateGordo()
@@ -84,7 +83,7 @@ public class PrismGordoCreatorV01
         var meshRenderer = gordo.GetObjectRecursively<SkinnedMeshRenderer>("slime_gordo");
         var i = 0;
         meshRenderer.material = Object.Instantiate(baseMaterial);
-        meshRenderer.materials = new List<Material>() { 
+        meshRenderer.materials = new List<Material>() {
             meshRenderer.material,
             Object.Instantiate(faceComp.BlinkEyes),
             Object.Instantiate(faceComp.HappyMouth) }.ToArray();
@@ -99,10 +98,7 @@ public class PrismGordoCreatorV01
         gameContext.LookupDirector._gordoDict.Add(gordoType, gordo);
         gameContext.LookupDirector._gordoEntries.items.Add(gordo);
         
-        
-        
         var gordoSlime = new PrismGordo(gordoType, false);
-        
         
         _createdGordo = gordoSlime;
         PrismShortcuts.PrismGordos.Add(gordoType.ReferenceId,gordoSlime);

@@ -27,7 +27,7 @@ public class PrismSlime
     
     public SlimeAppearance GetSlimeAppearanceRadiant() => SlimeDefinition.GetRadiantAppearance();
 
-    public SlimeAppearance TryGetSlimeAppearanceRadiant() 
+    public SlimeAppearance TryGetSlimeAppearanceRadiant()
     {
         try
         {

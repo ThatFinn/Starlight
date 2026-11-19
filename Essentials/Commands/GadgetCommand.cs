@@ -79,7 +79,7 @@ internal class GadgetCommand : StarlightCommand
         switch (args[0])
         {
             case "remove":
-            case "add": 
+            case "add":
             case "set":
                 int newValue = 0;
                 int oldValue = sceneContext.GadgetDirector.GetItemCount(type);
@@ -87,7 +87,7 @@ internal class GadgetCommand : StarlightCommand
                 {
                     case "set": newValue = amount; break;
                     case "add": newValue = amount + oldValue; break;
-                    case "remove": newValue = oldValue - amount; break; 
+                    case "remove": newValue = oldValue - amount; break;
                 }
                 newValue=Mathf.Clamp(newValue, 0, int.MaxValue);
                 
@@ -101,24 +101,24 @@ internal class GadgetCommand : StarlightCommand
                 {
                     case "set": SendMessage(Tr("cmd.gadget.successset", itemName, amount)); break;
                     case "add": SendMessage(Tr("cmd.gadget.successadd",amount,itemName)); break;
-                    case "remove": SendMessage(Tr("cmd.gadget.successremove",amount,itemName)); break; 
+                    case "remove": SendMessage(Tr("cmd.gadget.successremove",amount,itemName)); break;
                 }
                 break;
             case "get":
-                SendMessage(Tr("cmd.gadget.successget",sceneContext.GadgetDirector.GetItemCount(type),itemName)); 
+                SendMessage(Tr("cmd.gadget.successget",sceneContext.GadgetDirector.GetItemCount(type),itemName));
                 break;
             /*case "lock":
                 if (!sceneContext.GadgetDirector.HasBlueprint(type))
                     return SendError(translation("cmd.gadget.errorlock",itemName));
                 //This function doesn't exist  :(
                 sceneContext.GadgetDirector.RemoveBlueprint(type);
-                SendMessage(translation("cmd.gadget.successlock",itemName)); 
+                SendMessage(translation("cmd.gadget.successlock",itemName));
                 break;*/
             case "unlock":
                 if (sceneContext.GadgetDirector.HasBlueprint(type))
                     return SendError(Tr("cmd.gadget.errorunlock",itemName));
                 sceneContext.GadgetDirector.AddBlueprint(type,showPopup);
-                SendMessage(Tr("cmd.gadget.successunlock",itemName)); 
+                SendMessage(Tr("cmd.gadget.successunlock",itemName));
                 break;
         }
         return false;

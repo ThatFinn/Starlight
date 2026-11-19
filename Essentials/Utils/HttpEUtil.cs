@@ -70,7 +70,7 @@ public static class HttpEUtil
                     OnGoingRawImages.Remove(image);
                     if (image != null)
                     {
-                        if (error == null && texture != null) 
+                        if (error == null && texture != null)
                             image.texture = texture;
                         if (useCache)
                             File.WriteAllBytes(cachePath,ConvertEUtil.Texture2DToBytesPNG(ResizeTexture(texture,resizeX,resizeY)));
@@ -109,7 +109,6 @@ public static class HttpEUtil
         bool loaded = false;
         try { loaded = Il2CppImageConversionManager.LoadImage(texture, imageBytes, false); }
         catch (Exception e) { LogError(e); }
-
 
         if (!loaded)
         {

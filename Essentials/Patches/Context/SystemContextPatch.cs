@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Reflection;
 using System;
 using Il2CppInterop.Runtime.Injection;
 using Starlight.EmberMode;
@@ -182,16 +181,16 @@ internal class SystemContextPatch
                 }
 
         var lang = __instance.LocalizationDirector.GetCurrentLocaleCode();
-                    
+        
         LoadLanguage(lang);
         
-        try { EmberModeUI.Initialize(__instance); } 
+        try { EmberModeUI.Initialize(__instance); }
         catch (Exception e) { LogError(e); }
         try { if (StarlightEntryPoint.enableEmberMode) EmberModeUI.Enable(); }
         catch { }
         
         foreach (var expansion in StarlightEntryPoint.ExpansionV01S)
-            try { expansion.AfterSystemContext(__instance); } 
+            try { expansion.AfterSystemContext(__instance); }
             catch (Exception e) { LogError(e); }
         StarlightCallEventManager.ExecuteWithArgs(CallEvent.AfterSystemContextLoad, ("systemContext", __instance));
     }

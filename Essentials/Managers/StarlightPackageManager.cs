@@ -62,7 +62,7 @@ public static class StarlightPackageManager
                 case StarlightModInfoAttributes.CoAuthors: info.CoAuthors = meta.Value.Split(", "); break;
                 case StarlightModInfoAttributes.Contributors: info.Contributors = meta.Value.Split(", "); break;
                 case StarlightModInfoAttributes.IconB64:
-                    try { 
+                    try {
                         info.Icon = ConvertEUtil.Base64ToTexture2D(meta.Value).Texture2DToSprite();
                     } catch { }
                     break;
@@ -71,13 +71,13 @@ public static class StarlightPackageManager
 
         if (!info.Icon)
         {
-            try { 
+            try {
                 info.Icon = EmbeddedResourceEUtil.LoadSprite("icon.png", assembly).CopyWithoutMipmaps();
             } catch { }
             if (!info.Icon)
             {
-                try { 
-                    info.Icon = EmbeddedResourceEUtil.LoadSprite("Assets.icon.png", assembly).CopyWithoutMipmaps(); 
+                try {
+                    info.Icon = EmbeddedResourceEUtil.LoadSprite("Assets.icon.png", assembly).CopyWithoutMipmaps();
                 } catch { }
             }
         }
@@ -336,7 +336,7 @@ public static class StarlightPackageManager
                     {
                         var instance = (StarlightExpansionVXX)Activator.CreateInstance(type);
                         var info = instance.StarlightInternal_GetInfo;
-            
+                        
                         var gameContextStarted = StarlightEntryPoint.GameContextStarted;
 
                         switch (info.LoadTime)

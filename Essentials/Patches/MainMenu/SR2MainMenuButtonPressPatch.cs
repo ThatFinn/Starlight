@@ -1,9 +1,7 @@
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu.Model;
-using Starlight.Buttons;
 using Starlight.Buttons.Definitions;
 
 namespace Starlight.Patches.MainMenu;
-
 
 [HarmonyPatch(typeof(LoadGameBehaviorModel), nameof(LoadGameBehaviorModel.InvokeBehavior))]
 internal class SR2MainMenuButtonPressPatch

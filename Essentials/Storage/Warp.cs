@@ -25,7 +25,6 @@ public class Warp
 
     internal Quaternion rotation => new Quaternion(rotX, rotY, rotZ, rotW);
     
-    
     public bool IsValid()
     {
         foreach (var g in systemContext.SceneLoader.SceneGroupList.items)
@@ -86,13 +85,12 @@ public class Warp
             }
             catch (Exception e)
             {
-                LogError(e); 
+                LogError(e);
             }
         }
 
         return StarlightError.NoError;
     }
-
 
     internal LocationBookmarksUtil.LocationBookmark ToNative()
     {

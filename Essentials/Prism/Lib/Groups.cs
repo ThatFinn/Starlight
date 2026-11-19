@@ -35,7 +35,7 @@ public static class Groups
         /// </summary>
         /// <remarks>
         /// This just indicates something is edible,
-        /// not that all slimes can eat it 
+        /// not that all slimes can eat it
         /// </remarks>
         public const string Food = "FoodGroup";
         

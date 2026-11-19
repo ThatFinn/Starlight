@@ -75,11 +75,9 @@ public static class ContextShortcuts
     public static void LogError(string txt,params object[] args) => MelonLogger.Error(txt, args);
     public static void LogBigError(string nameSection,string txt) => MelonLogger.BigError(nameSection,txt);
 
-    
     public static void LogWarning(string txt) => MelonLogger.Warning(txt);
     public static void LogWarning(object obj) => MelonLogger.Warning(obj);
     public static void LogWarning(string txt, params object[] args) => MelonLogger.Warning(txt, args);
-    
     
     public static void StartCoroutine(IEnumerator routine) => MelonCoroutines.Start(routine);
     public static void StopCoroutine(object coroutineToken) => MelonCoroutines.Stop(coroutineToken);
@@ -104,7 +102,7 @@ public static class ContextShortcuts
         {
             if (min > 0) return false;
         }
-        else 
+        else
         {
             if (list.Length < min) return false;
             if(max!=-1) if (list.Length > max) return false;
@@ -112,7 +110,6 @@ public static class ContextShortcuts
 
         return true;
     }
-
 
     public static string mlVersion
     {
@@ -140,7 +137,7 @@ public static class ContextShortcuts
                             if (string.IsNullOrWhiteSpace(split[0])) StarlightEntryPoint.MelonVersion = split[2].Split("v")[1].Split(" ")[0];
                             else StarlightEntryPoint.MelonVersion = split[1].Split("v")[1].Split(" ")[0];
                         }
-                            
+                        
                     }
                     catch { StarlightEntryPoint.MelonVersion = "unknown"; }
                 }

@@ -29,7 +29,6 @@ public class PrismIdentifiableTypeGroupCreatorV01
         return true;
     }
 
-    
     public PrismIdentifiableTypeGroup CreateIdentifiableTypeGroup()
     {
         if (!IsValid()) return null;
@@ -59,7 +58,6 @@ public class PrismIdentifiableTypeGroupCreatorV01
 
         group._runtimeObject = new IdentifiableTypeGroupRuntimeObject(group);
 
-            
         if(!LookupEUtil.IdentifiableTypeGroupList.items.Contains(group))
             LookupEUtil.IdentifiableTypeGroupList.items.Add(group);
         gameContext.LookupDirector.RegisterIdentifiableTypeGroup(group);
@@ -67,7 +65,7 @@ public class PrismIdentifiableTypeGroupCreatorV01
             gameContext.LookupDirector._allIdentifiableTypeGroups.items.Add(group);
 
         var prismGroup = new PrismIdentifiableTypeGroup(group, false);
-            
+        
         PrismShortcuts.PrismIdentifiableTypeGroups.Add(group,prismGroup);
 
         _createdGroup = prismGroup;

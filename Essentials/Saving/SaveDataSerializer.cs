@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace Starlight.Saving;
 
-internal static class SaveDataSerializer 
+internal static class SaveDataSerializer
 {
     static Dictionary<Type, FieldInfo[]> _cache = new();
 
@@ -55,12 +55,12 @@ internal static class SaveDataSerializer
         try {
             using var ms = new MemoryStream(data);
             using var r = new BinaryReader(ms);
-        
+            
             // 1. Read String Table
             var count = r.ReadUInt16();
             var table = new string[count];
             for (var i = 0; i < count; i++) table[i] = r.ReadString();
-        
+            
             // 2. Read Checksum
             var storedChecksum = r.ReadUInt32();
 
@@ -69,7 +69,7 @@ internal static class SaveDataSerializer
             using (var decompressionStream = new GZipStream(ms, CompressionMode.Decompress)) {
                 decompressionStream.CopyTo(decompressedMs);
             }
-        
+            
             var payloadBytes = decompressedMs.ToArray();
             if (storedChecksum != CalculateChecksum(payloadBytes)) {
                 LogError("Save data corruption detected! Checksum mismatch.");
@@ -79,7 +79,7 @@ internal static class SaveDataSerializer
             // 4. Start reading objects
             decompressedMs.Position = 0;
             using var payloadReader = new BinaryReader(decompressedMs);
-        
+            
             // Pass the loadableObjects list to collect items during recursion
             var result = ReadObject(payloadReader, table, loadableObjects) as RootSave;
 
@@ -122,8 +122,8 @@ internal static class SaveDataSerializer
         else if (t == typeof(string)) { w.Write((byte)DataType.String); w.Write((string)obj); }
 
         // Unity
-        else if (t == typeof(Vector3)) { 
-            w.Write((byte)DataType.Vector3); 
+        else if (t == typeof(Vector3)) {
+            w.Write((byte)DataType.Vector3);
             var v = (Vector3)obj;
             w.Write(v.x); w.Write(v.y); w.Write(v.z);
         }
@@ -162,7 +162,7 @@ internal static class SaveDataSerializer
         }
         else if (IsGenericType(t, typeof(HashSet<>))) {
             w.Write((byte)DataType.HashSet);
-            dynamic set = obj; 
+            dynamic set = obj;
             w.Write((int)set.Count);
             w.Write(t.GetGenericArguments()[0].AssemblyQualifiedName);
             foreach (var item in set) WriteObject(w, item, strings);
@@ -241,7 +241,7 @@ internal static class SaveDataSerializer
             case DataType.Short: return r.ReadInt16();
             case DataType.UShort: return r.ReadUInt16();
             case DataType.String: return r.ReadString();
-            
+                
             case DataType.Vector3: return new Vector3(r.ReadSingle(), r.ReadSingle(), r.ReadSingle());
             case DataType.Quaternion: return new Quaternion(r.ReadSingle(), r.ReadSingle(), r.ReadSingle(), r.ReadSingle());
 
@@ -306,7 +306,7 @@ internal static class SaveDataSerializer
                 }
                 return set;
             }
-            
+                
             //Il2Cpp
             case DataType.Il2CppArray: {
                 var len = r.ReadInt32();
@@ -335,7 +335,7 @@ internal static class SaveDataSerializer
                     if (list != null) list.Add((dynamic)val);
                 }
                 if (list == null) return null;
-                return MiscEUtil.ToIl2CppList(list); 
+                return MiscEUtil.ToIl2CppList(list);
             }
             case DataType.Il2CppDictionary: {
                 var count = r.ReadInt32();
@@ -415,19 +415,18 @@ internal static class SaveDataSerializer
 
     static bool IsGenericType(Type t, Type genericDef) => t.IsGenericType && t.GetGenericTypeDefinition() == genericDef;
     
-
     static FieldInfo[] GetFields(Type t) {
         if (!_cache.TryGetValue(t, out var validFields)) {
             var allFields = t.GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
 
             var validList = new List<FieldInfo>();
 
-            foreach (var field in allFields) 
+            foreach (var field in allFields)
             {
                 if (field.GetCustomAttribute<StoreInSaveAttribute>() == null) continue;
-                if (field.IsStatic) 
+                if (field.IsStatic)
                     throw new Exception($"[SaveSystem] Error on '{t.Name}.{field.Name}': You cannot use [StoreInSave] on static fields.");
-                if (field.IsLiteral) 
+                if (field.IsLiteral)
                     throw new Exception($"[SaveSystem] Error on '{t.Name}.{field.Name}': You cannot use [StoreInSave] on const fields.");
                 
                 validList.Add(field);
@@ -442,7 +441,7 @@ internal static class SaveDataSerializer
         var crc = 0xFFFFFFFF;
         foreach (var b in data) {
             crc ^= b;
-            for (var i = 0; i < 8; i++) 
+            for (var i = 0; i < 8; i++)
                 crc = (crc & 1) != 0 ? (crc >> 1) ^ 0xEDB88320 : crc >> 1;
             
         }

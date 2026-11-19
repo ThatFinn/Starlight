@@ -1,6 +1,6 @@
 /*
  
-    BROKEN IN 1.2.0 
+    BROKEN IN 1.2.0
     
 using Il2CppMonomiPark.SlimeRancher.UI.Pause;
 using Starlight.Menus;

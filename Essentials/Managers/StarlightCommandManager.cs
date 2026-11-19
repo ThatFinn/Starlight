@@ -70,14 +70,14 @@ public static class StarlightCommandManager
         {
             case "StandaloneEngagementPrompt": foreach (var pair in Commands) try { pair.Value.OnStandaloneEngagementPromptLoad(); } catch (Exception e) { LogError(e); } break;
             case "PlayerCore": foreach (var pair in Commands) try { pair.Value.OnPlayerCoreLoad(); } catch (Exception e) { LogError(e); } break;
-            case "UICore": 
-                foreach (var pair in Commands) try { pair.Value.OnUICoreLoad(); } catch (Exception e) { LogError(e); } 
-                if (!string.IsNullOrEmpty(StarlightEntryPoint.onSaveLoadCommand)) 
+            case "UICore":
+                foreach (var pair in Commands) try { pair.Value.OnUICoreLoad(); } catch (Exception e) { LogError(e); }
+                if (!string.IsNullOrEmpty(StarlightEntryPoint.onSaveLoadCommand))
                     ExecuteByString(StarlightEntryPoint.onSaveLoadCommand);
                 break;
             case "MainMenuUI":
                 foreach (var pair in Commands) try { pair.Value.OnMainMenuUILoad(); } catch (Exception e) { LogError(e); }
-                if (!string.IsNullOrEmpty(StarlightEntryPoint.onMainMenuLoadCommand)) 
+                if (!string.IsNullOrEmpty(StarlightEntryPoint.onMainMenuLoadCommand))
                     ExecuteByString(StarlightEntryPoint.onMainMenuLoadCommand);
                 if (!_executedStartup&&!string.IsNullOrEmpty(StarlightEntryPoint.onStartupCommand))
                 {
@@ -138,7 +138,7 @@ public static class StarlightCommandManager
             try { expansion.OnLoadCommands(); }
             catch (Exception e) { LogError(e); }
         StarlightCallEventManager.ExecuteStandard(CallEvent.OnLoadCommands);
-                
+        
     }
     /// <summary>
     /// Registers a command to be used in the console<br />
@@ -286,7 +286,7 @@ public static class StarlightCommandManager
                     {
                         var openMenu = MenuEUtil.GetOpenMenu();
                         if (openMenu != null)
-                        {   
+                        {
                             Type openMenuType = openMenu.GetType();
                             foreach (var type in Commands[cmd].execWhileMenuOpen)
                                 if(openMenuType==type)
@@ -326,7 +326,7 @@ public static class StarlightCommandManager
                                             action(args);
                                 }
                                 catch (Exception e) { LogError($"Error in command extension execution!\n{e}"); }
-                            
+                                
                                 command.silent = false;
                             }
                         }
@@ -362,9 +362,5 @@ public static class StarlightCommandManager
                         StarlightLogManager.SendError(Tr("cmd.unknowncommand"));
             }
         }
-
     }
-
-
-
 }

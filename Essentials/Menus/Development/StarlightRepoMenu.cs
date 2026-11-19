@@ -79,9 +79,9 @@ internal class StarlightRepoMenu : StarlightMenu
                 obj.SetActive(true);
                 var colorBlock = b.colors;
                 colorBlock.normalColor = new Color(0.5f, 0.5f, 0.5f, 1);
-                colorBlock.highlightedColor = new Color(0.7f, 0.7f, 0.7f, 1); 
-                colorBlock.pressedColor = new Color(0.3f, 0.3f, 0.3f, 1); 
-                colorBlock.selectedColor = new Color(0.6f, 0.6f, 0.6f, 1); 
+                colorBlock.highlightedColor = new Color(0.7f, 0.7f, 0.7f, 1);
+                colorBlock.pressedColor = new Color(0.3f, 0.3f, 0.3f, 1);
+                colorBlock.selectedColor = new Color(0.6f, 0.6f, 0.6f, 1);
                 b.colors = colorBlock;
                     
                 b.onClick.AddListener((SystemAction)(() =>

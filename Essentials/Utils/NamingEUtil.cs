@@ -36,7 +36,6 @@ public static class NamingEUtil
     public static string GetCompactName(this ZoneDefinition definition) => _GCN(definition, definition._localizedName);
     public static string GetCompactUpperName(this ZoneDefinition definition) => _GCUN(definition, definition._localizedName);
     
-    
     //IdentifiableTypeGroup
     public static string GetName(this IdentifiableTypeGroup definition, bool addQuotesIfSpaces = true) => _GN(definition, definition._localizedName,addQuotesIfSpaces);
     public static string GetCompactName(this IdentifiableTypeGroup definition) => _GCN(definition, definition._localizedName);
@@ -47,31 +46,25 @@ public static class NamingEUtil
     public static string GetCompactName(this CurrencyDefinition definition) => _GCN(definition, definition.DisplayName);
     public static string GetCompactUpperName(this CurrencyDefinition definition) => _GCUN(definition, definition.DisplayName);
     
-    
     //IdentifiableType
     public static string GetName(this IdentifiableType type, bool addQuotesIfSpaces = true) => _GN(type, type.LocalizedName,addQuotesIfSpaces);
     public static string GetCompactName(this IdentifiableType type) => ContentNames.CommandNameOf(type) ?? _GCN(type, type.LocalizedName);
     public static string GetCompactUpperName(this IdentifiableType type) => ContentNames.CommandNameOf(type)?.ToUpper() ?? _GCUN(type, type.LocalizedName);
-    
     
     //Identifiable
     public static string GetName(this Identifiable identifiable, bool addQuotesIfSpaces = true) => _GN(identifiable.identType, identifiable.identType.LocalizedName, addQuotesIfSpaces);
     public static string GetCompactName(this Identifiable identifiable) => identifiable.identType.GetCompactName();
     public static string GetCompactUpperName(this Identifiable identifiable) => identifiable.identType.GetCompactUpperName();
     
-    
     //WeatherPatternDefinition
-    public static string GetName(this WeatherPatternDefinition definition, bool addQuotesIfSpaces = true) => _GNNonLocalized(definition, addQuotesIfSpaces); 
+    public static string GetName(this WeatherPatternDefinition definition, bool addQuotesIfSpaces = true) => _GNNonLocalized(definition, addQuotesIfSpaces);
     public static string GetCompactName(this WeatherPatternDefinition definition) => _GCNNonLocalized(definition);
     public static string GetCompactUpperName(this WeatherPatternDefinition definition) => _GCUNNonLocalized(definition);
 
-    
     //WeatherStateDefinition
     public static string GetName(this WeatherStateDefinition definition, bool addQuotesIfSpaces = true) => _GNNonLocalized(definition, addQuotesIfSpaces);
     public static string GetCompactName(this WeatherStateDefinition definition) => _GCNNonLocalized(definition);
     public static string GetCompactUpperName(this WeatherStateDefinition definition) => _GCUNNonLocalized(definition);
-    
-    
     
     //LocalizedString
     public static string GetLocalized(this LocalizedString localizedString, bool addQuotesIfSpaces = true)
@@ -99,10 +92,6 @@ public static class NamingEUtil
         } catch { return "<NOTRANSLATION>"; }
     }
 
-    
-    
-    
-    
     //General Localized
     static string _GN(Object obj, LocalizedString localizedString, bool addQuotesIfSpaces = true)
     {
@@ -141,7 +130,6 @@ public static class NamingEUtil
         { return obj.name.Replace(" ","").Replace("_","").ToUpper(); }
     }
     
-    
     //General Non Localized
     static string _GNNonLocalized(Object obj, bool addQuotesIfSpaces = true)
     {
@@ -152,7 +140,7 @@ public static class NamingEUtil
         } catch { }
 
         return null;
-    } 
+    }
     static string _GCNNonLocalized(Object obj)
     {
         try { return obj.name.Replace(" ","").Replace("_",""); } catch { }

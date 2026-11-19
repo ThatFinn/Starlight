@@ -30,7 +30,7 @@ internal class KillCommand : StarlightCommand
         bool didAThing = false;
         if (gameObject.GetComponentInParent<Gadget>())
         {
-            gameObject.GetComponentInParent<Gadget>().DestroyGadget();;
+            gameObject.GetComponentInParent<Gadget>().DestroyGadget();
             didAThing = true;
         }
         else if (gameObject.GetComponentInParent<ComponentAcqDrone>())

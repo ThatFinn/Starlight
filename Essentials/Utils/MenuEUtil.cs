@@ -32,7 +32,7 @@ public static class MenuEUtil
             var ident = GetOpenMenu().GetMenuIdentifier();
             if (string.IsNullOrEmpty(ident.saveKey)) return;
             if (StarlightSaveManager.data.fonts.TryAdd(ident.saveKey, ident.defaultFont)) StarlightSaveManager.Save();
-             dataFont = StarlightSaveManager.data.fonts[ident.saveKey];
+            dataFont = StarlightSaveManager.data.fonts[ident.saveKey];
         } catch { }
 
         TMP_FontAsset fontAsset = null;
@@ -64,7 +64,6 @@ public static class MenuEUtil
         if (fontAsset != null) menu.ApplyFont(fontAsset);
     }
 
-    
     internal static GameObject GetMenuRootObject(this Type type)
     {
         try
@@ -140,7 +139,6 @@ public static class MenuEUtil
         return StarlightMenuTheme.None;
     }
     
-    
     internal static void DoMenuActions(this MenuActions[] actions) => DoMenuActions(actions.ToList());
     internal static void DoMenuActions(this List<MenuActions> actions)
     {
@@ -161,15 +159,12 @@ public static class MenuEUtil
 
     }
     
-    
     public static List<StarlightMenuTheme> GetValidThemes(string menuSaveKey)
     {
         if (ValidThemes.ContainsKey(menuSaveKey.ToLower()))
             return ValidThemes[menuSaveKey.ToLower()];
         return new List<StarlightMenuTheme>();
     }
-
-
 
     public static bool isAnyPopUpOpen => OpenPopUps.Count != 0;
     public static bool isAnyMenuOpen

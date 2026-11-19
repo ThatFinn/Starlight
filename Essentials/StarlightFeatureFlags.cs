@@ -24,7 +24,7 @@ public static class StarlightFeatureFlags
 
     private static FeatureFlag[] extraDevFlags =>
     [
-        DevMode, Experiments, CommandsLoadDevOnly, CommandsLoadExperimental, IgnoreSaveErrors, 
+        DevMode, Experiments, CommandsLoadDevOnly, CommandsLoadExperimental, IgnoreSaveErrors,
         ExperimentalKeyCodes, DevTestMenu, EnableStudioMenu, EnableEmberMode,
         //EnableRepoMenu, UseMockRepo, EnableRepoManagement
         //AddMockOptionsUIButtons
@@ -43,7 +43,6 @@ public static class StarlightFeatureFlags
     {
         {DEFAULT_LANGUAGECODE,"en"}
     };
-    
     
     private static CommandType _enabledCmDs;
     private static Dictionary<FeatureIntegerValue, int> _featureInts = new ();
@@ -142,19 +141,19 @@ public static class StarlightFeatureFlags
         try { xmlDoc.Load(flagPath); } catch { }
 
         var root = xmlDoc["StarlightFeatureFlags"];
-        if (root == null) return; 
+        if (root == null) return;
         
         var strings = root["FeatureStringValue"];
         if (strings != null)
         {
             if(strings["LAST_StarlightVERSION"]!=null)
             {
-                if (strings["LAST_StarlightVERSION"].GetAttribute("value") != BuildInfo.DisplayVersion) return; 
+                if (strings["LAST_StarlightVERSION"].GetAttribute("value") != BuildInfo.DisplayVersion) return;
             }
             foreach (XmlElement stringElement in strings.ChildNodes)
                 if(stringElement.Name!="FeatureStringValue")
                     if (Enum.TryParse(stringElement.Name, out FeatureStringValue stringValue))
-                        if (stringValue.GetDefault() == stringElement.GetAttribute("default")) 
+                        if (stringValue.GetDefault() == stringElement.GetAttribute("default"))
                             _featureStrings[stringValue] = stringElement.GetAttribute("value");
         }
 
@@ -165,8 +164,7 @@ public static class StarlightFeatureFlags
                     if (flag.GetDefault().ToString().ToLower() == flagElement.GetAttribute("default"))
                         if (bool.TryParse(flagElement.GetAttribute("value"), out bool isEnabled))
                             flag.SetFlag(isEnabled);
-                    
-                
+        
         var ints = root["FeatureIntegerValues"];
         if (ints != null)
             foreach (XmlElement intElement in ints.ChildNodes)
@@ -175,7 +173,6 @@ public static class StarlightFeatureFlags
                         if (int.TryParse(intElement.GetAttribute("value"), out int intResult))
                             _featureInts[intValue] = intResult;
 
-        
         foreach (FeatureFlag flag in Enum.GetValues(typeof(FeatureFlag)))
         {
             if(flag.RequirementsMet()) continue;
@@ -219,7 +216,7 @@ public static class StarlightFeatureFlags
                 var split = arg.Split('=');
                 if (split.Length != 2) continue;
 
-                var argKey = split[0]; 
+                var argKey = split[0];
                 var argValue = split[1];
 
                 if (usedArgs.Contains(argKey)) continue;
@@ -231,7 +228,7 @@ public static class StarlightFeatureFlags
                     if (argValue == "true")
                         matchedFlag.EnableFlag();
                     else if (argValue == "false")
-                        matchedFlag.DisableFlag(); 
+                        matchedFlag.DisableFlag();
                     
                 }
             }
@@ -389,17 +386,17 @@ public static class StarlightFeatureFlags
 
 // ReSharper disable once InconsistentNaming
 internal class FFR //FeatureFlagRequirement
-{ } 
+{ }
 // ReSharper disable once InconsistentNaming
 internal class FFRString : FFR //FeatureFlagRequirementString
-{ 
+{
     public string String;
-} 
+}
 // ReSharper disable once InconsistentNaming
 internal class FFRFlag : FFR  //FeatureFlagRequirementFlag
-{ 
+{
     public FeatureFlag Flag;
-} 
+}
 // ReSharper disable once InconsistentNaming
 internal class FFRDeactivated : FFRFlag //FeatureFlagRequirementDeactivated
 {

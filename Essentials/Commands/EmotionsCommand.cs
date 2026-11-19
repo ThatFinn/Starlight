@@ -55,5 +55,4 @@ internal class EmotionsCommand : StarlightCommand
         }
         return SendNotLookingAtAnything();
     }
-    
 }

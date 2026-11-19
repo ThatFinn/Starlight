@@ -72,7 +72,6 @@ public static class EnumPatcher
         throw new Exception("No unused values in enum " + enumType.FullName);
     }
 
-
     public static TEnum GetFirstFreeValue<TEnum>() => (TEnum)GetFirstFreeValue(typeof(TEnum));
 
     public static void AddEnumValue(Type enumType, object value, string name)
@@ -100,7 +99,6 @@ public static class EnumPatcher
 
             Il2CPPpatch.AddValue((ulong)value, name);
         }
-
 
         patch.AddValue((ulong)value, name);
     }
@@ -131,8 +129,6 @@ public static class EnumPatcher
         return _il2CpPpatches.TryGetValue(enumType.GetHashCode(), out patch);
     }
 
-
-
     public class EnumPatch
     {
         private Dictionary<ulong, List<string>> _values = new ();
@@ -144,8 +140,6 @@ public static class EnumPatcher
             else
                 _values.Add(enumValue, new List<string> { name });
         }
-
-
 
         public List<KeyValuePair<ulong, string>> GetPairs()
         {

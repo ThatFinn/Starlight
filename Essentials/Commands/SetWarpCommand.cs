@@ -1,5 +1,4 @@
-﻿using Il2CppMonomiPark.SlimeRancher.Regions;
-using Starlight.Enums;
+﻿using Starlight.Enums;
 using Starlight.Managers;
 using Starlight.Storage;
 
@@ -13,7 +12,7 @@ internal class SetWarpCommand : StarlightCommand
     public override bool Execute(string[] args)
     {
         if (!args.IsBetween(1,1)) return SendUsage();
-        if (!inGame) return SendLoadASaveFirst(); 
+        if (!inGame) return SendLoadASaveFirst();
 
         string name = args[0];
 

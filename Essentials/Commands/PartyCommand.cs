@@ -14,11 +14,11 @@ internal class PartyCommand : StarlightCommand
         if (defaultVolume != null)
         {
             if (myAdjustments != null)
-            { 
+            {
                 myAdjustments.hueShift.value = 0;
                 myAdjustments.hueShift.overrideState = false;
                 defaultVolume = null;
-                SendMessage(Tr("cmd.party.success2")); 
+                SendMessage(Tr("cmd.party.success2"));
                 return true;
             }
         }
@@ -36,7 +36,7 @@ internal class PartyCommand : StarlightCommand
     }
 
     public override void Update()
-    {            
+    {
         if (defaultVolume != null)
         {
             try

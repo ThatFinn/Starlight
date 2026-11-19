@@ -23,7 +23,7 @@ public static class NativeEUtil
     private static bool _pausedByStarlight;
     
     public static void OverrideSR2Input()
-    { 
+    {
         // Fixes compatibility with UE
         if (ue)
         {
@@ -94,7 +94,6 @@ public static class NativeEUtil
         catch (Exception e) { LogError(e); }
     }
     
-    
     public static void TryHideMenus()
     {
         if (StarlightEntryPoint.MainMenuLoaded && !inGame)
@@ -108,7 +107,7 @@ public static class NativeEUtil
                     ui.enabled = false;
                     ui.Close(true);
                 }
-            }  
+            }
             catch (Exception e) { LogError(e); }
         }
 

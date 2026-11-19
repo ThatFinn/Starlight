@@ -27,4 +27,4 @@ public class PrismLargoMergeSettings
         this.TwinColors = twinColors;
         this.SloomberColors = sloomberColors;
     }
-}   
+}

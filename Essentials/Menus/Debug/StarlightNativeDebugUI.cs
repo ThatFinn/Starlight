@@ -1,7 +1,6 @@
 using System;
 using Il2CppInterop.Runtime.Attributes;
 using Il2CppTMPro;
-using Starlight.Components;
 using Starlight.Components.Debug;
 using Starlight.Enums;
 using Starlight.Enums.Features;
@@ -60,7 +59,7 @@ internal class StarlightNativeDebugUI : StarlightMenu
         var rect = obj.AddComponent<RectTransform>();
         rect.anchorMin = new Vector2(0, 0);
         rect.anchorMax = new Vector2(1, 1);
-        rect.offsetMin = Vector2.zero; 
+        rect.offsetMin = Vector2.zero;
         rect.offsetMax = Vector2.zero;
         rect.localScale = Vector3.one;
         rect.localPosition = Vector2.zero;
@@ -87,7 +86,6 @@ internal class StarlightNativeDebugUI : StarlightMenu
         if (_debugUIs.Count >= 1) CloseEntries(_debugUIs[_debugUIs.Count - 1]);
         else Close();
     }
-    
     
     public void CloseEntries(DebugUI toClose)
     {

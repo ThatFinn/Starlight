@@ -92,4 +92,3 @@ public abstract class StarlightPopUp : MonoBehaviour
         
     }
 }
-

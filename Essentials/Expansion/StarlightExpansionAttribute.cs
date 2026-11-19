@@ -1,5 +1,4 @@
 using System;
-using Starlight.Storage;
 
 namespace Starlight.Expansion;
 
@@ -8,6 +7,6 @@ public class StarlightLoadExpansionAttribute : Attribute
 {
     public StarlightLoadExpansionAttribute()
     {
-       
+        
     }
 }

@@ -3,7 +3,6 @@ using Starlight.Storage;
 
 namespace Starlight.Patches.Dev;
 
-
 [FeatureFlagDependentPatch(DevMode)]
 [HarmonyPatch(typeof(LoadingScreenView), nameof(LoadingScreenView.Awake))]
 internal static class LoadingScreenViewPatch
@@ -24,5 +23,4 @@ internal static class LoadingScreenViewPatch
         done = true;
         return true;
     }
-
 }

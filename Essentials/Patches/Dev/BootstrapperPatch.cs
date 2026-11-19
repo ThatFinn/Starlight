@@ -1,10 +1,7 @@
 using Il2CppMonomiPark.SlimeRancher;
-using Il2CppMonomiPark.SlimeRancher.DataModel;
-using Il2CppMonomiPark.SlimeRancher.Persist;
 using Starlight.Storage;
 
 namespace Starlight.Patches.Dev;
-
 
 [FeatureFlagDependentPatch(DevMode)]
 [HarmonyPatch(typeof(Bootstrapper), nameof(Bootstrapper.Start))]
@@ -20,5 +17,4 @@ internal static class BootstrapperPatch
         Object.DontDestroyOnLoad(instance);
         done = true;
     }
-
 }

@@ -72,7 +72,7 @@ public static class PrismLibAppearances
         if (!SupportRadiant.HasFlag()&&IsRadiant(appearanceIndex)) return;
         var app = slime.GetSlimeDefinition().AppearancesDefault[(int)appearanceIndex];
         if (app == null) return;
-        for (int i = 0; i < app.Structures.Count; i++) 
+        for (int i = 0; i < app.Structures.Count; i++)
             if (app.Structures[i].Element.Type == type)
             {
                 app._structures = app._structures.ReplaceToNew(structure, i);
@@ -124,19 +124,19 @@ public static class PrismLibAppearances
         if (structPrefab == null) return;
         var smr = structPrefab.GetComponent<SkinnedMeshRenderer>();
         if (smr != null) smr.sharedMesh = mesh;
-            
+        
         var structObj = structPrefab.GetComponent<SlimeAppearanceObject>();
         structObj.IgnoreLODIndex = true;
         structObj.RootBone = rootBone;
         structObj.ParentBone = parentBone;
         structObj.AttachedBones = new Il2CppStructArray<SlimeAppearance.SlimeBone>(0);
-            
+        
         var structure = new SlimeAppearanceStructure(baseStruct);
         structure.Element = ScriptableObject.CreateInstance<SlimeAppearanceElement>();
         structure.Element.CastsShadows = true;
         structure.Element.Name = elementName;
         structure.Element.Prefabs = new Il2CppReferenceArray<SlimeAppearanceObject>(new[] { structObj });
-            
+        
         app._structures = app._structures.AddToNew(structure);
         
     }
@@ -415,7 +415,6 @@ public static class PrismLibAppearances
         var material = sphere.sharedMaterial;
         material.SetColor("_ColorCenter", center);
     }
-    
     
     public static void SetEdgeColor(this PrismLiquid liquid, Color edge)
     {

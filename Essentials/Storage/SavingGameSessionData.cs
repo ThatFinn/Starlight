@@ -15,7 +15,7 @@ public class SavingGameSessionData
     public readonly GameMetadata GameMetadata;
     public readonly SavedGameInfoProvider SavedGameInfoProvider;
 
-    internal SavingGameSessionData(ISaveReferenceTranslation iSaveReferenceTranslation, SaveReferenceTranslation saveReferenceTranslation, 
+    internal SavingGameSessionData(ISaveReferenceTranslation iSaveReferenceTranslation, SaveReferenceTranslation saveReferenceTranslation,
         dynamic gameState, GameModel gameModel, GameMetadata gameMetadata, SavedGameInfoProvider savedGameInfoProvider)
     {
         this.GameMetadata = gameMetadata;

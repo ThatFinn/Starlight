@@ -15,4 +15,3 @@ internal class ButtonBehaviorViewHolderPatch
         tmp.maxVisibleCharacters = 13;
     }
 }
-

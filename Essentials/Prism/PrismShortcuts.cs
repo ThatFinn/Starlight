@@ -21,7 +21,6 @@ public static class PrismShortcuts
     internal static readonly List<IdentifiableType> RemoveMarketPlortEntries = new ();
     internal static readonly List<SystemAction> CreateLargoActions = new ();
     
-    
     internal static readonly Dictionary<IdentifiableTypeGroup, PrismIdentifiableTypeGroup> PrismIdentifiableTypeGroups = new ();
     internal static readonly Dictionary<string, PrismBaseSlime> PrismBaseSlimes = new ();
     internal static readonly Dictionary<string, PrismGordo> PrismGordos = new ();
@@ -47,7 +46,6 @@ public static class PrismShortcuts
     internal static LocalizedString EmptyTranslation;
     internal static Sprite UnavailableIcon;
     
-    
     public static SlimeAppearanceDirector mainAppearanceDirector => appearanceDirector;
     internal static readonly Dictionary<string, List<Action>> OnSceneLoaded = new ();
     internal static void OnSceneWasLoaded(int buildIndex, string sceneName)
@@ -63,8 +61,6 @@ public static class PrismShortcuts
         
     }
 
-    
-    
     public static PrismBaseSlime GetPrismBaseSlime(this PrismNativeBaseSlime nativeBaseSlime)
     {
         try { return LookupEUtil.baseSlimeTypes.GetEntryByRefID(nativeBaseSlime.GetReferenceID()).GetPrismBaseSlime(); } catch { }
@@ -79,7 +75,7 @@ public static class PrismShortcuts
     }
     public static PrismPlort GetPrismPlort(this PrismNativePlort nativePlort)
     {
-        try { return LookupEUtil.plortTypes.GetEntryByRefID(nativePlort.GetReferenceID()).GetPrismPlort(); 
+        try { return LookupEUtil.plortTypes.GetEntryByRefID(nativePlort.GetReferenceID()).GetPrismPlort();
         } catch { }
 
         return null;
@@ -167,9 +163,6 @@ public static class PrismShortcuts
         return newLiquid;
     }
     
-    
-    
-    
     public static PrismVeggieFood GetPrismVeggieFood(this IdentifiableType customOrNativeVeggieFood)
     {
         if (!customOrNativeVeggieFood) return null;
@@ -221,7 +214,6 @@ public static class PrismShortcuts
         return newBabyChickenFood;
     }
     
-    
     public static PrismFood GetPrismFood(this IdentifiableType customOrNativeFood)
     {
         if (!customOrNativeFood) return null;
@@ -267,10 +259,6 @@ public static class PrismShortcuts
         
     }
     
-    
-    
-    
-    
     public static PrismIdentifiableTypeGroup GetPrismIdentifiableGroup(this IdentifiableTypeGroup group)
     {
         if (group == null) return null;
@@ -280,9 +268,6 @@ public static class PrismShortcuts
         return newPlort;
     }
 
-
-    
-    
     public static PrismPediaEntry GetPrismPediaEntry(this PediaEntry customOrNativePedia)
     {
         if (customOrNativePedia == null) return null;

@@ -1,6 +1,5 @@
 ﻿using Starlight.Enums;
 using Starlight.Managers;
-using UnityEngine.InputSystem;
 
 namespace Starlight.Commands;
 internal class UnbindCommand : StarlightCommand

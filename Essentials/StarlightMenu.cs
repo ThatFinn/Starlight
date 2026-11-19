@@ -71,8 +71,8 @@ public abstract class StarlightMenu : MonoBehaviour
     {
     }
 
-    [HideFromIl2Cpp] protected FontTheme currentFontTheme => StarlightSaveManager.data.fonts[this.GetMenuIdentifier().saveKey].GetFontTheme(); 
-    [HideFromIl2Cpp] protected UITheme currentTheme => StarlightSaveManager.data.themes[this.GetMenuIdentifier().saveKey].GetTheme(); 
+    [HideFromIl2Cpp] protected FontTheme currentFontTheme => StarlightSaveManager.data.fonts[this.GetMenuIdentifier().saveKey].GetFontTheme();
+    [HideFromIl2Cpp] protected UITheme currentTheme => StarlightSaveManager.data.themes[this.GetMenuIdentifier().saveKey].GetTheme();
     public virtual void ApplyFont(TMP_FontAsset font)
     {
         foreach (var text in gameObject.GetAllChildrenOfType<TMP_Text>())
@@ -108,7 +108,7 @@ public abstract class StarlightMenu : MonoBehaviour
                     try { StarlightCommandManager.RegisterCommand(new MenuVisibilityCommands.ToggleCommand(identifier, this, inGameOnly)); }
                     catch (Exception e) { error=true; LogError(e); }
 
-                    try { StarlightCommandManager.RegisterCommand(new MenuVisibilityCommands.CloseCommand(identifier, this, inGameOnly)); } 
+                    try { StarlightCommandManager.RegisterCommand(new MenuVisibilityCommands.CloseCommand(identifier, this, inGameOnly)); }
                     catch (Exception e) { error=true; LogError(e); }
                 }
             }
@@ -254,7 +254,7 @@ public abstract class StarlightMenu : MonoBehaviour
 
     protected readonly Dictionary<TextMeshProUGUI, string> ToTranslate = new ();
 
-    protected Sprite whitePillBg => MenuEUtil.whitePillBg; 
+    protected Sprite whitePillBg => MenuEUtil.whitePillBg;
     protected Texture2D whitePillBgTex => MenuEUtil.whitePillBgTex;
 
     public virtual void OnThemeChange()
@@ -267,4 +267,3 @@ public abstract class StarlightMenu : MonoBehaviour
     /// </summary>
     public virtual void AfterGameContext(GameContext gameContext) { }
 }
-

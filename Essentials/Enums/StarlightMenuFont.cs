@@ -9,8 +9,8 @@ namespace Starlight.Enums;
 public enum StarlightMenuFont
 {
     Default=0,
-    Native=1, 
-    Bold=2, 
+    Native=1,
+    Bold=2,
     //Regular=3,
     NotoSans=4
 }

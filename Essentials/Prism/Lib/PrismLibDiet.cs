@@ -8,7 +8,7 @@ namespace Starlight.Prism.Lib;
 /// A library of helper functions for dealing with slime diets
 /// </summary>
 public static class PrismLibDiet
-{    
+{
     internal static readonly Dictionary<SlimeDefinition, Dictionary<SlimeDiet.EatMapEntry, bool>> CustomEatmaps = new ();
 
     /// <summary>
@@ -38,7 +38,7 @@ public static class PrismLibDiet
     /// <param name="produce">What the slime produces after eating this food</param>
     /// <param name="eat">The food the slime eats</param>
     /// <returns>The new <see cref="SlimeDiet.EatMapEntry"/></returns>
-    public static SlimeDiet.EatMapEntry CreateEatmapEntry(SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat) 
+    public static SlimeDiet.EatMapEntry CreateEatmapEntry(SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat)
         => new SlimeDiet.EatMapEntry
         {
             EatsIdent = eat,
@@ -47,22 +47,21 @@ public static class PrismLibDiet
             MinDrive = mindrive
         };
 
-
-   internal static bool _CarefulCheck(Il2CppSystem.Collections.Generic.List<SlimeDiet.EatMapEntry> list,
+    internal static bool _CarefulCheck(Il2CppSystem.Collections.Generic.List<SlimeDiet.EatMapEntry> list,
         SlimeDiet.EatMapEntry eatmap)
-   {
-       if (list == null) return false;
-       if (eatmap == null) return false;
-       foreach (var entry in list)
-       {
-           if (eatmap.BecomesIdent != entry.BecomesIdent) continue;
-           if (eatmap.EatsIdent != entry.EatsIdent) continue;
-           if (eatmap.Driver != entry.Driver) continue;
-           if (!Mathf.Approximately(eatmap.MinDrive, entry.MinDrive)) continue;
-           if (eatmap.ProducesIdent != entry.ProducesIdent) continue;
-           return false;
-       } 
-       return true;
+    {
+        if (list == null) return false;
+        if (eatmap == null) return false;
+        foreach (var entry in list)
+        {
+            if (eatmap.BecomesIdent != entry.BecomesIdent) continue;
+            if (eatmap.EatsIdent != entry.EatsIdent) continue;
+            if (eatmap.Driver != entry.Driver) continue;
+            if (!Mathf.Approximately(eatmap.MinDrive, entry.MinDrive)) continue;
+            if (eatmap.ProducesIdent != entry.ProducesIdent) continue;
+            return false;
+        }
+        return true;
     }
     /// <summary>
     /// Adds an <see cref="SlimeDiet.EatMapEntry"/> to a slime's diet
@@ -78,11 +77,10 @@ public static class PrismLibDiet
         else CustomEatmaps.Add(prismSlime, eatmaps);
         eatmaps.Add(eatmap,beCareful);
         if(beCareful)
-            if(!_CarefulCheck(prismSlime.GetSlimeDiet().EatMap,eatmap)) 
+            if(!_CarefulCheck(prismSlime.GetSlimeDiet().EatMap,eatmap))
                 return;
         prismSlime.GetSlimeDiet().EatMap.Add(eatmap);
     }
-
 
     /// <summary>
     /// Refreshes the eat map of a slime
@@ -93,9 +91,6 @@ public static class PrismLibDiet
         prismSlime.GetSlimeDiet().RefreshEatMap(gameContext.SlimeDefinitions, prismSlime);
     }
 
-    
-    
-    
     /// <summary>
     /// Adds an item to the slime's produce list
     /// </summary>
@@ -126,7 +121,6 @@ public static class PrismLibDiet
         prismSlime.GetSlimeDiet().ProduceIdents = prismSlime.GetSlimeDiet().ProduceIdents.RemoveToNew(identifiableType);
     }
 
-    
     /// <summary>
     /// Adds a favorite food to the slime
     /// To make it edible, add it as an additional food as well
@@ -168,7 +162,6 @@ public static class PrismLibDiet
         prismSlime.GetSlimeDiet().FavoriteProductionCount = count;
     }
     
-    
     /// <summary>
     /// Adds an additional food to the slime
     /// </summary>
@@ -197,7 +190,6 @@ public static class PrismLibDiet
     {
         prismSlime.GetSlimeDiet().AdditionalFoodIdents = prismSlime.GetSlimeDiet().AdditionalFoodIdents.RemoveToNew(identifiableType);
     }
-
 
     /// <summary>
     /// Adds a food group to the slime
@@ -228,9 +220,6 @@ public static class PrismLibDiet
     {
         prismSlime.GetSlimeDiet().MajorFoodIdentifiableTypeGroups = prismSlime.GetSlimeDiet().MajorFoodIdentifiableTypeGroups.RemoveToNew(identifiableTypeGroup);
     }
-
-    
-    
 
     internal static SlimeDiet CreateNewDiet() => new SlimeDiet
     {

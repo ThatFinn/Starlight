@@ -91,12 +91,12 @@ public static class SaveFileEUtil
                 starlightSaveFile.metaGameIcon = summary.IconId.ReferenceId;
                 starlightSaveFile.metaFeralEnabled = summary.FeralEnabled;
                 starlightSaveFile.metaTarrEnabled = summary.TarrEnabled;
-                starlightSaveFile.metaDisplayName = summary.DisplayName; 
+                starlightSaveFile.metaDisplayName = summary.DisplayName;
                 starlightSaveFile.metaGameName = gameName;
                 starlightSaveFile.metaSaveSlotIndex = summary.SaveSlotIndex;
                 starlightSaveFile.metaLatestSaveNumber = summary.SaveNumber;
                 starlightSaveFile.metaSR2Version = summary.Version;
-            }     
+            }
         }
         if (savesData.Count == 0) return NoValidSaves;
         if (!hasLatest) return LatestSaveInvalid;
@@ -136,7 +136,7 @@ public static class SaveFileEUtil
             try
             {
                 var stream = new Il2CppSystem.IO.MemoryStream(pair.Value);
-                //var gameState = new GameV10; 
+                //var gameState = new GameV10;
                 dynamic gameState = Il2CppSystem.Activator.CreateInstance(VersionedEUtil.GetLatestGameVXX());
                 gameState.Load(stream);
                 if (stream is { CanRead: true }) stream.Close();

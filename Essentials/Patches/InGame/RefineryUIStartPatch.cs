@@ -5,7 +5,6 @@ using UnityEngine.Localization.Components;
 
 namespace Starlight.Patches.InGame;
 
-
 [HarmonyPatch(typeof(RefineryUI), nameof(RefineryUI.Start))]
 internal static class RefineryUIStartPatch
 {

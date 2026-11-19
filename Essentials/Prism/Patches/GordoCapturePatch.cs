@@ -12,7 +12,7 @@ internal class GordoCapturePatch
     public static void Postfix(SnareModel __instance, ref IdentifiableType __result)
     {
         var pair = PrismLibGordo.GordoBaitDict.FirstOrDefault(x => x.Key == __instance.baitTypeId.ReferenceId);
-            
+        
         if (pair.Value!=null)
             __result = pair.Value;
     }

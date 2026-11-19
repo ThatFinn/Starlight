@@ -47,5 +47,4 @@ internal class CheatMenuCurrency : MonoBehaviour
         }
         catch { }
     }
-    
 }

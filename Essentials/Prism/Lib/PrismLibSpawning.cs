@@ -16,7 +16,6 @@ public static class PrismLibSpawning
 
     internal static readonly List<Action<DirectedActorSpawner>> ExecuteOnSpawnerAwake = new ();
 
-
     /// <summary>
     /// Makes an Identifiable able to spawn.
     /// </summary>
@@ -175,7 +174,7 @@ public static class PrismLibSpawning
             //Ignore duplicates that way
             var allConditions = Enum.GetValues<PrismSpawnConditions>();
             if (requiredConditions != null)
-                if(requiredConditions.Length!=0) 
+                if(requiredConditions.Length!=0)
                     foreach (var con in allConditions)
                     {
                         if (requiredConditions.Contains(con))
@@ -277,7 +276,6 @@ public static class PrismLibSpawning
         };
         constraint.Slimeset.Members = constraint.Slimeset.Members.AddToNew(member);
     }
-
 
     /* public static void SetResourceGrower(
          IdentifiableType ident,

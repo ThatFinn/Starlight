@@ -70,13 +70,13 @@ internal class PediaCommand : StarlightCommand
                 if (!sceneContext.PediaDirector.IsUnlocked(id))
                     return SendError(Tr("cmd.pedia.errorlock",itemName));
                 sceneContext.PediaDirector.DebugReLock(id);
-                SendMessage(Tr("cmd.pedia.successlock",itemName)); 
+                SendMessage(Tr("cmd.pedia.successlock",itemName));
                 break;
             case "unlock":
                 if (sceneContext.PediaDirector.IsUnlocked(id))
                     return SendError(Tr("cmd.pedia.errorunlock",itemName));
                 sceneContext.PediaDirector.Unlock(id,showPopup);
-                SendMessage(Tr("cmd.pedia.successunlock",itemName)); 
+                SendMessage(Tr("cmd.pedia.successunlock",itemName));
                 break;
         }
         return false;

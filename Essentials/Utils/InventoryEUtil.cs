@@ -24,7 +24,7 @@ public static class InventoryEUtil
         var slot = sceneContext.PlayerState.Ammo.Slots[slotIndex];
         if (!slot.Id) return;
         var newCount = slot.Count + additionalCount;
-        if(!allowOverflow && newCount > slot.MaxCount) newCount = slot.MaxCount; 
+        if(!allowOverflow && newCount > slot.MaxCount) newCount = slot.MaxCount;
         if(newCount <= 0) slot.Clear();
         else slot.Count = newCount;
     }
@@ -33,7 +33,7 @@ public static class InventoryEUtil
         var slot = sceneContext.PlayerState.Ammo.Slots[slotIndex];
         if (!slot.Id) return;
         var newCount = slot.Count - removeCount;
-        if(!allowOverflow && newCount > slot.MaxCount) newCount = slot.MaxCount; 
+        if(!allowOverflow && newCount > slot.MaxCount) newCount = slot.MaxCount;
         if(newCount <= 0) slot.Clear();
         else slot.Count = newCount;
     }
@@ -43,7 +43,7 @@ public static class InventoryEUtil
         var slot = sceneContext.PlayerState.Ammo.Slots[slotIndex];
         if (!slot.Id) return;
         var _newCount = newCount;
-        if(!allowOverflow && _newCount > slot.MaxCount) _newCount = slot.MaxCount; 
+        if(!allowOverflow && _newCount > slot.MaxCount) _newCount = slot.MaxCount;
         if(_newCount <= 0) slot.Clear();
         else slot.Count = _newCount;
     }
@@ -114,7 +114,6 @@ public static class InventoryEUtil
         
     }
     
-    
     public static int GetStarlightSlotItemPossibleSlot(StarlightSlotItemInfo info)
     {
         if (info == null || !info.IdentifiableType) return -1;
@@ -149,7 +148,4 @@ public static class InventoryEUtil
 
         return slotID;
     }
-    
-    
-    
 }

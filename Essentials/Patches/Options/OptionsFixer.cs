@@ -21,7 +21,7 @@ internal static class OptionsFixer
                     if(allowedIds.Contains(data.PersistenceKey))
                         modifiedList.Add(data);
                 }
-                catch 
+                catch
                 {
                     if(data==null||string.IsNullOrEmpty(data.PersistenceKey)) Log("OptionsFixer: Removed invalid entry!");
                     else Log("OptionsFixer: Removed invalid entry: "+data.PersistenceKey+"!");

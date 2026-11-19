@@ -34,7 +34,6 @@ internal class HelpCommand : StarlightCommand
         {
             string currText = Tr("cmd.help.success")+"\n";
 
-
             foreach (KeyValuePair<string, StarlightCommand> entry in StarlightCommandManager.Commands)
                 if (!entry.Value.Hidden)
                     currText = $"{currText}\n{entry.Value.Usage} - {GetCommandDescription(entry.Key)}";

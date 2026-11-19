@@ -13,7 +13,7 @@ public class CustomPauseMenuButton
     public bool Enabled = true;
     public CustomPauseMenuButton(LocalizedString label, int insertIndex, SystemAction action)
     {
-        this.Label = label; ;
+        this.Label = label;
         this.InsertIndex = insertIndex;
         this.Action = action;
 

@@ -32,7 +32,7 @@ public static class StarlightNoClipManager
     }
 
     /// <summary>
-    /// Whether the player will be teleported back after disabling NoClip, if enabled 
+    /// Whether the player will be teleported back after disabling NoClip, if enabled
     /// </summary>
     public static bool ReturnsPlayer => Enabled && returnOnDisable;
 

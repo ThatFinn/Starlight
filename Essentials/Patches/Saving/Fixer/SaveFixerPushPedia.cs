@@ -1,6 +1,5 @@
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
-using Il2CppMonomiPark.SlimeRancher.Persist;
 
 namespace Starlight.Patches.Saving.Fixer;
 
@@ -19,7 +18,4 @@ internal static class SaveFixerPushPedia
         }
         catch (Exception e) { LogError(e); }
     }
-
-    
 }
-

@@ -72,7 +72,6 @@ internal class EmberModeTransformInspector : MonoBehaviour
         _windowRoot = _windowRect.gameObject;
         _windowRoot.name = "EmberModeTransformInspectorUI";
 
-        
         var contentRect = _windowRoot.transform.Find("Content").GetComponent<RectTransform>();
         var contentObj = contentRect.gameObject;
 
@@ -83,7 +82,6 @@ internal class EmberModeTransformInspector : MonoBehaviour
         vLayout.childForceExpandWidth = true;
         vLayout.childForceExpandHeight = false;
 
-        
         var toolbarRow = CreateRow(contentRect, "ToolsRow", 30);
         _btnMove = CreateButton(toolbarRow, "Move",
             () => EmberModeTransformGizmo.CurrentTool = EmberModeTransformGizmo.TransformTool.Move, out _imgMove);
@@ -94,7 +92,6 @@ internal class EmberModeTransformInspector : MonoBehaviour
 
         CreateSpacer(contentRect);
 
-        
         var nameRow = CreateRow(contentRect, "NameRow", 25);
         CreateLabel(nameRow, "Name", 70);
         _nameInput = CreateInputField(nameRow, "NameInput");
@@ -103,7 +100,6 @@ internal class EmberModeTransformInspector : MonoBehaviour
             if (_lastSelected && _lastSelected.name != val) _lastSelected.name = val;
         }));
 
-        
         _posInputs = CreateVectorRow(contentRect, "Position", val =>
         {
             if (_lastSelected) _lastSelected.transform.position = val;

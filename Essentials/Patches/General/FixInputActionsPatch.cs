@@ -8,6 +8,6 @@ namespace Starlight.Patches.General
         {
             foreach (var input in LookupEUtil.PausedActions.Values)
                 input.Enable();
-        } 
+        }
     }
 }

@@ -6,7 +6,7 @@ class Program
 {
     //Install tool via:
     //dotnet tool install -g XMLDoc2Markdown
-    private static string docGen = "dotnet tool run xmldoc2md \"bin/Debug/net6.0/Starlight.dll\" --output ../XMLToMD/ --member-accessibility-level public"; 
+    private static string docGen = "dotnet tool run xmldoc2md \"bin/Debug/net6.0/Starlight.dll\" --output ../XMLToMD/ --member-accessibility-level public";
     static void Main(string[] args)
     {
         Console.WriteLine("Hello World! The converting has begun!");
@@ -29,7 +29,7 @@ class Program
             apiDev = new DirectoryInfo(apiDevDir);
             api = new DirectoryInfo(Path.Combine(apiDevDir, apiDir));
         }
-        catch 
+        catch
         {
             Console.WriteLine("Setup is wrong");
             Console.WriteLine("Are you running this program in the ide?");
@@ -49,17 +49,16 @@ class Program
         if(!ExecuteCommand("dotnet tool restore", gitDir+"/Essentials")) return;
         if(!ExecuteCommand(docGen, gitDir+"/Essentials")) return;
         
-        
         if (!Directory.Exists(workingDir)) { Directory.CreateDirectory(workingDir); }
         
         ClearDirectory(workingDir);
         CopyFilesAndDirectories(sourceDir, workingDir);
         CreateCategoryJson(workingDir);
-        MoveFiles(workingDir);  
-        ProcessDirectories(workingDir);  
-        FixBrTags(workingDir);  
-        FixMarkDownLinks(workingDir,"/dev/api/"+apiDir);  
-        DeleteMdFilesInWorkingDir(workingDir); 
+        MoveFiles(workingDir);
+        ProcessDirectories(workingDir);
+        FixBrTags(workingDir);
+        FixMarkDownLinks(workingDir,"/dev/api/"+apiDir);
+        DeleteMdFilesInWorkingDir(workingDir);
         //Cleanup
         ClearDirectory(sourceDir);
     }
@@ -96,7 +95,7 @@ class Program
             process.WaitForExit();
 
             if (process.ExitCode == 0) return true;
-            Console.WriteLine($"The command exited with code {process.ExitCode}. Something went wrong."); 
+            Console.WriteLine($"The command exited with code {process.ExitCode}. Something went wrong.");
             return false;
             
         }
@@ -113,31 +112,30 @@ class Program
 
         foreach (var subdir in Directory.GetDirectories(directory))
         {
-            Directory.Delete(subdir, true);  
+            Directory.Delete(subdir, true);
             Console.WriteLine($"Deleted directory {subdir}");
         }
     }
 
-    
     static void CopyFilesAndDirectories(string sourceDir, string workingDir)
     {
         foreach (var file in Directory.GetFiles(sourceDir))
         {
             string destinationFile = Path.Combine(workingDir, Path.GetFileName(file));
-            File.Copy(file, destinationFile, true); 
+            File.Copy(file, destinationFile, true);
             Console.WriteLine($"Copied {file} to {destinationFile}");
         }
         foreach (var directory in Directory.GetDirectories(sourceDir))
         {
             string destinationDir = Path.Combine(workingDir, Path.GetFileName(directory));
             Directory.CreateDirectory(destinationDir);
-            CopyFilesAndDirectories(directory, destinationDir); 
+            CopyFilesAndDirectories(directory, destinationDir);
         }
     }
 
     static void CreateCategoryJson(string workingDir)
     {
-        string categoryContent = 
+        string categoryContent =
             "{" + "\n" +
             "\"label\": \"Starlight "+Starlight.BuildInfo.DisplayVersion+"\"," + "\n" +
             "\"link\": {" + "\n" +
@@ -150,8 +148,6 @@ class Program
         Console.WriteLine("_category_.json file created.");
     }
 
-
-    
     static void MoveFiles(string workingDir)
     {
         foreach (var file in Directory.GetFiles(workingDir))
@@ -162,7 +158,7 @@ class Program
             if (string.IsNullOrEmpty(namespaceName))
                 continue;
             string folderStructure = namespaceName.Replace('.', Path.DirectorySeparatorChar);
-            string folderPath = Path.Combine(workingDir, folderStructure);;
+            string folderPath = Path.Combine(workingDir, folderStructure);
             Directory.CreateDirectory(folderPath);
             string newFilename = RemoveNamespacePrefixFromFilename(file, namespaceName);
             string destinationPath = Path.Combine(folderPath, newFilename);
@@ -195,23 +191,19 @@ class Program
         return newFilePath;
     }
 
-
-
-    
     static void ProcessDirectories(string workingDir)
     {
         foreach (var dir in Directory.GetDirectories(workingDir, "*",SearchOption.AllDirectories))
         {
             var mdFiles = Directory.GetFiles(dir, "*.md");
             var classNames = new List<string>();
-            foreach (var file in mdFiles) 
+            foreach (var file in mdFiles)
                 classNames.AddRange(ExtractClassEnumStructInterfaceNames(file));
             var subdirectories = Directory.GetDirectories(dir);
             CreateIndexMd(dir, classNames, subdirectories, workingDir);
         }
     }
 
-    
     static List<string> ExtractClassEnumStructInterfaceNames(string filePath)
     {
         var names = new List<string>();
@@ -223,7 +215,6 @@ class Program
         return names;
     }
 
-    
     static void CreateIndexMd(string directory, List<string> classNames, string[] subdirectories, string workingDir)
     {
         string folderName = Path.GetFileName(directory);
@@ -305,7 +296,6 @@ class Program
         }
     }
 
-    
     static void DeleteMdFilesInWorkingDir(string workingDir)
     {
         var mdFiles = Directory.GetFiles(workingDir, "*.md", SearchOption.TopDirectoryOnly);

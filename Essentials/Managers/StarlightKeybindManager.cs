@@ -93,7 +93,6 @@ public static class StarlightKeybindManager
         StarlightSaveManager.data.modKeys[keybind.Id] = key;
         StarlightSaveManager.Save();
         
-        
         var clash = Registered.FirstOrDefault(other =>
             !ReferenceEquals(other, keybind) && key != LKey.None && KeyOf(other) == key);
 

@@ -16,7 +16,7 @@ public sealed class ImmediatePanel
     public static bool Typing => !string.IsNullOrEmpty(Focused);
 
     /// <summary>
-    /// Unfocuses the currently focused thing 
+    /// Unfocuses the currently focused thing
     /// </summary>
     /// <remarks> This only clears the focus on the panel </remarks>
     public static void Unfocus()

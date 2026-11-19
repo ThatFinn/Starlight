@@ -7,7 +7,6 @@ using Type = System.Type;
 
 namespace Starlight.EnumPatcher;
 
-
 [HarmonyPatch]
 internal static class EnumInfoPatch
 {

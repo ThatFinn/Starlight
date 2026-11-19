@@ -11,8 +11,8 @@ public class CreateAssetBundles
         {
             Directory.CreateDirectory(assetBundleDirectory);
         }
-        BuildPipeline.BuildAssetBundles(assetBundleDirectory, 
-                                        BuildAssetBundleOptions.None, 
+        BuildPipeline.BuildAssetBundles(assetBundleDirectory,
+                                        BuildAssetBundleOptions.None,
                                         EditorUserBuildSettings.activeBuildTarget);
         File.Delete(assetBundleDirectory+"starlight.bundle.manifest");
         File.Delete(assetBundleDirectory+"Assets.manifest");

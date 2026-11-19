@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 namespace Starlight.Utils;
 
 public static class SpawnEUtil
-{        
+{
     
     public static GadgetModel SpawnGadget(this GadgetDefinition def, Vector3 pos) => SpawnGadget(def, pos, Quaternion.identity);
     public static GadgetModel SpawnGadget(this GadgetDefinition def, Vector3 pos, Vector3 rot)=> SpawnGadget(def, pos, Quaternion.Euler(rot));
@@ -32,15 +32,13 @@ public static class SpawnEUtil
     {
         return InstantiationHelpers.InstantiateDynamic(obj, pos, rot);
     }
-        
+    
     public static GameObject SpawnFX(this GameObject fx, Vector3 pos) => SpawnFX(fx, pos, Quaternion.identity);
-        
+    
     public static GameObject SpawnFX(this GameObject fx, Vector3 pos, Quaternion rot)
     {
         return FXHelpers.SpawnFX(fx, pos, rot);
     }
-    
-    
     
     internal static List<LandPlotLocation> LandPlotLocations = new();
     private static Dictionary<string, GameObject> _rootObjects = new ();
@@ -68,7 +66,6 @@ public static class SpawnEUtil
         }),2);
     }
     
-    
     /// <summary>
     /// Note, custom landplots don't support drones yet!
     /// </summary>
@@ -80,7 +77,7 @@ public static class SpawnEUtil
         if (loc == null || string.IsNullOrWhiteSpace(id)) return;
         var scene = SceneManager.GetSceneByName(loc.SceneName);
         if (StarlightSaveManager.inGameData.CustomPlots.ContainsKey(id)) return;
-         
+        
         StarlightSaveManager.inGameData.CustomPlots.Add(id,loc);
         if (scene.isLoaded)
             SpawnLandPlot(id, loc);
@@ -103,11 +100,8 @@ public static class SpawnEUtil
             sceneContext.GameModel.landPlots.Remove(id);
     }
 
-    
-    
-    
     private static void SpawnLandPlot(string plotKey, StarlightLandPlotLocation loc)
-    { 
+    {
         var landplotRoot = GetNewLandPlotRoot(loc.SceneName);
         var obj = new GameObject(plotKey);
         var lpl = obj.AddComponent<LandPlotLocation>();
@@ -118,7 +112,7 @@ public static class SpawnEUtil
         obj.transform.rotation = loc.Rotation;
         obj.transform.localScale = loc.Scale;
         var id = loc.DefaultPlot;
-        if (id == LandPlot.Id.NONE) id = LandPlot.Id.EMPTY;        
+        if (id == LandPlot.Id.NONE) id = LandPlot.Id.EMPTY;
         ExecuteInTicks(() =>
         {
             var prefab = gameContext.LookupDirector.GetPlotPrefab(id);
@@ -224,11 +218,11 @@ public static class SpawnEUtil
         {
             if (newAppearance.name.Contains("Radiant"))
             {
-                slimeRadiant.SetRadiant(); 
+                slimeRadiant.SetRadiant();
                 slimeRadiant.SetRadiantAppearance();
             }
             else
-            { 
+            {
                 slimeRadiant._slimeModel.RadiantBaseType = null;
             }
         }

@@ -20,7 +20,6 @@ public static class EmbeddedResourceEUtil
     }
     public static Sprite LoadSprite(string fileName, Assembly assembly) => LoadTexture2D(fileName,assembly).Texture2DToSprite();
     
-    
     public static Texture2D LoadTexture2D(string fileName)
     {
         return LoadTexture2D(fileName, ToAssembly(new StackTrace().GetFrame(1)?.GetMethod()));
@@ -41,15 +40,13 @@ public static class EmbeddedResourceEUtil
             catch (Exception e) { LogError(e); return null; }
             texture2D.hideFlags = HideFlags.DontUnloadUnusedAsset;
             texture2D.filterMode = FilterMode.Bilinear;
-        
+            
             return texture2D;
         }
 
         return null;
     }
 
-    
-    
     public static Dictionary<string, byte[]> LoadResources(string folderNamespace, bool recursive = false)
     {
         var method = new StackTrace().GetFrame(1)?.GetMethod();
@@ -82,8 +79,6 @@ public static class EmbeddedResourceEUtil
         return null;
     }
 
-    
-    
     public static byte[] LoadResource(string filename)
     {
         var method = new StackTrace().GetFrame(1)?.GetMethod();
@@ -108,8 +103,6 @@ public static class EmbeddedResourceEUtil
 
         return null;
     }
-    
-    
     
     public static string LoadString(string filename)
     {
@@ -188,5 +181,4 @@ public static class EmbeddedResourceEUtil
 
         return null;
     }
-    
 }

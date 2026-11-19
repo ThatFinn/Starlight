@@ -19,9 +19,7 @@ public class PrismPlortCreatorV01
     public Color VacColor = new Color32(0,0,0,255);
     public GameObject CustomBasePrefab = null;
 
-
     public PrismMarketData? MarketData = null;
-    
     
     public PrismPlortCreatorV01(string name, Sprite icon, LocalizedString localized)
     {
@@ -62,7 +60,6 @@ public class PrismPlortCreatorV01
         }
         catch { }
         
-        
         plort.localizedName = Localized;
         plort._pediaPersistenceSuffix = "modded"+Name.ToLower()+"_plort";
         
@@ -86,11 +83,8 @@ public class PrismPlortCreatorV01
         
         var prismPlort = new PrismPlort(plort, false);
         
-        
         _createdPlort = prismPlort;
         PrismShortcuts.PrismPlorts.Add(plort.ReferenceId,prismPlort);
         return _createdPlort;
     }
 }
-
-

@@ -20,10 +20,8 @@ public static class LookupEUtil
     internal static Dictionary<string, InputAction> DebugActions = new ();
     internal static IdentifiableTypeGroupList IdentifiableTypeGroupList;
 
-    
     public static readonly Dictionary<GameObject, (ParticleSystemRenderer, string)> FXLibrary = new ();
     public static readonly Dictionary<string, (ParticleSystemRenderer, GameObject)> FXLibraryReversable = new ();
-    
     
     public static WeatherStateDefinition[] weatherStateDefinitions => autoSaveDirector._configuration.WeatherStates.items.ToArray();
     public static UpgradeComponent[] upgradeComponents => autoSaveDirector._configuration.UpgradeComponents.items.ToArray();
@@ -35,10 +33,8 @@ public static class LookupEUtil
             foreach (var item in IdentifiableTypeGroupList.items) dict.TryAdd(item.name, item);
             return dict;
         }
-}
+    }
 
-
-    
     public static IdentifiableType[] identifiableTypes => MembersOf(autoSaveDirector?._configuration?.IdentifiableTypes).ToArray();
 
     public static IdentifiableType[] vaccableTypes => _FromGroupList("VaccableNonLiquids");
@@ -70,7 +66,6 @@ public static class LookupEUtil
     public static IdentifiableType[] chickFoodTypes => _FromGroupList("ChickGroup");
     public static IdentifiableType[] craftTypes => _FromGroupList("CraftGroup");
 
-    
     /// <summary>
     /// Members of a group by name
     /// </summary>
@@ -157,7 +152,7 @@ public static class LookupEUtil
         referenceID = referenceID.ToUpper();
         foreach (ToyDefinition type in idents) if (type.ReferenceId.ToUpper() == referenceID) return type;
         return null;
-    }    
+    }
     public static GadgetDefinition GetEntryByRefID(this GadgetDefinition[]? idents, string referenceID)
     {
         if (string.IsNullOrWhiteSpace(referenceID)) return null;
@@ -165,7 +160,7 @@ public static class LookupEUtil
         referenceID = referenceID.ToUpper();
         foreach (GadgetDefinition type in idents) if (type.ReferenceId.ToUpper() == referenceID) return type;
         return null;
-    }    
+    }
     public static SlimeDefinition GetEntryByRefID(this SlimeDefinition[]? idents, string referenceID)
     {
         if (string.IsNullOrWhiteSpace(referenceID)) return null;
@@ -173,7 +168,7 @@ public static class LookupEUtil
         referenceID = referenceID.ToUpper();
         foreach (SlimeDefinition type in idents) if (type.ReferenceId.ToUpper() == referenceID) return type;
         return null;
-    }    
+    }
     public static LiquidDefinition GetEntryByRefID(this LiquidDefinition[]? idents, string referenceID)
     {
         if (string.IsNullOrWhiteSpace(referenceID)) return null;
@@ -181,7 +176,7 @@ public static class LookupEUtil
         referenceID = referenceID.ToUpper();
         foreach (LiquidDefinition type in idents) if (type.ReferenceId.ToUpper() == referenceID) return type;
         return null;
-    } 
+    }
     public static IdentifiableType GetEntryByRefID(this IdentifiableType[]? idents, string referenceID)
     {
         if (string.IsNullOrWhiteSpace(referenceID)) return null;
@@ -189,7 +184,7 @@ public static class LookupEUtil
         referenceID = referenceID.ToUpper();
         foreach (IdentifiableType type in idents) if (type.ReferenceId.ToUpper() == referenceID) return type;
         return null;
-    }    
+    }
     public static IdentifiableType GetEntryByName(this IdentifiableType[]? idents, string name)
     {
         if (string.IsNullOrWhiteSpace(name)) return null;
@@ -207,7 +202,7 @@ public static class LookupEUtil
         referenceID = referenceID.ToUpper();
         foreach (var type in group.GetAllMembersHashSet()) if (type.ReferenceId == referenceID) return type;
         return null;
-    }    
+    }
     public static IdentifiableType GetEntryByName(this IdentifiableTypeGroup group, string name)
     {
         if (string.IsNullOrWhiteSpace(name)) return null;
@@ -218,11 +213,6 @@ public static class LookupEUtil
         foreach (var type in group.GetAllMembersHashSet()) if (type.GetCompactUpperName() == name) return type;
         return null;
     }
-    
-    
-    
-    
-    
     
     public static bool IsGadget(this IdentifiableType type) => type.TryCast<GadgetDefinition>() != null;
     /// <summary>
@@ -248,8 +238,8 @@ public static class LookupEUtil
         name = name.ToUpper();
         if (name == "NONE" || name == "PLAYER") return null;
         var ids = gadgetTypes;
-        foreach (var type in ids) 
-            if (type.name.ToUpper() == name) 
+        foreach (var type in ids)
+            if (type.name.ToUpper() == name)
                 if(type.IsGadget())
                     return type.Cast<GadgetDefinition>();
         name=name.Replace("_", "").Replace(" ","");
@@ -267,8 +257,6 @@ public static class LookupEUtil
         foreach (var state in weatherStateDefinitions) if (state.GetCompactUpperName() == name) return state;
         return null;
     }
-
-
 
     static bool StartsWithOrContain(this string value,string compare,bool useContain)
     {
@@ -323,7 +311,6 @@ public static class LookupEUtil
         list.Sort();
         return list;
     }
-    
     
     /// <summary>
     /// Returns a List<String> of GetCompactName() of filtered IdentifiableTypes
@@ -433,7 +420,6 @@ public static class LookupEUtil
         return list;
     }
     
-    
     /// <summary>
     /// Returns a List<String> of GetCompactName() of all GadgetDefinitions
     /// </summary>
@@ -524,8 +510,7 @@ public static class LookupEUtil
         return list;
     }
     
-    
-    public static List<string> GetKeyStringListByPartialName(string partial, bool useContain, int maxEntries) 
+    public static List<string> GetKeyStringListByPartialName(string partial, bool useContain, int maxEntries)
     {
         var list = new List<string>();
         maxEntries -= 1;
@@ -557,7 +542,7 @@ public static class LookupEUtil
         list.Sort();
         return list;
     }
-    public static List<string> GetLKeyStringListByPartialName(string partial, bool useContain, int maxEntries, bool includeExtendedLatin = false, bool includeCyrillic = false) 
+    public static List<string> GetLKeyStringListByPartialName(string partial, bool useContain, int maxEntries, bool includeExtendedLatin = false, bool includeCyrillic = false)
     {
         var list = new List<string>();
         maxEntries -= 1;
@@ -592,7 +577,7 @@ public static class LookupEUtil
         list.Sort();
         return list;
     }
-    public static List<string> GetKeyCodeStringListByPartialName(string partial, bool useContain, int maxEntries) 
+    public static List<string> GetKeyCodeStringListByPartialName(string partial, bool useContain, int maxEntries)
     {
         var list = new List<string>();
         maxEntries -= 1;
@@ -624,9 +609,4 @@ public static class LookupEUtil
         list.Sort();
         return list;
     }
-    
-    
-    
-    
-    
 }

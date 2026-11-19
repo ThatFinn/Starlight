@@ -1,12 +1,10 @@
 using System;
 using System.Linq;
-using Il2CppMonomiPark.SlimeRancher.Economy;
 using Il2CppMonomiPark.SlimeRancher.Input;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppSystem.Linq;
 using Il2CppTMPro;
 using Starlight.Buttons;
-using Starlight.Commands;
 using Starlight.Components;
 using Starlight.Enums;
 using Starlight.Enums.Features;
@@ -29,7 +27,6 @@ public class StarlightCheatMenu : StarlightMenu
         openActions = new List<MenuActions> { MenuActions.PauseGame, MenuActions.HideMenus, MenuActions.OverrideInput }.ToArray();
         closeActions = new List<MenuActions> { MenuActions.UnPauseGame, MenuActions.UnHideMenus, MenuActions.DeOverrideInput, MenuActions.EnableInput }.ToArray();
     }
-    
     
     internal static readonly List<StarlightCheatMenuButton> cheatButtons = new();
     private readonly List<CheatMenuRefineryEntry> _refineryEntries = new();
@@ -92,7 +89,6 @@ public class StarlightCheatMenu : StarlightMenu
             _gadgetEntries.Add(entry.GetComponent<CheatMenuGadgetEntry>());
         }
         
-        
         //Cheat Buttons
         foreach (StarlightCheatMenuButton cheatButton in cheatButtons)
         {
@@ -107,7 +103,6 @@ public class StarlightCheatMenu : StarlightMenu
             cheatButton.ButtonInstance = button.GetComponent<Button>();
         }
 
-
         _noclipButton.TextInstance.text = Tr("cheatmenu.cheatbuttons.noclip" + (sceneContext.Camera.GetComponent<NoClipComponent>() == null ? "off" : "on"));
         _refillButton.TextInstance.text = Tr("cheatmenu.cheatbuttons.refillinv");
         var saved = StarlightSaveManager.inGameData;
@@ -117,7 +112,6 @@ public class StarlightCheatMenu : StarlightMenu
         _removeFogButton.TextInstance.text = Tr("cheatmenu.cheatbuttons.removefog" + (saved is { RemoveFogActive: true } ? "on" : "off"));
         _keepInvButton.TextInstance.text = Tr("cheatmenu.cheatbuttons.keepinv" + (saved is { KeepInventoryActive: true } ? "on" : "off"));
 
-        
         //Warp Buttons
         foreach (KeyValuePair<string,Warp> pair in StarlightSaveManager.data.warps.OrderBy(x => x.Key))
         {
@@ -127,7 +121,7 @@ public class StarlightCheatMenu : StarlightMenu
             button.GetComponent<Button>().onClick.AddListener((Action)(() =>
                 {
                     AudioEUtil.PlaySound(MenuSound.Click);
-                    Close();        
+                    Close();
                     StarlightError error = pair.Value.WarpPlayerThere();
                     switch (error)
                     {
@@ -199,7 +193,6 @@ public class StarlightCheatMenu : StarlightMenu
         
         CheatButtons();
 
-        
         var button1 = transform.GetObjectRecursively<Image>("CheatMenuMainSelectionButtonRec");
         //button1.sprite = whitePillBg;
         button1.GetComponent<Button>().onClick.AddListener(selectCategorySound);
@@ -233,7 +226,7 @@ public class StarlightCheatMenu : StarlightMenu
             AudioEUtil.PlaySound(MenuSound.Click);
             StarlightCommandManager.ExecuteByString("infhealth", true,true);
             _infHealthButton.TextInstance.text = Tr("cheatmenu.cheatbuttons.infhealth" + (StarlightSaveManager.inGameData.InfiniteHealthActive? "on" : "off"));
-            });
+        });
         _removeFogButton = new StarlightCheatMenuButton(Tr("cheatmenu.cheatbuttons.removefogoff"),
             () =>
             {

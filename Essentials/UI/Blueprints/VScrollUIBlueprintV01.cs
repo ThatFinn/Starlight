@@ -27,7 +27,6 @@ internal class VScrollUIBlueprintV01 : UIBlueprint
     public string? ScrollBarVerticalName = "Scrollbar Vertical";
     public string? ViewportName = "Viewport";
     
-    
     protected override void OnRender(UITheme theme, FontTheme fontTheme, RectTransform obj)
     {
         IgnoreCorners = true;
@@ -51,7 +50,7 @@ internal class VScrollUIBlueprintV01 : UIBlueprint
         viewPortImage.sprite = whiteTexture.Texture2DToSprite();
         var viewPortMask = viewPortObj.AddComponent<Mask>();
         viewPortMask.showMaskGraphic = false;
-    
+        
         var contentObj = new GameObject(ContentName??"Content");
         var contentRect = contentObj.AddComponent<RectTransform>();
         contentRect.pivot = new Vector2(0.5f, 1f);

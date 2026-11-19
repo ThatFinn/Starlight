@@ -1,5 +1,3 @@
-using Starlight.Saving;
-
 namespace Starlight.Storage.Prefs;
 
 public abstract class PackagePref
@@ -22,7 +20,6 @@ public abstract class PackagePref
     }
 
     public void SetPref<T>(T value) => prefs.SetEntry<T>(key, value);
-    
     
 }
 public class PackagePref<T> : PackagePref

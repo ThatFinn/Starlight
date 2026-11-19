@@ -28,7 +28,7 @@ internal static class RedirectSaveFilesPatch
     {
         if (!RedirectSaveFiles.HasFlag()) return true;
         __result = provider;
-        return false; 
+        return false;
     }
     
 }
@@ -54,6 +54,6 @@ internal static class RedirectSaveFilesPatch2
     {
         if (!RedirectSaveFiles.HasFlag()) return true;
         __result = userManager.TryCast<IUserManager>();
-        return false; 
+        return false;
     }
 }

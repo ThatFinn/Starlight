@@ -23,7 +23,5 @@ public class EnumHolderResolver
                     field.SetValue(null, newVal);
                 }
             }
-            
-        
     }
 }

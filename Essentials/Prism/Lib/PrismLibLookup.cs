@@ -8,69 +8,66 @@ namespace Starlight.Prism.Lib;
 public static class PrismLibLookup
 {
     
-    
     /// <summary>
     /// The group of all identifiable types
     /// </summary>
-    public static IdentifiableTypeGroup identifiableGroup => LookupEUtil.allIdentifiableTypeGroups["IdentifiableTypesGroup"]; 
+    public static IdentifiableTypeGroup identifiableGroup => LookupEUtil.allIdentifiableTypeGroups["IdentifiableTypesGroup"];
     /// <summary>
     /// The group of all vaccable types
     /// </summary>
-    public static IdentifiableTypeGroup vaccableGroup => LookupEUtil.allIdentifiableTypeGroups["VaccableNonLiquids"]; 
+    public static IdentifiableTypeGroup vaccableGroup => LookupEUtil.allIdentifiableTypeGroups["VaccableNonLiquids"];
     /// <summary>
     /// The group of all toy types
     /// </summary>
-    public static IdentifiableTypeGroup toyGroup => LookupEUtil.allIdentifiableTypeGroups["ToyGroup"]; 
+    public static IdentifiableTypeGroup toyGroup => LookupEUtil.allIdentifiableTypeGroups["ToyGroup"];
     /// <summary>
     /// The group of all gadget types
     /// </summary>
-    public static IdentifiableTypeGroup gadgetGroup => LookupEUtil.allIdentifiableTypeGroups["GadgetGroup"]; 
+    public static IdentifiableTypeGroup gadgetGroup => LookupEUtil.allIdentifiableTypeGroups["GadgetGroup"];
     /// <summary>
     /// The group of all liquid types
     /// </summary>
-    public static IdentifiableTypeGroup liquidGroup => LookupEUtil.allIdentifiableTypeGroups["LiquidGroup"]; 
+    public static IdentifiableTypeGroup liquidGroup => LookupEUtil.allIdentifiableTypeGroups["LiquidGroup"];
     /// <summary>
     /// The group of all slime types
     /// </summary>
-    public static IdentifiableTypeGroup slimeGroup => LookupEUtil.allIdentifiableTypeGroups["SlimesGroup"]; 
+    public static IdentifiableTypeGroup slimeGroup => LookupEUtil.allIdentifiableTypeGroups["SlimesGroup"];
     /// <summary>
     /// The group of all largo types
     /// </summary>
-    public static IdentifiableTypeGroup largoGroup => LookupEUtil.allIdentifiableTypeGroups["LargoGroup"]; 
+    public static IdentifiableTypeGroup largoGroup => LookupEUtil.allIdentifiableTypeGroups["LargoGroup"];
     /// <summary>
     /// The group of all plort types
     /// </summary>
-    public static IdentifiableTypeGroup plortGroup => LookupEUtil.allIdentifiableTypeGroups["PlortGroup"]; 
+    public static IdentifiableTypeGroup plortGroup => LookupEUtil.allIdentifiableTypeGroups["PlortGroup"];
     /// <summary>
     /// The group of all food types
     /// </summary>
-    public static IdentifiableTypeGroup foodGroup => LookupEUtil.allIdentifiableTypeGroups["FoodGroup"]; 
+    public static IdentifiableTypeGroup foodGroup => LookupEUtil.allIdentifiableTypeGroups["FoodGroup"];
     /// <summary>
     /// The group of all meat food types
     /// </summary>
-    public static IdentifiableTypeGroup meatFoodGroup => LookupEUtil.allIdentifiableTypeGroups["MeatGroup"]; 
+    public static IdentifiableTypeGroup meatFoodGroup => LookupEUtil.allIdentifiableTypeGroups["MeatGroup"];
     /// <summary>
     /// The group of all veggie food types
     /// </summary>
-    public static IdentifiableTypeGroup veggieFoodGroup => LookupEUtil.allIdentifiableTypeGroups["VeggieGroup"]; 
+    public static IdentifiableTypeGroup veggieFoodGroup => LookupEUtil.allIdentifiableTypeGroups["VeggieGroup"];
     /// <summary>
     /// The group of all fruit food types
     /// </summary>
-    public static IdentifiableTypeGroup fruitFoodGroup => LookupEUtil.allIdentifiableTypeGroups["FruitGroup"]; 
+    public static IdentifiableTypeGroup fruitFoodGroup => LookupEUtil.allIdentifiableTypeGroups["FruitGroup"];
     /// <summary>
     /// The group of all nectar food types
     /// </summary>
-    public static IdentifiableTypeGroup nectarFoodGroup => LookupEUtil.allIdentifiableTypeGroups["NectarFoodGroup"]; 
+    public static IdentifiableTypeGroup nectarFoodGroup => LookupEUtil.allIdentifiableTypeGroups["NectarFoodGroup"];
     /// <summary>
     /// The group of all chick food types
     /// </summary>
-    public static IdentifiableTypeGroup chickFoodGroup => LookupEUtil.allIdentifiableTypeGroups["ChickGroup"]; 
+    public static IdentifiableTypeGroup chickFoodGroup => LookupEUtil.allIdentifiableTypeGroups["ChickGroup"];
     /// <summary>
     /// The group of all craft types
     /// </summary>
-    public static IdentifiableTypeGroup craftGroup => LookupEUtil.allIdentifiableTypeGroups["CraftGroup"]; 
-    
-    
+    public static IdentifiableTypeGroup craftGroup => LookupEUtil.allIdentifiableTypeGroups["CraftGroup"];
     
     /// <summary>
     /// Adds an IdentifiableType to a group

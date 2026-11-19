@@ -65,7 +65,7 @@ internal class EmberModeUIInfo : MonoBehaviour
 
     internal static void SetToolInfo(string info)
     {
-        if (_instance) 
+        if (_instance)
             _instance._toolInfo = info ?? string.Empty;
     }
 

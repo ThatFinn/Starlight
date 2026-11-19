@@ -85,13 +85,13 @@ public class NavigationUIBlueprintV01 : UIBlueprint
                 {
                     panel = Tabs[i].Render(theme, fontTheme, CustomChildHolder);
                     panel.gameObject.SetActive(i == _activeTab);
-                } catch (Exception e) { LogError(e); } 
-                _panels.Add(panel); 
+                } catch (Exception e) { LogError(e); }
+                _panels.Add(panel);
             }
 
         if(ChildrenWithButtons!=null)
             for (var i = 0; i < ChildrenWithButtons.Count; i++)
-                try { ChildrenWithButtons[i].Render(theme, fontTheme, bcRect); } catch (Exception e) { LogError(e); } 
+                try { ChildrenWithButtons[i].Render(theme, fontTheme, bcRect); } catch (Exception e) { LogError(e); }
         
         ExecuteInTicks(() => { try { _buttons[_activeTab].GetComponent<Button>().interactable = false; } catch { } },1);
     }

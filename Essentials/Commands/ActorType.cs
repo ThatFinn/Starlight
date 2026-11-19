@@ -28,7 +28,7 @@ internal class ActorType : StarlightCommand
                 if (enabledLoop)
                 {
                     disabledActors.Add(loopedType.ReferenceId);
-                    foreach (var actor in Resources.FindObjectsOfTypeAll<IdentifiableActor>()) 
+                    foreach (var actor in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
                         if (actor.identType == loopedType) actor.gameObject.AddComponent<ObjectBlocker>();
                 }
                 disabledActors.Remove(loopedType.ReferenceId);
@@ -88,7 +88,4 @@ internal class ActorType : StarlightCommand
         foreach (var actor in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
             actor.gameObject.RemoveComponent<ObjectBlocker>();
     }
-    
 }
-
-

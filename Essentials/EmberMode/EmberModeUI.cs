@@ -42,7 +42,6 @@ internal static class EmberModeUI
         EmberModeRoot.AddComponent<EmberModeTransformGizmo>();
         EmberModeRoot.AddComponent<EmberModeTransformInspector>();
         
-        
         EmberModeRoot.SetActive(false);
         IsActive = false;
         

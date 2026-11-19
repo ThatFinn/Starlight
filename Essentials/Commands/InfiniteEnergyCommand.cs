@@ -69,7 +69,7 @@ internal class InfiniteEnergyCommand : StarlightCommand
     {
         try
         {
-            if (inGame && !StarlightCounterGateManager.srleActive && StarlightSaveManager.inGameData.InfiniteEnergyActive) 
+            if (inGame && !StarlightCounterGateManager.srleActive && StarlightSaveManager.inGameData.InfiniteEnergyActive)
                 sceneContext.PlayerState.SetEnergy(int.MaxValue);
         }
         catch { }
@@ -87,7 +87,6 @@ internal class InfiniteEnergyCommand : StarlightCommand
         },1);
     }
     
-
     private static float _normalEnergy = 100;
     private static float _normalHoverHeight = 0;
     private static float _normalMaxUpwardThrustForce = 0;

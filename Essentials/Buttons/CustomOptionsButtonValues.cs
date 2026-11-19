@@ -82,9 +82,6 @@ public class CustomOptionsButtonValues : CustomAbstractOptionsButton
         return instance;
     }
 
-    
-    
-    
     public CustomOptionsButtonValues(LocalizedString label, Action<int> onModify, params LocalizedString[] values)
     {
         this.label = label;
@@ -112,7 +109,7 @@ public class CustomOptionsButtonValues : CustomAbstractOptionsButton
     public CustomOptionsButtonValues(
         LocalizedString label, LocalizedString detailsText,
         int defaultValueIndex, bool applyImmediately,
-        bool wrapAround, bool requireConfirmation, Action<int> onModify, 
+        bool wrapAround, bool requireConfirmation, Action<int> onModify,
         params LocalizedString[] values)
     {
         this.saveid = saveid;
@@ -129,7 +126,7 @@ public class CustomOptionsButtonValues : CustomAbstractOptionsButton
     public CustomOptionsButtonValues(
         LocalizedString label, LocalizedString detailsText,
         string saveid, int defaultValueIndex, bool applyImmediately,
-        bool wrapAround, bool requireConfirmation, Action<int> onModify, 
+        bool wrapAround, bool requireConfirmation, Action<int> onModify,
         params LocalizedString[] values)
     {
         this.saveid = saveid;
@@ -161,5 +158,4 @@ public class CustomOptionsButtonValues : CustomAbstractOptionsButton
         this.Type = type;
         this.values = values;
     }
-    
 }

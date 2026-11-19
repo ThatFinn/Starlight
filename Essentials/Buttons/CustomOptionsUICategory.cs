@@ -17,7 +17,7 @@ public class CustomOptionsUICategory
 
     public CustomOptionsUICategory(LocalizedString label, int insertIndex, Sprite icon, OptionsCategoryVisibleState visibleState)
     {
-        this.Label = label; 
+        this.Label = label;
         this.InsertIndex = insertIndex;
         this.Icon = icon;
         this.VisibleState = visibleState;
@@ -25,14 +25,13 @@ public class CustomOptionsUICategory
         StarlightOptionsButtonManager.customOptionsUICategories.Add(this,new HashSet<CustomAbstractOptionsButton>());
     }
     
-
     public void AddButton(CustomAbstractOptionsButton button)
-    { 
+    {
         if(!StarlightOptionsButtonManager.customOptionsUICategories[this].Contains(button))
             StarlightOptionsButtonManager.customOptionsUICategories[this].Add(button);
     }
     public void RemoveButton(CustomAbstractOptionsButton button)
-    { 
+    {
         if(StarlightOptionsButtonManager.customOptionsUICategories[this].Contains(button))
             StarlightOptionsButtonManager.customOptionsUICategories[this].Remove(button);
     }

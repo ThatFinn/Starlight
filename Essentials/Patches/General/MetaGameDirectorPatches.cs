@@ -2,7 +2,6 @@ using Il2CppMonomiPark.SlimeRancher;
 
 namespace Starlight.Patches.General;
 
-
 [HarmonyPatch(typeof(MetaGameDirector), nameof(MetaGameDirector.ChangeGameActivity))]
 internal static class MetaGameDirectorChangeGameActivityPatch
 {

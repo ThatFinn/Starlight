@@ -2,10 +2,9 @@ using Il2CppMonomiPark.SlimeRancher;
 
 namespace Starlight.Patches.Saving;
 
-
 [HarmonyPatch(typeof(GameModelPushHelpers), nameof(GameModelPushHelpers.PushGame))]
 internal static class LoadPatch
-{   
+{
     [HarmonyFinalizer]
     static Exception Finalizer(Exception __exception)
     {

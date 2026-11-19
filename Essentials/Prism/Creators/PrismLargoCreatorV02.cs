@@ -321,7 +321,7 @@ public static class PrismLargoCreatorV02
     }
 
     /// <summary>
-    /// Merges the slime behavior from both base slimes 
+    /// Merges the slime behavior from both base slimes
     /// </summary>
     private static Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<GameObject> BuildModules(
         SlimeDefinition first, SlimeDefinition second)

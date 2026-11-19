@@ -19,7 +19,7 @@ public static class PrismLibPedia
     internal static readonly Dictionary<PrismPediaCategoryType, List<PediaEntry>> PediaEntryLookup = new ()
     {
         {PrismPediaCategoryType.Slimes, new List<PediaEntry>()}, {PrismPediaCategoryType.RadiantSlimes, new List<PediaEntry>()}, {PrismPediaCategoryType.Resources, new List<PediaEntry>()}, {PrismPediaCategoryType.Blueprints, new List<PediaEntry>()},
-        {PrismPediaCategoryType.World, new List<PediaEntry>()}, {PrismPediaCategoryType.Weather, new List<PediaEntry>()}, {PrismPediaCategoryType.Toys, new List<PediaEntry>()}, {PrismPediaCategoryType.Ranch, new List<PediaEntry>()}, 
+        {PrismPediaCategoryType.World, new List<PediaEntry>()}, {PrismPediaCategoryType.Weather, new List<PediaEntry>()}, {PrismPediaCategoryType.Toys, new List<PediaEntry>()}, {PrismPediaCategoryType.Ranch, new List<PediaEntry>()},
         {PrismPediaCategoryType.Science, new List<PediaEntry>()}, {PrismPediaCategoryType.Tutorial, new List<PediaEntry>()},
     };
     private static readonly Dictionary<PrismPediaDetailType, PediaDetailSection> PediaDetailSectionLookup = new ();
@@ -152,7 +152,7 @@ public static class PrismLibPedia
 
         IdentifiablePediaEntryPrefab = Get<IdentifiablePediaEntry>("Pink");
         if (IdentifiablePediaEntryPrefab == null) IdentifiablePediaEntryPrefab = GetAny<IdentifiablePediaEntry>();
-        if (IdentifiablePediaEntryPrefab != null) IdentifiablePediaEntryPrefab.hideFlags = HideFlags.DontUnloadUnusedAsset; 
+        if (IdentifiablePediaEntryPrefab != null) IdentifiablePediaEntryPrefab.hideFlags = HideFlags.DontUnloadUnusedAsset;
 
         if(SupportRadiant.HasFlag()) RadiantStuff();
         
@@ -165,7 +165,7 @@ public static class PrismLibPedia
     {
         RadiantSlimePediaEntryPrefab = Get<RadiantSlimePediaEntry>("RadiantPink");
         if (RadiantSlimePediaEntryPrefab == null) RadiantSlimePediaEntryPrefab = GetAny<RadiantSlimePediaEntry>();
-        if (RadiantSlimePediaEntryPrefab != null) RadiantSlimePediaEntryPrefab.hideFlags = HideFlags.DontUnloadUnusedAsset; 
+        if (RadiantSlimePediaEntryPrefab != null) RadiantSlimePediaEntryPrefab.hideFlags = HideFlags.DontUnloadUnusedAsset;
     }
     
     public static void PediaSlimeDietAddOverride(this PrismSlime slime, Sprite icon, LocalizedString localized)

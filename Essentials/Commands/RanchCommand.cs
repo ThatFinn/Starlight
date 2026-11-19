@@ -1,5 +1,3 @@
-using System;
-using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.World;
 
 namespace Starlight.Commands;
@@ -25,7 +23,7 @@ internal class RanchCommand : StarlightCommand
     }
 
     internal static void LoadAutoComplete(dynamic ranchDyn)
-    { 
+    {
         ranch = ranchDyn;
         doors = new List<string>();
         foreach (var door in MiscEUtil.ToNetDictionary(ranch.AccessDoorStates)) doors.Add(door.Key);
@@ -51,7 +49,7 @@ internal class RanchCommand : StarlightCommand
             }
             silent = isSilent;
             switch (args[0])
-            { 
+            {
                 case "lock": SendMessage(Tr("cmd.ranch.successalllock")); break;
                 case "unlock": SendMessage(Tr("cmd.ranch.successallunlock")); break;
             }
@@ -68,14 +66,14 @@ internal class RanchCommand : StarlightCommand
                     return SendError(Tr("cmd.ranch.errorlock",args[1]));
                 ranch.AccessDoorStates[args[1]] = AccessDoor.State.LOCKED;
                 foreach (AccessDoor accessDoor in accessDoors) if (accessDoor.Id == args[1]) { accessDoor.CurrState=AccessDoor.State.LOCKED; break; }
-                SendMessage(Tr("cmd.ranch.successlock",args[1])); 
+                SendMessage(Tr("cmd.ranch.successlock",args[1]));
                 break;
             case "unlock":
                 if (ranch.AccessDoorStates[args[1]] == AccessDoor.State.OPEN)
                     return SendError(Tr("cmd.ranch.errorunlock",args[1]));
                 ranch.AccessDoorStates[args[1]] = AccessDoor.State.OPEN;
                 foreach (AccessDoor accessDoor in accessDoors) if (accessDoor.Id == args[1]) { accessDoor.CurrState=AccessDoor.State.OPEN; break; }
-                SendMessage(Tr("cmd.ranch.successunlock",args[1])); 
+                SendMessage(Tr("cmd.ranch.successunlock",args[1]));
                 break;
         }
 

@@ -22,7 +22,7 @@ internal class ClearInventoryCommand : StarlightCommand
         {
             try { slotToClear = int.Parse(args[0]); }
             catch { SendError(Tr("cmd.error.notvalidint",args[0])); return false; }
-            if (slotToClear<=0) return SendNotValidInt(args[0]); 
+            if (slotToClear<=0) return SendNotValidInt(args[0]);
             if(slotToClear>numberOfSlots) return SendError(Tr("cmd.clearinv.error.slotdoesntexist",numberOfSlots));
             slotToClear -= 1;
         }
@@ -35,9 +35,8 @@ internal class ClearInventoryCommand : StarlightCommand
             return true;
         }
 
-        if (!InventoryEUtil.GetIsSlotUnlocked(slotToClear)) 
+        if (!InventoryEUtil.GetIsSlotUnlocked(slotToClear))
             return SendError(Tr("cmd.clearinv.error.slotnotunlocked",slotToClear+1));
-           
         
         InventoryEUtil.ClearSlot(slotToClear);
         SendMessage(Tr("cmd.clearinv.successsingle",slotToClear+1));

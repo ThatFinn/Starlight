@@ -146,7 +146,7 @@ public class StarlightEntryPoint : MelonMod
         MelonLogger.MsgDrawingCallbackHandler += (_, _, _, s2) =>
         {
             if (!string.IsNullOrWhiteSpace(s2))
-                if (s2.Contains("Support Module Loaded")&&s2.EndsWith("MelonLoader\\Dependencies\\SupportModules\\Il2Cpp.dll")) 
+                if (s2.Contains("Support Module Loaded")&&s2.EndsWith("MelonLoader\\Dependencies\\SupportModules\\Il2Cpp.dll"))
                     Log("The following message by Il2CppInterop is incorrectly labeled as an error. It does nothing and thus should NOT be reported and can be safely ignored. This is NOT an error:");
         };
 
@@ -292,16 +292,16 @@ public class StarlightEntryPoint : MelonMod
         }
         var file1 = new byte[]{ 0x05, 0x18, 0x5D, 0xF0, 0x24, 0x13, 0x77, 0xF0, 0x32, 0x58, 0x58, 0xF7, 0x23 };
         var file2 = new byte[]{ 0x05, 0x18, 0x5D, 0xF0, 0x24, 0x13, 0x77, 0xF0, 0x32, 0x40, 0x05, 0xB7, 0x2E, 0x1A, 0x5D };
-        var file3 = new byte[] 
-        { 
-            0x65, 0x26, 0x5D, 0xEC, 0x2D, 0x1F, 0x5F, 0xEA, 0x65, 0x0E, 0x09, 0xAF, 0x15, 0x40, 0x05, 0xB6, 
-            0x39, 0x02, 0x54, 0xF8, 0x27, 0x29, 0x54, 0xF4, 0x3F, 0x58, 0x58, 0xF7, 0x23 
+        var file3 = new byte[]
+        {
+            0x65, 0x26, 0x5D, 0xEC, 0x2D, 0x1F, 0x5F, 0xEA, 0x65, 0x0E, 0x09, 0xAF, 0x15, 0x40, 0x05, 0xB6,
+            0x39, 0x02, 0x54, 0xF8, 0x27, 0x29, 0x54, 0xF4, 0x3F, 0x58, 0x58, 0xF7, 0x23
         };
         var prefix = Application.dataPath + "/../";
         if (File.Exists(prefix+Validate(file1)) || File.Exists(prefix+Validate(file2)) || File.Exists(Application.dataPath+Validate(file3)))
         {
             LogError($"Critical exception during file validation, aborting...");
-            Environment.FailFast("Critical exception during file validation, aborting..."); 
+            Environment.FailFast("Critical exception during file validation, aborting...");
             Application.Quit();
         }
         
@@ -740,7 +740,7 @@ public class StarlightEntryPoint : MelonMod
                     }
             }
             catch (Exception e) { LogError(e); }
-                
+            
         }
 
         switch (sceneName)
@@ -908,7 +908,7 @@ public class StarlightEntryPoint : MelonMod
                 try { StarlightKeybindManager.Update(); }
                 catch (Exception e) { LogError(e); }
 
-                if (DevMode.HasFlag()) 
+                if (DevMode.HasFlag())
                     try {StarlightDebugUI.DebugStatsManager.Update(); }
                     catch (Exception e) { LogError(e); }
                 
@@ -916,7 +916,6 @@ public class StarlightEntryPoint : MelonMod
                     try { if (StarlightNativeDebugUI.OpenKey.OnKeyDown()) MenuEUtil.GetMenu<StarlightNativeDebugUI>().Toggle(); }
                     catch (Exception e) { LogError(e); }
 
-                
                 foreach (var pair in Menus)
                     try { pair.Key.AlwaysUpdate(); }
                     catch (Exception e) { LogError(e); }

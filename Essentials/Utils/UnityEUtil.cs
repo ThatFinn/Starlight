@@ -27,7 +27,7 @@ public static class UnityEUtil
         for (int i = 0; i < obj.childCount; i++)
             children.Add(obj.GetChild(i));
         return children;
-    }   
+    }
     public static List<GameObject> GetChildren(this GameObject obj)
     {
         var children = new List<GameObject>();
@@ -37,14 +37,14 @@ public static class UnityEUtil
     }
     public static void DestroyAllChildren(this Transform obj)
     {
-        for (int i = 0; i < obj.childCount; i++) 
+        for (int i = 0; i < obj.childCount; i++)
             Object.Destroy(obj.GetChild(i).gameObject);
     }
 
     public static void DestroyAllChildren(this GameObject obj) => obj.transform.DestroyAllChildren();
     public static void DestroyImmediateAllChildren(this Transform obj)
     {
-        for (int i = 0; i < obj.childCount; i++) 
+        for (int i = 0; i < obj.childCount; i++)
             Object.DestroyImmediate(obj.GetChild(i).gameObject);
     }
 
@@ -122,8 +122,6 @@ public static class UnityEUtil
         return obj && obj.name == name && obj.scene.IsValid() && obj.scene.isLoaded;
     }).ToList();
     
-    
-    
     public static T AddComponent<T>(this Component obj) where T : Component => obj.gameObject.AddComponent<T>();
     public static T AddComponent<T>(this Transform obj) where T : Component => obj.gameObject.AddComponent<T>();
     public static bool AddComponent(this Transform obj, Il2CppSystem.Type componentType) => obj.gameObject.AddComponent(componentType);
@@ -164,7 +162,6 @@ public static class UnityEUtil
         copy.name = name;
         copy.transform.parent = PrefabHolder.transform;
 
-        
         return copy;
     }
     public static GameObject CreatePrefab(GameObject obj)
@@ -174,7 +171,6 @@ public static class UnityEUtil
         
         copy.transform.parent = PrefabHolder.transform;
 
-        
         return copy;
     }
 }

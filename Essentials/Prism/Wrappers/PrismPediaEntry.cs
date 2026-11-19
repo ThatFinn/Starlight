@@ -41,14 +41,14 @@ public class PrismPediaEntry
         if (index < 0) return;
         if (index >= PediaEntry._details.Count) return;
         PediaEntry._details = PediaEntry._details.RemoveAtToNew(index);
-    }    
+    }
     public void ReplaceDetail(int index,PrismPediaDetail? detail)
     {
         if (index < 0) return;
         if (index >= PediaEntry._details.Count) return;
         if (detail == null) return;
         PediaEntry._details = PediaEntry._details.ReplaceToNew(detail.ConvertToNativeType(),index);
-    }    
+    }
     public void InsertDetail(int index,PrismPediaDetail? detail)
     {
         if (index < 0) return;
@@ -87,6 +87,6 @@ public class PrismPediaEntry
     public void ClearAdditionalFacts()
     {
         if (PrismLibPedia.AdditionalFactsMap.ContainsKey(PediaEntry)) return;
-            PrismLibPedia.AdditionalFactsMap.Remove(PediaEntry);
+        PrismLibPedia.AdditionalFactsMap.Remove(PediaEntry);
     }
 }

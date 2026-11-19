@@ -344,7 +344,6 @@ public class MenubarUIBlueprintV01 : UIBlueprint
         lineImg.raycastTarget = false;
     }
 
-
     private void OpenFlyout(MenubarEntry parentEntry, float xPos, float yPos, UITheme theme, FontTheme fontTheme)
     {
         CloseFlyout();

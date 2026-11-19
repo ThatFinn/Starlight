@@ -18,7 +18,7 @@ internal class PlortEconomyGetTargetValuePatch
 
                 for (int i = 0; i < ((int)day); i++)
                     rng.NextDouble();
-        
+                
                 var min = baseValue - fullSaturation;
                 var max = baseValue + fullSaturation;
 
@@ -31,5 +31,4 @@ internal class PlortEconomyGetTargetValuePatch
             }
         return true;
     }
-
 }

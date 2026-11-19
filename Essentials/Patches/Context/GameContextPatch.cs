@@ -36,7 +36,7 @@ internal class GameContextPatch
         damageSource._logMessage = "Modded.StarlightKill";
         damageSource.name = "ModdedStarlightDamage";
         damageSource.hideFlags |= HideFlags.HideAndDontSave;
-         _killDamage = new Damage
+        _killDamage = new Damage
         {
             Amount = 99999999, DamageSource = damageSource,
         };
@@ -50,8 +50,8 @@ internal class GameContextPatch
                 LookupEUtil.FXLibraryReversable.Add(pname, (particle, particle.gameObject));
         }
         
-        try 
-        { 
+        try
+        {
             SlimeRendererPrefab = new GameObject("SlimeRenderer");
             SlimeRendererPrefab.SetActive(false);
             SlimeRendererPrefab.MakePrefab();
@@ -82,7 +82,6 @@ internal class GameContextPatch
             RendererPool = new PooledSlimeAppearanceObjectProvider(objectPool).TryCast<ISlimeAppearanceObjectProvider>();
         }
         catch (Exception e) { LogError(e); }
-        
         
         if (!StarlightEntryPoint.AddedButtons)
         {
@@ -123,7 +122,7 @@ internal class GameContextPatch
                 testCategory1.AddButton(new CustomOptionsButtonValues
                 (AddTranslation("GlobalTest"),AddTranslation("This is an example description"),
                     "starlight.mock.global1",1,true,false,false, ((value) =>
-                    { 
+                    {
                         Log("It has been changed to "+value);
                     }), OptionsButtonType.OptionsUI,
                     AddTranslation("Value0"),AddTranslation("Value1"),AddTranslation("Value2"),AddTranslation("Value3")
@@ -131,7 +130,7 @@ internal class GameContextPatch
                 testCategory2.AddButton(new CustomOptionsButtonValues
                 (AddTranslation("MainMenuOnlyTest"),AddTranslation("This wraps around!"),
                     "starlight.mock.mainmenuonly1",1,true,true,false, ((value) =>
-                    { 
+                    {
                         Log("It has been changed to "+value);
                     }), OptionsButtonType.OptionsUI,
                     AddTranslation("G0"),AddTranslation("G1"),AddTranslation("G2"),AddTranslation("G3")
@@ -139,7 +138,7 @@ internal class GameContextPatch
                 testCategory3.AddButton(new CustomOptionsButtonValues
                 (AddTranslation("InGameOnlyTest"),AddTranslation("This doesn't apply immediately!"),
                     "starlight.mock.ingameonly1",1,false,false,false, ((value) =>
-                    { 
+                    {
                         Log("It has been changed to "+value);
                     }), OptionsButtonType.InGameOptionsUIOnly,
                     AddTranslation("Value0"),AddTranslation("Value1"),AddTranslation("Value2"),AddTranslation("Value3")
@@ -247,6 +246,4 @@ internal class GameContextPatch
             StarlightCommandManager.RegisterCommand(cmd);
         }
     }
-
-
 }

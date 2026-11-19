@@ -16,7 +16,7 @@ internal class LandPlotRemoveCommand : StarlightCommand
                 if (inGame)
                 {
                     var plots = new List<string>();
-                    foreach (var pair in StarlightSaveManager.inGameData.CustomPlots) 
+                    foreach (var pair in StarlightSaveManager.inGameData.CustomPlots)
                         if(pair.Key.StartsWith("starlightown."))
                             plots.Add(pair.Key.Substring("starlightown.".Length));
                     return plots;
@@ -34,7 +34,7 @@ internal class LandPlotRemoveCommand : StarlightCommand
 
         if (args==null)
         {
-            Camera cam = MiscEUtil.GetActiveCamera(); if (!cam) return SendNoCamera(); 
+            Camera cam = MiscEUtil.GetActiveCamera(); if (!cam) return SendNoCamera();
             if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
             {
                 var obj = hit.transform.gameObject;

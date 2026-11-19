@@ -26,7 +26,6 @@ public class PrismPlort
     public GameObject GetPrefab() => IdentifiableType.prefab;
     public bool GetIsNative() => _isNative;
     
-    
     public void SetIcon(Sprite newIcon)
     {
         IdentifiableType.icon = newIcon;

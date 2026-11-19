@@ -13,5 +13,4 @@ internal class DebugDirectorFixer : MonoBehaviour
         Instance = this;
         Director = GetComponent<DebugDirector>();
     }
-
 }

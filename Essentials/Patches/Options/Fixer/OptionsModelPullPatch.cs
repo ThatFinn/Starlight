@@ -1,5 +1,4 @@
 using Il2CppMonomiPark.SlimeRancher.DataModel;
-using Il2CppMonomiPark.SlimeRancher.Options;
 using Il2CppMonomiPark.SlimeRancher.Persist;
 
 namespace Starlight.Patches.Options.Fixer;

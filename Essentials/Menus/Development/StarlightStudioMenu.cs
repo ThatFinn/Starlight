@@ -57,13 +57,13 @@ internal class StarlightStudioMenu : StarlightMenu
         _previewCamera.farClipPlane = 10f;
         _previewCamera.targetTexture = _renderTexture;
         _previewCamera.clearFlags = CameraClearFlags.SolidColor;
-        _previewCamera.backgroundColor = new Color(0, 0, 0, 0); 
+        _previewCamera.backgroundColor = new Color(0, 0, 0, 0);
 
         _previewCamera.cullingMask = 1 << _targetLayer;
         var hdData = camObj.AddComponent<HDAdditionalCameraData>();
         hdData.volumeAnchorOverride = _previewCamera.transform;
         hdData.clearColorMode = HDAdditionalCameraData.ClearColorMode.Color;
-        hdData.backgroundColorHDR = new Color(0, 0, 0, 0); 
+        hdData.backgroundColorHDR = new Color(0, 0, 0, 0);
 
         var rotation = Quaternion.Euler(_viewAngle);
         var positionOffset = rotation * Vector3.back * _distance;
@@ -96,7 +96,7 @@ internal class StarlightStudioMenu : StarlightMenu
         var rect = obj.AddComponent<RectTransform>();
         rect.anchorMin = new Vector2(0, 0);
         rect.anchorMax = new Vector2(1, 1);
-        rect.offsetMin = Vector2.zero; 
+        rect.offsetMin = Vector2.zero;
         rect.offsetMax = Vector2.zero;
         rect.localScale = Vector3.one;
         return obj;

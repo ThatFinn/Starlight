@@ -19,7 +19,6 @@ public class PrismLiquidCreatorV01
     public Color VacColor = new Color(0.2f,0.5f,0.6f,255);
     public GameObject CustomBasePrefab = null;
 
-
     public GameObject CustomVacFailFxPrefab = null;
     public GameObject CustomVacInFxPrefab = null;
 

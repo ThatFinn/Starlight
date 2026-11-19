@@ -1,4 +1,3 @@
-using Il2CppMonomiPark.SlimeRancher.Economy;
 using Il2CppMonomiPark.SlimeRancher.UI.Refinery;
 
 namespace Starlight.Patches.InGame;

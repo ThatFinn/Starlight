@@ -7,7 +7,7 @@ internal static class UIDisplayInteractableOnInteractPatch
 {
     internal static bool takeOverNextUI;
     internal static bool Prefix(UIDisplayInteractable __instance)
-    { 
+    {
         if (__instance.gameObject.name == "StarlightMarketViewerOverride")
         {
             if(sceneContext.PlortEconomyDirector.IsMarketShutdown())

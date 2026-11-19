@@ -8,7 +8,7 @@ internal class GraphicsCommand : StarlightCommand
     public override string Usage => "graphics <mode>";
     public override CommandType type => CommandType.Fun;
     public override List<string> GetAutoComplete(int argIndex, string[] args)
-    { 
+    {
         //return new List<string>(){"InMaintenance"};
         if (argIndex == 0)
         {
@@ -18,7 +18,6 @@ internal class GraphicsCommand : StarlightCommand
         }
         return null;
     }
-
 
     internal static GameObject rangeLightInstance;
     internal static bool activated = false;

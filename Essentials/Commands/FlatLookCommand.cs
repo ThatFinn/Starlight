@@ -1,7 +1,4 @@
-using Starlight.Components;
-using Starlight.Patches.General;
 using Starlight.Patches.Options;
-using UnityEngine.InputSystem;
 
 namespace Starlight.Commands;
 
@@ -27,5 +24,4 @@ internal class FlatLookCommand : StarlightCommand
         OptionsUIRootApplyPatch.Apply();
         return true;
     }
-
 }

@@ -22,7 +22,7 @@ public class StarlightSlimeRenderer : MonoBehaviour
             if(value)
                 try { _renderedObj.GetObjectRecursively<Animator>("Appearance").updateMode=AnimatorUpdateMode.UnscaledTime; }
                 catch {}
-            else 
+            else
                 try { _renderedObj.GetObjectRecursively<Animator>("Appearance").updateMode=AnimatorUpdateMode.Normal; }
                 catch {}
         }

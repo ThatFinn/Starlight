@@ -8,7 +8,6 @@ using Starlight.Enums;
 using Starlight.Enums.Sounds;
 using Starlight.Storage.Prefs;
 using Starlight.Managers;
-using Starlight.Popups;
 using Starlight.Storage;
 using Starlight.UI;
 using Starlight.UI.Blueprints;
@@ -37,7 +36,7 @@ internal class StarlightModMenu : StarlightMenu
         var rect = obj.AddComponent<RectTransform>();
         rect.anchorMin = new Vector2(0, 0);
         rect.anchorMax = new Vector2(1, 1);
-        rect.offsetMin = Vector2.zero; 
+        rect.offsetMin = Vector2.zero;
         rect.offsetMax = Vector2.zero;
         rect.localScale = Vector3.one;
         return obj;
@@ -116,7 +115,7 @@ internal class StarlightModMenu : StarlightMenu
                                         Anchors = new Vector4(0,0,1,1),
                                     }
                                 ]
-                            } 
+                            }
                         ]
                     },
                     new PanelUIBlueprintV01
@@ -144,7 +143,7 @@ internal class StarlightModMenu : StarlightMenu
                             {
                                 if (EnableRepoMenu.HasFlag())
                                 {
-                                    Close(); 
+                                    Close();
                                     MenuEUtil.GetMenu<StarlightRepoMenu>().OpenC(this);
                                 }
                                 else
@@ -175,7 +174,7 @@ internal class StarlightModMenu : StarlightMenu
                 Children = [
                     new TextUIBlueprintV01
                     {
-                        TextContent = "modmenu.title", Size = new Vector2(530,90), FontSize = 50, 
+                        TextContent = "modmenu.title", Size = new Vector2(530,90), FontSize = 50,
                         Color = UIColor.TextButton, Alignment = TextAlignmentOptions.Center,
                     }
                 ]
@@ -206,7 +205,7 @@ internal class StarlightModMenu : StarlightMenu
                 Children = [
                     new TextUIBlueprintV01()
                     {
-                        TextContent = displayName, Margins = new Vector4(5,1,5,1), 
+                        TextContent = displayName, Margins = new Vector4(5,1,5,1),
                         Color = UIColor.TextCategoryAlternate, FontSize = 40, FontAutoSizeMax = 40, EnableAutoSizing = true,
                         Size = new Vector2(0,0), Anchors = new Vector4(0,0,1,1), Alignment = TextAlignmentOptions.Left,
                     }
@@ -256,7 +255,7 @@ internal class StarlightModMenu : StarlightMenu
                 
             }
             entries.Add(displayName,list);
-        } 
+        }
         
         foreach (var prefs in PackagePrefs.allPrefs)
         {
@@ -276,7 +275,7 @@ internal class StarlightModMenu : StarlightMenu
                 Children = [
                     new TextUIBlueprintV01()
                     {
-                        TextContent = displayName, Margins = new Vector4(5,1,5,1), 
+                        TextContent = displayName, Margins = new Vector4(5,1,5,1),
                         Color = UIColor.TextCategory, FontSize = 40, FontAutoSizeMax = 40, EnableAutoSizing = true,
                         Size = new Vector2(0,0), Anchors = new Vector4(0,0,1,1), Alignment = TextAlignmentOptions.Left,
                     }
@@ -326,8 +325,7 @@ internal class StarlightModMenu : StarlightMenu
                 
             }
             entries.Add(displayName,list);
-        } 
-        
+        }
         
         var sorted = entries.OrderByDescending(x => x.Key == BuildInfo.Name).
             ThenBy(x => x.Key).Select(x => x.Value).ToList();
@@ -392,7 +390,6 @@ internal class StarlightModMenu : StarlightMenu
             });
         }
         
-        
         if (info.Icon)
         {
             button.Children.Add(new PanelUIBlueprintV01()
@@ -430,7 +427,6 @@ internal class StarlightModMenu : StarlightMenu
             
             finalText += "\n" + Tr("modmenu.modinfo.version", info.Version) + "\n";
             
-            
             if(!string.IsNullOrWhiteSpace(info.SourceCode)) finalText += "\n" + Tr("modmenu.modinfo.sourcecode", FormatLink(info.SourceCode));
             if(!string.IsNullOrWhiteSpace(info.Nexus)) finalText += "\n" + Tr("modmenu.modinfo.nexus", FormatLink(info.Nexus));
             if(!string.IsNullOrWhiteSpace(info.Discord)) finalText += "\n" + Tr("modmenu.modinfo.discord", FormatLink(info.Discord));
@@ -458,7 +454,7 @@ internal class StarlightModMenu : StarlightMenu
                 finalText += "\n";
             }
             
-            if(!string.IsNullOrWhiteSpace(info.Description)) 
+            if(!string.IsNullOrWhiteSpace(info.Description))
                 finalText += "\n" + Tr("modmenu.modinfo.description", info.Description + "\n");
 
             if (isRotten&&rottenInfo!=null&rottenInfo.Count>=3)
@@ -530,10 +526,6 @@ internal class StarlightModMenu : StarlightMenu
         catch {}
     }
 
-    
-    
-    
-    
     private static void ApplyIntFeatures(PackagePref entry, UIBlueprint blueprint, PackagePrefs category)
     {
         blueprint.Children.Add(new InputUIBlueprintV01()
@@ -749,12 +741,6 @@ internal class StarlightModMenu : StarlightMenu
             Alignment = TextAlignmentOptions.Center
         });
     }
-    
-    
-    
-    
-    
-    
     
     // Melon Features
     private static void ApplyIntFeatures(MelonPreferences_Entry entry, UIBlueprint blueprint, MelonPreferences_Category category)
@@ -979,5 +965,4 @@ internal class StarlightModMenu : StarlightMenu
             Alignment = TextAlignmentOptions.Center
         });
     }
-    
 }

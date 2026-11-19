@@ -13,7 +13,7 @@ public enum FeatureIntegerValue
     /// <summary>
     /// Controls the maximum amount of save slots
     /// </summary>
-    SAVESLOT_COUNT=20, 
+    SAVESLOT_COUNT=20,
     /// <summary>
     /// Controls the maximum amount of autocomplete entries on screen in the console
     /// </summary>

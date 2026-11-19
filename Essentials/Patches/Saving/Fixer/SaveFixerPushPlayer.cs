@@ -1,9 +1,7 @@
-using System.Linq;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
 
 namespace Starlight.Patches.Saving.Fixer;
-
 
 [HarmonyPriority(-99999999)]
 [HarmonyPatch(typeof(GameModelPushHelpers), nameof(GameModelPushHelpers.PushPlayer))]
@@ -31,15 +29,15 @@ internal static class SaveFixerPushPlayer
                 foreach(var itemCountPair in copyOfItemCounts)
                     if (NeedsRemoving(itemCountPair.Key,loadReferenceTranslation))
                         player.ItemCounts.Remove(itemCountPair.Key);
-                    
+                
                 foreach(var blueprintID in MiscEUtil.ToNetList(player.Blueprints._items))
                     if (NeedsRemoving(blueprintID,loadReferenceTranslation))
                         player.Blueprints.Remove(blueprintID);
-                    
+                
                 foreach(var availBlueprintID in MiscEUtil.ToNetList(player.AvailBlueprints._items))
                     if (NeedsRemoving(availBlueprintID,loadReferenceTranslation))
                         player.AvailBlueprints.Remove(availBlueprintID);
-                    
+                
                 foreach(var favouriteGadgetID in MiscEUtil.ToNetList(player.FavoriteGadgets._items))
                     if (NeedsRemoving(favouriteGadgetID,loadReferenceTranslation))
                         player.FavoriteGadgets.Remove(favouriteGadgetID);
@@ -57,5 +55,4 @@ internal static class SaveFixerPushPlayer
         catch (Exception e) { LogError(e); }
         
     }
-
 }

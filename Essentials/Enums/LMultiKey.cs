@@ -15,5 +15,4 @@ public struct LMultiKey
     {
         this.keys = keys;
     }
-
 }

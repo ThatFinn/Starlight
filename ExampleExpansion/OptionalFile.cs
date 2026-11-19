@@ -7,7 +7,7 @@
 // This is 100% optional and requires you to reference the MelonLoader.dll,
 // therefore it is recommended to only use this when you want to specify required versions
 
-[assembly: MelonInfo(typeof(OptionFileEntrypoint),  
+[assembly: MelonInfo(typeof(OptionFileEntrypoint),
     //Those infos are only shown by MelonLoader in the console when starting up
     //They don't have to match the real ones.
     "Example Expansion", //Put in the Expansions name
@@ -21,7 +21,6 @@ static class OptionFileInfo
     internal const string ExactGameVersion = null; //e.g 1.1.0 or something similar (optional)
     internal const string MinimumStarlightVersion = null; //e.g 4.0.0 put in the minimum required version of Starlight (optional)
 }
-
 
 // DON'T MODIFY BEYOND THIS POINT
 // Leave this as is
@@ -285,10 +284,8 @@ class OptionFileEntrypoint : MelonMod
             MelonCoroutines.Start(CheckForMainMenu(0));
         }
 
-        
         //Unregister();
     }
-
 
     bool IsSameOrNewer(string v1, string v2)
     {
@@ -313,5 +310,4 @@ class OptionFileEntrypoint : MelonMod
 
         return true;
     }
-
 }

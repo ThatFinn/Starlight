@@ -1,7 +1,5 @@
 ﻿using Starlight.Enums;
-using Starlight.Managers;
 using Starlight.Storage;
-using UnityEngine.InputSystem;
 
 namespace Starlight.Commands;
 
@@ -46,7 +44,6 @@ internal class FXPlayCommand : StarlightCommand
             if (!TryParseFloat(args[1], out playbackSpeed, 0, false)) return false;
             if (args.Length == 3) if (!TryParseBool(args[2], out playAndPause)) return false;
         }
-
 
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {

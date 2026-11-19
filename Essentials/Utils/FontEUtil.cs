@@ -18,7 +18,7 @@ public static class FontEUtil
     [Obsolete("Currently broken!")] public static TMP_FontAsset FontFromOS(string name)
     {
         try
-        { 
+        {
             string path = $"C:\\Windows\\Fonts\\{name}.ttf";
             if(!File.Exists(path)) throw new Exception();
             FontEngine.InitializeFontEngine();
@@ -38,7 +38,7 @@ public static class FontEUtil
             fontAsset.isMultiAtlasTexturesEnabled = true;
             Material material = new Material(ShaderUtilities.ShaderRef_MobileSDF);
             material.SetTexture(ShaderUtilities.ID_MainTex, texture);
-            material.SetFloat(ShaderUtilities.ID_WeightNormal, fontAsset.normalStyle); 
+            material.SetFloat(ShaderUtilities.ID_WeightNormal, fontAsset.normalStyle);
             material.SetFloat(ShaderUtilities.ID_WeightBold, fontAsset.boldStyle);
             material.SetFloat(ShaderUtilities.ID_TextureHeight, 1024);
             material.SetFloat(ShaderUtilities.ID_TextureWidth, 1024);
@@ -53,5 +53,4 @@ public static class FontEUtil
         catch { StarlightEntryPoint.SendFontError(name); }
         return null;
     }
-
 }

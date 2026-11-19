@@ -1,6 +1,5 @@
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
-using Il2CppMonomiPark.SlimeRancher.Persist;
 
 namespace Starlight.Patches.Saving.Fixer;
 
@@ -18,7 +17,7 @@ internal static class SaveFixerPushGadget
     {
         if (!StarlightEntryPoint.disableFixSaves)
             try
-            { 
+            {
                 if(NeedsRemoving(gadget.TypeId,loadReferenceTranslation)) return false;
             }
             catch (Exception e)
@@ -28,5 +27,4 @@ internal static class SaveFixerPushGadget
             }
         return true;
     }
-	
 }

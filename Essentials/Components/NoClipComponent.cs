@@ -2,7 +2,6 @@
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Starlight.Commands;
 using Starlight.Enums;
-using Starlight.Managers;
 using Starlight.Storage;
 using UnityEngine.InputSystem;
 

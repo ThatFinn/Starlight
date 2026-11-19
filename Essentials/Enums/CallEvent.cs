@@ -7,7 +7,6 @@ public enum CallEvent : long
     //Negative values have custom arguments
     //Positive values don't
     
-    
     /// <summary>
     /// Gets called in the postfix of SystemContext.Start()<br />
     /// Custom Arguments:<br />
@@ -39,7 +38,6 @@ public enum CallEvent : long
     /// </summary>
     AfterSaveDirectorLoad = -5,
     
-    
     OnSceneStandaloneEngagementPromptLoad = 1,
     OnScenePlayerCoreLoad = 2,
     OnSceneUICoreLoad = 3,
@@ -61,11 +59,8 @@ public enum CallEvent : long
     
     OnLoadCommands=19,
     
-    
     //OnPrismCreateAdditions=20,
     //AfterPrismCreateAdditions=21,
     //AfterPrismLargosCreated=22
-    
-    
     
 }

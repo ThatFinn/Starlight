@@ -17,7 +17,7 @@ internal class ScaleCommand: StarlightCommand
         if (!TryParseVector3(args[0], args[1], args[2], out scale)) return false;
         
         Camera cam = MiscEUtil.GetActiveCamera(); if (!cam) return SendNoCamera();
-             
+        
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {
             var gameobject = hit.collider.gameObject;

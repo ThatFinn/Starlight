@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Starlight.Utils;
@@ -21,7 +20,6 @@ public static class EnumEUtil
         catch { return null; }
     }
 
-
     public static object Parse(Type enumType, string value, bool ignoreCase)
     {
         if (!enumType.IsEnum)
@@ -37,7 +35,6 @@ public static class EnumEUtil
         }
     }
 
-
     public static object FromInt(Type enumType, int value)
     {
         if (!enumType.IsEnum)
@@ -46,7 +43,6 @@ public static class EnumEUtil
         return System.Enum.ToObject(enumType, value);
     }
 
-
     public static string[] GetAllNames(Type enumType)
     {
         if (!enumType.IsEnum)
@@ -54,7 +50,6 @@ public static class EnumEUtil
 
         return System.Enum.GetNames(enumType);
     }
-
 
     public static object[] GetAll(Type enumType)
     {
@@ -70,7 +65,6 @@ public static class EnumEUtil
         return enums.ToArray();
     }
 
-
     public static bool IsDefined(Type enumType, string value)
     {
         try
@@ -79,7 +73,6 @@ public static class EnumEUtil
         }
         catch { return false; }
     }
-
 
     public static bool HasEnumValue(Type enumType, string value)
     {
@@ -110,7 +103,6 @@ public static class EnumEUtil
         catch { return errorReturn; }
     }
 
-
     public static T FromInt<T>(int value) where T : System.Enum => (T)System.Enum.ToObject(typeof(T), value);
     public static string[] GetAllNames<T>() where T : System.Enum => System.Enum.GetNames(typeof(T));
 
@@ -132,7 +124,6 @@ public static class EnumEUtil
         }
         catch { return false; }
     }
-
 
     public static bool HasEnumValue<T>(string value) where T : System.Enum
     {

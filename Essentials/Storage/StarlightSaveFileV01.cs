@@ -76,7 +76,7 @@ public class StarlightSaveFileV01
             byte[] buffer = new byte[4096];
             int read;
 
-            while ((read = gzip.Read(buffer, 0, buffer.Length)) > 0) 
+            while ((read = gzip.Read(buffer, 0, buffer.Length)) > 0)
                 decompressed.Write(buffer, 0, read);
 
             byte[] result = decompressed.ToArray();

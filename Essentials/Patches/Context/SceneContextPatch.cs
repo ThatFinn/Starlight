@@ -1,7 +1,5 @@
 using Starlight.Enums;
 using Starlight.Managers;
-using Starlight.Prism.Lib;
-using Starlight.Storage;
 
 namespace Starlight.Patches.Context;
 
@@ -12,9 +10,8 @@ internal class SceneContextPatch
     {
         StarlightEntryPoint.CheckForTime();
         foreach (var expansion in StarlightEntryPoint.ExpansionV01S)
-            try { expansion.AfterSceneContext(__instance); } 
+            try { expansion.AfterSceneContext(__instance); }
             catch (Exception e) { LogError(e); }
         StarlightCallEventManager.ExecuteWithArgs(CallEvent.AfterSceneContextLoad, ("sceneContext", __instance));
     }
 }
-

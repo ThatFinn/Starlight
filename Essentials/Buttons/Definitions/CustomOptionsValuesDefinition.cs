@@ -16,7 +16,6 @@ internal class CustomOptionsValuesDefinition : ScriptedValuePresetOptionDefiniti
         try { button.onModify.Invoke(index); }catch (Exception e) { LogError(e); }
     }
 
-
     private int askedForPreset = 0;
     public override int GetDefaultPresetIndex()
     {

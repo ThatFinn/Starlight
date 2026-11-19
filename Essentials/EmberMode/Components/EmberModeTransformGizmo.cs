@@ -23,7 +23,7 @@ internal class EmberModeTransformGizmo : MonoBehaviour
     private GameObject _zHandle;
 
     private bool _isDragging;
-    private int _dragAxis = -1; 
+    private int _dragAxis = -1;
     private Vector3 _dragStartWorldPos;
     private Vector3 _dragStartObjPos;
     private Plane _dragPlane;
@@ -33,9 +33,7 @@ internal class EmberModeTransformGizmo : MonoBehaviour
     private const float ARROW_SCALE_FACTOR = 0.15f;
     private const float TIP_LENGTH = 0.18f;
     
-    
-    
-    private const int GIZMO_LAYER = 2; 
+    private const int GIZMO_LAYER = 2;
 
     private int _hoveredAxis = -1;
 
@@ -62,7 +60,6 @@ internal class EmberModeTransformGizmo : MonoBehaviour
 
         if (Mouse.current == null) return;
 
-        
         if (LKey.Escape.OnKeyDown())
         {
             if (_selected) Deselect();
@@ -80,7 +77,6 @@ internal class EmberModeTransformGizmo : MonoBehaviour
         if (_isDragging && Mouse.current.leftButton.wasReleasedThisFrame)
             StopDrag();
 
-        
         if ((CurrentTool == TransformTool.Move || CurrentTool == TransformTool.Scale) && _selected && _gizmoRoot)
         {
             _gizmoRoot.transform.position = _selected.transform.position;
@@ -92,7 +88,6 @@ internal class EmberModeTransformGizmo : MonoBehaviour
 
         UpdateToolInfo();
 
-        
         if (_selected)
         {
             if (CurrentTool == TransformTool.Move)
@@ -198,7 +193,6 @@ internal class EmberModeTransformGizmo : MonoBehaviour
         var mousePos = Mouse.current.position.ReadValue();
         var ray = cam.ScreenPointToRay(new Vector3(mousePos.x, mousePos.y, 0));
 
-        
         if (CurrentTool == TransformTool.Move || CurrentTool == TransformTool.Scale)
         {
             if (_gizmoRoot)
@@ -264,7 +258,6 @@ internal class EmberModeTransformGizmo : MonoBehaviour
             }
         }
 
-        
         if (Physics.Raycast(ray, out var worldHit, Mathf.Infinity, MiscEUtil.defaultMask))
             Select(worldHit.transform.gameObject);
         else Deselect();
@@ -278,7 +271,6 @@ internal class EmberModeTransformGizmo : MonoBehaviour
 
         _selected = obj;
 
-        
         var renderer = _selected.GetComponent<Renderer>();
         if (renderer && renderer.material)
         {
@@ -324,7 +316,7 @@ internal class EmberModeTransformGizmo : MonoBehaviour
     {
         var axisObj = new GameObject($"GizmoCollider_{name}");
         axisObj.transform.SetParent(_gizmoRoot.transform, false);
-        axisObj.layer = GIZMO_LAYER; 
+        axisObj.layer = GIZMO_LAYER;
         
         var col = axisObj.AddComponent<CapsuleCollider>();
         col.isTrigger = true;

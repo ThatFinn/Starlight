@@ -89,7 +89,7 @@ internal class StarlightTestDevMenu : StarlightMenu
                                 MinValue = 0,
                                 MaxValue = 100,
                             },
-                            
+                        
                             new SliderUIBlueprintV01()
                             {
                                 Size =  new Vector2(400,40), Position = new Vector2(0,-200),
@@ -135,7 +135,7 @@ internal class StarlightTestDevMenu : StarlightMenu
         var rect = obj.AddComponent<RectTransform>();
         rect.anchorMin = new Vector2(0, 0);
         rect.anchorMax = new Vector2(1, 1);
-        rect.offsetMin = Vector2.zero; 
+        rect.offsetMin = Vector2.zero;
         rect.offsetMax = Vector2.zero;
         rect.localScale = Vector3.one;
         return obj;

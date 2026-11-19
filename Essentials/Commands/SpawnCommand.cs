@@ -1,6 +1,4 @@
-﻿using Il2CppMonomiPark.SlimeRancher.Slime;
-
-namespace Starlight.Commands;
+﻿namespace Starlight.Commands;
 
 internal class SpawnCommand : StarlightCommand
 {
@@ -27,15 +25,11 @@ internal class SpawnCommand : StarlightCommand
         var def = LookupEUtil.GetIdentifiableTypeByName(identifierTypeName);
         if (!def) return SendNotValidIdentType(identifierTypeName);
         
-        
         var makeRadiant = false;
         int amount = 1;
         if (args.Length >= 2) if(!TryParseInt(args[1], out amount,1, true)) return false;
         if (args.Length >= 3) if (!TryParseBool(args[2], out makeRadiant)) return false;
 
-        
-        
-        
         for (int i = 0; i < amount; i++)
         {
             if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))

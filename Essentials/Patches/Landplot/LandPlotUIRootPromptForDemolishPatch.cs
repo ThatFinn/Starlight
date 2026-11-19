@@ -12,9 +12,9 @@ internal static class LandPlotUIRootClosePatch
         if (plotPrefab.name=="patchEmpty")
             ExecuteInTicks(() =>
             {
-                foreach (var c in GetAllInScene<Canvas>("DimBackground(Clone)")) 
+                foreach (var c in GetAllInScene<Canvas>("DimBackground(Clone)"))
                     Object.Destroy(c.gameObject);
-                try { __instance.Close(); 
+                try { __instance.Close();
                 } catch { }
             },2);
     }

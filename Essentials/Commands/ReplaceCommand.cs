@@ -37,7 +37,7 @@ internal class ReplaceCommand : StarlightCommand
                 //Remove old one
                 DeathHandler.Kill(gameobject, killDamage);
 
-            } 
+            }
             else if (gameobject.GetComponentInParent<Gadget>())
             {
                 isValid = true;
@@ -47,7 +47,7 @@ internal class ReplaceCommand : StarlightCommand
             }
             if (isValid)
             {
-                //Add new one 
+                //Add new one
                 GameObject spawned = null;
                 if (type.TryCast<GadgetDefinition>()!=null) spawned = type.TryCast<GadgetDefinition>().SpawnGadget(hit.point,Quaternion.identity).GetGameObject();
                 else spawned = type.SpawnActor(hit.point, Quaternion.identity);

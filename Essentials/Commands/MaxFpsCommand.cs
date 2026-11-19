@@ -1,4 +1,3 @@
-using System.Collections;
 using Starlight.Patches.Options;
 
 namespace Starlight.Commands;
@@ -27,5 +26,4 @@ internal class MaxFpsCommand : StarlightCommand
         OptionsUIRootApplyPatch.Apply();
         return true;
     }
-
 }

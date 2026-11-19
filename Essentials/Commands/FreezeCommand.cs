@@ -14,8 +14,7 @@ internal class FreezeCommand : StarlightCommand
         if (!inGame) return SendLoadASaveFirst();
 
         Camera cam = MiscEUtil.GetActiveCamera(); if (!cam) return SendNoCamera();
-            
-
+        
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {
             var ident = hit.transform.GetComponent<IdentifiableActor>();
@@ -44,4 +43,3 @@ internal class FreezeCommand : StarlightCommand
         return SendNotLookingAtAnything();
     }
 }
-

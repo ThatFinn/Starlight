@@ -1,5 +1,4 @@
 ﻿using System;
-using Il2CppMonomiPark.SlimeRancher.Script.UI.Pause;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.UI.Pause;
 using Starlight.Buttons;

@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
 using MelonLoader;
-using Starlight.Menus;
 
 namespace Starlight.Managers;
 
@@ -32,8 +31,6 @@ public static class StarlightLogManager
         MelonLogger.WarningCallbackHandler += (s, s1) => { if (StarlightEntryPoint.mLLogToStarlightLog) SendWarning($"[{s}]: {s}", false); };
     }
     
-    
-    
     /// <summary>
     /// Display a message in the console
     /// </summary>
@@ -47,7 +44,6 @@ public static class StarlightLogManager
         if (doMLLog&&(message.Contains("\n") || internal_logMLForSingleLine)) mlog.Msg(message);
         OnSendMessage?.Invoke(message);
     }
-    
     
     /// <summary>
     /// Display an error in the log
@@ -77,8 +73,6 @@ public static class StarlightLogManager
         OnSendWarning?.Invoke(message);
     }
     
-    
-    
     /// <summary>
     /// Displays a message box
     /// </summary>
@@ -103,8 +97,6 @@ public static class StarlightLogManager
         MessageBox(IntPtr.Zero, message, title, 0);
     }
 
-    
-    
     static bool HideMessage(string message)
     {
         if (string.IsNullOrEmpty(message)) return true;

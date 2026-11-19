@@ -6,7 +6,7 @@ using Starlight.Saving;
 using Starlight.Storage;
 
 namespace Starlight.Patches.Saving;
-   
+
 [HarmonyPriority(99999999)]
 [HarmonyPatch(typeof(GameModelPushHelpers), nameof(GameModelPushHelpers.PushGame))]
 internal static class CustomSaveDataLoadPatch
@@ -20,7 +20,7 @@ internal static class CustomSaveDataLoadPatch
     {
         foreach (var expansion in StarlightEntryPoint.ExpansionV01S)
             if (_rootSaves.ContainsKey(expansion))
-                try { expansion.OnCustomSaveDataReceived(_rootSaves[expansion].Item1, _rootSaves[expansion].Item2); } 
+                try { expansion.OnCustomSaveDataReceived(_rootSaves[expansion].Item1, _rootSaves[expansion].Item2); }
                 catch (Exception e) { LogError(e); }
             else if(_noRootSaves.ContainsKey(expansion))
                 try { expansion.OnNoCustomSaveDataReceived(_noRootSaves[expansion]); }
@@ -51,7 +51,6 @@ internal static class CustomSaveDataLoadPatch
                 StarlightSaveManager.OnInGameLoad(null,sessionData);
             }catch (Exception e) { LogError(e); }
         
-        
         _rootSaves = new Dictionary<StarlightExpansionV01, (RootSave, LoadingGameSessionData)>();
         _noRootSaves = new Dictionary<StarlightExpansionV01, LoadingGameSessionData>();
         var executedExpansions = new List<StarlightExpansionV01>();
@@ -71,7 +70,7 @@ internal static class CustomSaveDataLoadPatch
                             if(info.ID.CreateMD5() == md5Hash)
                             {
                                 var sessionData = new LoadingGameSessionData(actorIdProvider, saveReferenceTranslation, saveReferenceTranslation.ToNonIVariant(), gameState, gameModel);
-                                RootSave rootSave = null; 
+                                RootSave rootSave = null;
                                 try
                                 {
                                     var rawBytes = remaining.Substring(32).DecodeFromBase128();

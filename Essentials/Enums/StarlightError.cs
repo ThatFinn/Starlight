@@ -5,19 +5,19 @@ public enum StarlightError
     /// <summary>
     /// Returns when there is no error
     /// </summary>
-    NoError=0, 
+    NoError=0,
     /// <summary>
     /// Returns when the action is only available while in a save file
     /// </summary>
-    NotInGame=1, 
+    NotInGame=1,
     /// <summary>
     /// Returns when the player object is null
     /// </summary>
-    PlayerNull=2, 
+    PlayerNull=2,
     /// <summary>
     /// Returns when the teleportable player is null
     /// </summary>
-    TeleportablePlayerNull=3, 
+    TeleportablePlayerNull=3,
     /// <summary>
     /// Returns when the character controller is null
     /// </summary>
@@ -25,11 +25,11 @@ public enum StarlightError
     /// <summary>
     /// Returns when the SceneGroup is not supported
     /// </summary>
-    SceneGroupNotSupported=5, 
+    SceneGroupNotSupported=5,
     /// <summary>
     /// Returns when an object under the same name already exists
     /// </summary>
-    AlreadyExists=6, 
+    AlreadyExists=6,
     /// <summary>
     /// Returns when no object under said name exists
     /// </summary>

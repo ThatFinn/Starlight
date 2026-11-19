@@ -21,7 +21,6 @@ internal static class StarlightLanguageManager
     private static Dictionary<string, string> _loadedLanguage = new ();
     private static Dictionary<string, string> _defaultLang;
     
-    
     internal static string Translation(string key)
     {
         if (string.IsNullOrEmpty(key) || !_loadedLanguage.ContainsKey(key)) return key;
@@ -38,7 +37,7 @@ internal static class StarlightLanguageManager
             translatedRaw = translatedRaw.Replace($"${i}", obj.ToString());
             i++;
         }
-    
+        
         return translatedRaw;
     }
 
@@ -104,18 +103,16 @@ internal static class StarlightLanguageManager
         {
             _defaultLang = new Dictionary<string, string>();
             foreach (var languageDicts in Languages[DEFAULT_LANGUAGECODE.Get()])
-                foreach (var translation in languageDicts) 
+                foreach (var translation in languageDicts)
                     _defaultLang[translation.Key] = translation.Value;
         }
         _loadedLanguage = new Dictionary<string, string>(_defaultLang);
         if (code != DEFAULT_LANGUAGECODE.Get()) if (Languages.ContainsKey(code))
-            foreach (var languageDicts in Languages[code]) 
+            foreach (var languageDicts in Languages[code])
                 foreach (var translation in languageDicts)
                     _loadedLanguage[translation.Key] = translation.Value;
         StarlightEntryPoint.CheckFallBackFont();
     }
-    
-    
     
     internal static LocalizedString AddTranslation(string localized, string key = null, string table = "Actor") =>
         AddTranslation(localized, key, table, out _);
@@ -124,12 +121,11 @@ internal static class StarlightLanguageManager
     {
         usedKey = null;
         if (!InjectTranslations.HasFlag())
-        { 
+        {
             var tutorial = LocalizationUtil.GetTable("Tutorial");
             foreach (var pair in tutorial.m_TableEntries) return new LocalizedString(tutorial.SharedData.TableCollectionName, pair.Value.SharedEntry.Id);
         }
         StringTable table2 = LocalizationUtil.GetTable(table);
-
 
         StringTableEntry existing = null;
         if (string.IsNullOrWhiteSpace(key))
@@ -159,7 +155,7 @@ internal static class StarlightLanguageManager
         dictionary[key] = localized;
         StringTableEntry stringTableEntry = table2.AddEntry(key, localized);
         return new LocalizedString(table2.SharedData.TableCollectionName, stringTableEntry.SharedEntry.Id);
-        }
+    }
     /// <summary>
     /// Adds an entry made from one of Starlight's own translations
     /// </summary>
@@ -177,10 +173,10 @@ internal static class StarlightLanguageManager
 
         StarlightToSRLanguage.TryAdd(starlightTranslationID,localizedString);
         StarlightReplaceOnLanguageChange.TryAdd(starlightTranslationID, (key, table, localizedString));
-            
+        
         return localizedString;
     }
-        
+    
     /// <summary>
     /// Forgets the entries made from Starlight's own translations
     /// </summary>
@@ -213,9 +209,9 @@ internal static class StarlightLanguageManager
     internal static void SetTranslation(string localized, string key, string table)
     {
         if (!InjectTranslations.HasFlag()) return;
-            
+        
         StringTable table2 = LocalizationUtil.GetTable(table);
-            
+        
         table2.GetEntry(key).Value = localized;
     }
     internal static void SetTranslationFromStarlight(string starlightTranslationID, string key, string table) => SetTranslation(Translation(starlightTranslationID), key, table);

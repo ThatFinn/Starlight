@@ -1,11 +1,9 @@
 using System;
 using Il2CppInterop.Runtime.Attributes;
-using Il2CppMonomiPark.SlimeRancher.Player;
 using Il2CppTMPro;
 using Starlight.Enums.Sounds;
 using Starlight.Popups;
 using Starlight.Storage;
-using Unity.Mathematics;
 using UnityEngine.UI;
 
 namespace Starlight.Components;

@@ -15,5 +15,4 @@ internal class SpawnerPatch
             try { action.Invoke(__instance); }
             catch (Exception e) { LogError(e); }
     }
-    
 }

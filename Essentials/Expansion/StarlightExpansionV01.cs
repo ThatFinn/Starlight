@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Reflection;
 using Il2CppMonomiPark.SlimeRancher;
 using MelonLoader.Utils;
 using Starlight.Managers;
@@ -24,12 +23,10 @@ public abstract class StarlightExpansionV01 : StarlightExpansionVXX
     }
     private string _modDataPath = null;
     
-    
     public PackagePrefs prefs => _prefs;
     internal PackagePrefs _prefs = null;
     
     protected StarlightExpansionV01() {}
-    
     
     #region Native Events
 
@@ -99,15 +96,11 @@ public abstract class StarlightExpansionV01 : StarlightExpansionVXX
     /// </summary>
     public virtual void OnUnload() { }
     
-    
     /// <summary>
     /// Runs when the PackagePrefs are created.
     /// </summary>
     public virtual void OnCreatePrefs() {}
     #endregion
-    
-    
-    
     
     #region Starlight Scene Events
     
@@ -190,9 +183,6 @@ public abstract class StarlightExpansionV01 : StarlightExpansionVXX
     public virtual void OnZoneCoreUnloaded() { }
     #endregion
     
-    
-    
-    
     #region Starlight Context & Directors Events
     /// <summary>
     /// Gets executed once SystemContext loads. In Postfix of the Start method
@@ -222,8 +212,7 @@ public abstract class StarlightExpansionV01 : StarlightExpansionVXX
     public virtual void AfterSaveDirector(AutoSaveDirector saveDirector) { }
     #endregion
     
-    
-    #region Starlight 
+    #region Starlight
     
     /// <summary>
     /// Loads the custom SaveRoot from a save file<br />
@@ -240,8 +229,6 @@ public abstract class StarlightExpansionV01 : StarlightExpansionVXX
     /// </summary>
     public virtual void OnEarlyNoCustomSaveDataReceived(LoadingGameSessionData loadingGameSessionData) { }
     
-    
-    
     /// <summary>
     /// Loads the custom SaveRoot from a save file<br />
     /// Check the type before proceeding<br />
@@ -252,7 +239,6 @@ public abstract class StarlightExpansionV01 : StarlightExpansionVXX
     /// Same as OnCustomSaveDataReceived but only gets called if this mod has no custom save data
     /// </summary>
     public virtual void OnNoCustomSaveDataReceived(LoadingGameSessionData loadingGameSessionData) { }
-    
     
     ///.
     /// Gets executed everytime a save file is being saved<br/>
@@ -270,8 +256,6 @@ public abstract class StarlightExpansionV01 : StarlightExpansionVXX
     public virtual void OnLoadCommands() { }
     
     #endregion
-    
-    
     
     #region Prism Events
     /// <summary>

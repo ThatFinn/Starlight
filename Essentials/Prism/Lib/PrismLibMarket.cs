@@ -87,7 +87,6 @@ public static class PrismLibMarket
                         return true;
         } catch { }
 
-
         if (PrismShortcuts.MarketData.ContainsKey(ident)) return true;
         foreach (var keyPair in PrismShortcuts.MarketPlortEntries)
         {
@@ -104,7 +103,7 @@ public static class PrismLibMarket
                     foreach (IdentifiableType removed in PrismShortcuts.RemoveMarketPlortEntries)
                         if (ident == removed)
                         {
-                            returnBool = false; 
+                            returnBool = false;
                             break;
                         }
                     return returnBool;

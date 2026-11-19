@@ -12,7 +12,6 @@ internal class LKeyInputAcquirer : MonoBehaviour
     private HashSet<LKey> downThisFrame = new HashSet<LKey>();
     private HashSet<LKey> upThisFrame = new HashSet<LKey>();
 
-
     private void Start()
     {
         if (Instance != null)
@@ -96,7 +95,6 @@ internal class LKeyInputAcquirer : MonoBehaviour
                 }
                 catch {}
             
-
             if (!anyPressed)
             {
                 pressedKeys.Clear();
@@ -104,7 +102,6 @@ internal class LKeyInputAcquirer : MonoBehaviour
             }
         }
     }
-
 
     internal bool OnKey(LKey key) => pressedKeys.Contains(key);
     internal bool OnKeyDown(LKey key) => downThisFrame.Contains(key);

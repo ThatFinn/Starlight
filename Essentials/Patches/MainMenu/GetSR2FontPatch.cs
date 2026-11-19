@@ -16,6 +16,5 @@ internal static class GetSR2FontPatch
             if (label != null) StarlightEntryPoint.Sr2FontAsset = label.font;
             StarlightEntryPoint.SetupFonts();
         }
-        
     }
 }

@@ -33,9 +33,9 @@ internal static class StarlightRepoManager
         Error = (sender, args) =>
         {
             if(DebugLogging.HasFlag()) Log($"Error: {args.ErrorContext.Error.Message}");
-            //if (args.ErrorContext.Member is string memberName && args.ErrorContext.Path.Contains(nameof(StarlightSaveData.fonts))) 
+            //if (args.ErrorContext.Member is string memberName && args.ErrorContext.Path.Contains(nameof(StarlightSaveData.fonts)))
             //    ((Dictionary<string, StarlightMenuFont>)args.ErrorContext.OriginalObject)[memberName] = StarlightMenuFont.Default;
-            //if (args.ErrorContext.Member is string memberName2 && args.ErrorContext.Path.Contains(nameof(StarlightSaveData.themes))) 
+            //if (args.ErrorContext.Member is string memberName2 && args.ErrorContext.Path.Contains(nameof(StarlightSaveData.themes)))
             //    ((Dictionary<string, StarlightMenuTheme>)args.ErrorContext.OriginalObject)[memberName2] = StarlightMenuTheme.Default;
             args.ErrorContext.Handled = true;
         }
@@ -53,16 +53,16 @@ internal static class StarlightRepoManager
                     var repo = JsonConvert.DeserializeObject<Repo>(response, jsonSerializerSettings);
                     if (repo.identifier != repoSave.identifier)
                     {
-                        Log("StarlightRepo identifier changed"); 
+                        Log("StarlightRepo identifier changed");
                         return null;
                     }
                     return repo;
 
                 }
-                catch (Exception e) 
-                { 
+                catch (Exception e)
+                {
                     LogError("Error fetching repo: "+repoSave.url);
-                    Log("The json file is broken! Please contact the repo maintainer!"); 
+                    Log("The json file is broken! Please contact the repo maintainer!");
                     LogError(e);
                 }
             }

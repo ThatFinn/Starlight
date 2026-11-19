@@ -9,7 +9,7 @@ public abstract class UIBlueprint
     private static Canvas _menuCanvas;
 
     /// <summary>
-    /// The scale factor of the canvas Starlight menus use 
+    /// The scale factor of the canvas Starlight menus use
     /// </summary>
     internal static float CanvasScale
     {
@@ -28,7 +28,7 @@ public abstract class UIBlueprint
     internal static float ScaleFactorY => ScaleFactor;
     internal static float ScaleFactorX => ScaleFactor;
     [Obsolete("Please use Name instead")]public string mame = null;
-    public string Name = "<MissingName>"; 
+    public string Name = "<MissingName>";
     public Vector2 Size = new(100,100);
     public Vector2 Position = Vector2.zero;
     public Vector2 Rotation = new ();
@@ -62,11 +62,11 @@ public abstract class UIBlueprint
         
         if(Components != null)
             foreach (var comp in Components)
-                try { obj.AddComponent(comp); } catch (Exception e) { LogError(e); } 
+                try { obj.AddComponent(comp); } catch (Exception e) { LogError(e); }
         
         if (Children != null)
             foreach (var child in Children)
-                try {  child.Render(theme, fontTheme, CustomChildHolder ?? rectT); } catch (Exception e) { LogError(e); } 
+                try {  child.Render(theme, fontTheme, CustomChildHolder ?? rectT); } catch (Exception e) { LogError(e); }
         
         try { AfterRenderChildren(theme, fontTheme, rectT); } catch (Exception e) { LogError(e); }
         return rectT;

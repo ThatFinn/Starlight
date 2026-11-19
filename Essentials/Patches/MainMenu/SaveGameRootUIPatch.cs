@@ -69,17 +69,16 @@ internal static class SaveGameRootUIPatch
                     StarlightConfirmationViewerPopUp.Open(Tr("messages.save.export.error",error),null,null);
                     return;
                 }
-                if(filePath.EndsWith(".json")) File.WriteAllText(filePath,savefile.Export());  
-                else File.WriteAllBytes(filePath,savefile.ExportCompressed());  
+                if(filePath.EndsWith(".json")) File.WriteAllText(filePath,savefile.Export());
+                else File.WriteAllBytes(filePath,savefile.ExportCompressed());
             }
         }
     }
 
-
     static void ScrollTo(ScrollRect scroll,RectTransform target)
     {
         var minus = 0f;
-            
+        
         foreach (var child in scroll.content.transform.GetChildren())
         {
             if (!child.gameObject.activeSelf) continue;

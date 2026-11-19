@@ -46,7 +46,7 @@ public class StarlightConsole : StarlightMenu
         var rect = obj.AddComponent<RectTransform>();
         rect.anchorMin = new Vector2(0, 0);
         rect.anchorMax = new Vector2(1, 1);
-        rect.offsetMin = Vector2.zero; 
+        rect.offsetMin = Vector2.zero;
         rect.offsetMax = Vector2.zero;
         rect.localScale = Vector3.one;
         return obj;
@@ -236,7 +236,7 @@ public class StarlightConsole : StarlightMenu
     void RefreshAutoComplete(string text)
     {
         if (!_openMenu) return;
-        _autoCompleteContent.parent.parent.GetComponent<ScrollRect>().enabled = true; // Make sure that the component is enabled            
+        _autoCompleteContent.parent.parent.GetComponent<ScrollRect>().enabled = true; // Make sure that the component is enabled
 
         if (_selectedAutoComplete > _autoCompleteContent.childCount - 1)
             _selectedAutoComplete = 0;
@@ -291,8 +291,8 @@ public class StarlightConsole : StarlightMenu
                         {
                             finalText = "<alpha=#67>"+new Regex(Regex.Escape(containing), RegexOptions.IgnoreCase).Replace(
                                 argument,
-                                "<alpha=#FF>" + 
-                                argument.Substring(argument.ToUpper().IndexOf(containing.ToUpper(), StringComparison.Ordinal),containing.Length) 
+                                "<alpha=#FF>" +
+                                argument.Substring(argument.ToUpper().IndexOf(containing.ToUpper(), StringComparison.Ordinal),containing.Length)
                                 + "<alpha=#67>", 1);
                         }
 
@@ -331,8 +331,8 @@ public class StarlightConsole : StarlightMenu
                 {
                     finalText = "<alpha=#67>"+new Regex(Regex.Escape(text), RegexOptions.IgnoreCase).Replace(
                         valuePair.Key,
-                        "<alpha=#FF>" + 
-                        valuePair.Key.Substring(valuePair.Key.ToUpper().IndexOf(text.ToUpper(), StringComparison.Ordinal),text.Length) 
+                        "<alpha=#FF>" +
+                        valuePair.Key.Substring(valuePair.Key.ToUpper().IndexOf(text.ToUpper(), StringComparison.Ordinal),text.Length)
                         + "<alpha=#67>", 1);
                 }
                 var instance = GetAutoCompletePrefab(finalText);
@@ -353,8 +353,8 @@ public class StarlightConsole : StarlightMenu
 
     protected override void OnUpdate()
     {
-        try 
-        { 
+        try
+        {
             while (_messageHistory.Count >= MAX_CONSOLELINES.Get())
             {
                 _messageHistory.RemoveAt(0);

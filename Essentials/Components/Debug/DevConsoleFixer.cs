@@ -143,6 +143,4 @@ internal class DevConsoleFixer : MonoBehaviour
 
         GUI.contentColor = Color.white;
     }
-
-
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using Il2CppMonomiPark.SlimeRancher.Drone;
+﻿using Il2CppMonomiPark.SlimeRancher.Drone;
 
 namespace Starlight.Commands;
 
@@ -42,7 +41,7 @@ internal class KillAllCommand : StarlightCommand
         var type = LookupEUtil.GetIdentifiableTypeByName(identifierTypeName);
         if (!type) return SendNotValidIdentType(identifierTypeName);
         if (type.IsGadget()) return SendIsGadgetNotItem(type.GetName());
-                
+        
         foreach (var ident in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
             if (ident.hasStarted)
                 if (ident.identType == type)

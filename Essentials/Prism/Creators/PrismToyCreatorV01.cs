@@ -24,7 +24,6 @@ internal class PrismToyCreatorV01
     public float BaseAgitationReductionFactor = 0.15f;
     public float FavoriteAgitationReductionFactor = 0.3f;
     
-    
     public PrismToyCreatorV01(string name, GameObject visualModelPrefab, ColliderData colliderData, Sprite icon, LocalizedString localized)
     {
         this.Name = name;
@@ -92,7 +91,6 @@ internal class PrismToyCreatorV01
         modelHolder.transform.SetParent(modelInstance.transform);
         modelHolder.transform.position = Vector3.zero;
         
-        
         ColliderData.AddToGameObject(toy.prefab);
         
         // I highly doubt anyone will make a toy snare-able
@@ -101,14 +99,10 @@ internal class PrismToyCreatorV01
         
         PrismLibSaving.SetupForSaving(toy,referenceID);
         
-        
         var prismToy = new PrismToy(toy, false);
-        
         
         _createdToy = prismToy;
         PrismShortcuts.PrismToys.Add(toy.ReferenceId,prismToy);
         return _createdToy;
     }
 }
-
-

@@ -5,7 +5,6 @@ using UnityEngine.AddressableAssets;
 
 namespace Starlight.Patches.General;
 
-
 [HarmonyPatch(typeof(SceneLoader))]
 internal class SceneLoaderLoadSceneGroupPatch
 {
@@ -76,8 +75,5 @@ internal class SceneLoaderLoadSceneGroupPatch
             LogError(e);
         }
         isTeleportingPlayer = false;
-    } 
-    
-    
-
+    }
 }

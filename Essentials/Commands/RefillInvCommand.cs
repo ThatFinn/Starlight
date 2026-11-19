@@ -43,7 +43,6 @@ internal class RefillInvCommand : StarlightCommand
         if (!InventoryEUtil.GetIsSlotUnlocked(slotToFill))
             return SendError(Tr("cmd.refillinv.error.slotnotunlocked", slotToFill + 1));
 
-
         if (InventoryEUtil.GetIsSlotEmpty(slotToFill))
             return SendError(Tr("cmd.refillinv.error.slotempty", slotToFill + 1));
 
@@ -52,4 +51,3 @@ internal class RefillInvCommand : StarlightCommand
         return true;
     }
 }
-    

@@ -1,6 +1,5 @@
 using Il2CppMonomiPark.SlimeRancher.UI.Map;
 using Starlight.Managers;
-using Starlight.Menus;
 
 namespace Starlight.Patches.InGame;
 

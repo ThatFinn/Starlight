@@ -59,11 +59,11 @@ public enum FeatureFlag
     /// <summary>
     /// Load dev-only commands
     /// </summary>
-    CommandsLoadDevOnly=110, 
+    CommandsLoadDevOnly=110,
     /// <summary>
     /// Enable experimental commands
     /// </summary>
-    CommandsLoadExperimental=120, 
+    CommandsLoadExperimental=120,
     
     //Commands
     /// <summary>
@@ -277,8 +277,4 @@ public enum FeatureFlag
     /// </summary>
     SupportRadiant=570, //
     
-    
-    
-    
-
 }

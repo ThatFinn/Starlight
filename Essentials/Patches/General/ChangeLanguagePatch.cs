@@ -1,4 +1,3 @@
-using System;
 using Il2CppMonomiPark.SlimeRancher.UI.Localization;
 using Il2CppSystem.Globalization;
 using Starlight.Managers;

@@ -36,5 +36,4 @@ public class InjectIntoIL : Attribute
         this.LOGOnFail = true;
         this.Interfaces = interfaces;
     }
-    
 }

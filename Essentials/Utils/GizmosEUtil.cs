@@ -6,7 +6,6 @@ public static class GizmosEUtil
     private static readonly List<System.Action<Camera>> _drawCommands = new();
     private static int _lastFrame = -1;
 
-    
     private static readonly Color XColor = new(2f, 0f, 0f, 1f);
     private static readonly Color YColor = new(0f, 2f, 0f, 1f);
     private static readonly Color ZColor = new(0f, 0f, 2f, 1f);
@@ -18,7 +17,7 @@ public static class GizmosEUtil
     {
         if (_onEndCameraRendering == null)
         {
-            _onEndCameraRendering = (context, camera) => 
+            _onEndCameraRendering = (context, camera) =>
             {
                 foreach (var cmd in _drawCommands)
                     cmd?.Invoke(camera);
@@ -34,7 +33,6 @@ public static class GizmosEUtil
     }
 
     private static Material _glMaterial;
-
 
     public static void EnsureGLMaterial()
     {

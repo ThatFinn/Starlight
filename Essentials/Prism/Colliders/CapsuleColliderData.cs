@@ -17,5 +17,4 @@ public class CapsuleColliderData : ColliderData
         col.direction = 0;
         return col;
     }
-    
 }

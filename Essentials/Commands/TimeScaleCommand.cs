@@ -24,4 +24,3 @@ internal class TimeScaleCommand : StarlightCommand
         return true;
     }
 }
-

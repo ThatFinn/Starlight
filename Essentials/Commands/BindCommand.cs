@@ -47,4 +47,3 @@ internal class BindCommand : StarlightCommand
         return true;
     }
 }
-

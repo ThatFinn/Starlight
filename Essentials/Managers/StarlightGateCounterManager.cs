@@ -1,6 +1,5 @@
 using MelonLoader;
 using Starlight.Expansion;
-using Starlight.Storage;
 using Starlight.Patches.Context;
 
 namespace Starlight.Managers;
@@ -26,7 +25,7 @@ public static class StarlightCounterGateManager
         try
         {
             if(GameContextPatch.CheatMenuButton!=null)
-                if(disableCheats) 
+                if(disableCheats)
                     GameContextPatch.CheatMenuButton.Remove();
                 else
                     GameContextPatch.CheatMenuButton.AddAgain();
@@ -62,9 +61,6 @@ public static class StarlightCounterGateManager
         RefreshOcclusionCulling();
     }
     
-    
-    
-    
     public static void RegisterFor_DisableCheats(this StarlightExpansionVXX expansion)
     {
         if (!DisableCheatsList.Contains(expansion)) DisableCheatsList.Add(expansion);
@@ -86,8 +82,6 @@ public static class StarlightCounterGateManager
         RefreshDisableCheats();
     }
     
-    
-    
     public static void RegisterFor_LockPackages(this StarlightExpansionVXX expansion)
     {
         if (!LockPackages.Contains(expansion)) LockPackages.Add(expansion);
@@ -104,7 +98,6 @@ public static class StarlightCounterGateManager
     {
         if (!LockPackages.Contains(melon)) LockPackages.Remove(melon);
     }
-    
     
     public static void RegisterFor_SRLEActive(this StarlightExpansionVXX expansion)
     {

@@ -11,4 +11,3 @@ public static class StarlightModInfoAttributes
     public const string IconB64 = "icon_b64";
     public const string MinimumStarlightVersion = "minimum_sce";
 }
-

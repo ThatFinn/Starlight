@@ -111,11 +111,11 @@ internal static class StarlightUpdateManager
             var dict = copy.ToObject<Dictionary<string, object>>();
             var sortedDict = new SortedDictionary<string, object>(dict);
             var canonicalJson = JsonConvert.SerializeObject(sortedDict, Formatting.None);
-    
+            
             var dataBytes = Encoding.UTF8.GetBytes(canonicalJson);
             var signatureBytes = Convert.FromBase64String(signatureBase64);
-        
-            var pubKeyBase64 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvW1COeevhDiQl5G4BbLTIZi+oGZNQSyorDs/ue1YGACa/KQEysp3akgFgR86sudcAnaA+b6qaR50hD+/Wd+ZofYxv8LRI1J6RqKWNzZDK8yJePo6eVbqPz1F/JP96+pNXHEGy7yJH0VRjO+h/Jb15vNfOSwfnoIWY4XUm/+LONTCTDXOfAS9HBHy6r3zc0AI0A+101Q8LYDhMrINiirVkQRZw4W5FzNF0Ouvj0emkQfyJ7pRZcD+GwrXhN5Sad65QeWF8joKq8aCcyEN0oifieDCtGyBCGbV+Jm3zElraS1NIKWDjQnT+b4QOJtSKRHSymVqX3oFWahV3cadi/CfqQIDAQAB"; 
+            
+            var pubKeyBase64 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvW1COeevhDiQl5G4BbLTIZi+oGZNQSyorDs/ue1YGACa/KQEysp3akgFgR86sudcAnaA+b6qaR50hD+/Wd+ZofYxv8LRI1J6RqKWNzZDK8yJePo6eVbqPz1F/JP96+pNXHEGy7yJH0VRjO+h/Jb15vNfOSwfnoIWY4XUm/+LONTCTDXOfAS9HBHy6r3zc0AI0A+101Q8LYDhMrINiirVkQRZw4W5FzNF0Ouvj0emkQfyJ7pRZcD+GwrXhN5Sad65QeWF8joKq8aCcyEN0oifieDCtGyBCGbV+Jm3zElraS1NIKWDjQnT+b4QOJtSKRHSymVqX3oFWahV3cadi/CfqQIDAQAB";
             var publicKeyBytes = Convert.FromBase64String(pubKeyBase64);
 
             using (var rsa = RSA.Create())

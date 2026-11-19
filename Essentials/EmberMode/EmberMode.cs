@@ -14,7 +14,6 @@ internal static class EmberModeMode
         var previous = Current;
         Current = mode;
         
-        
         switch (previous)
         {
             case Mode.Transform:

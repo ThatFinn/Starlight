@@ -47,12 +47,10 @@ public abstract class StarlightCommand
     /// </summary>
     public virtual CommandType type { get; } = CommandType.None;
 
-
     /// <summary>
     /// If the command should be hidden from the help command and autocomplete
     /// </summary>
     public virtual bool Hidden { get; }
-
 
     /// <summary>
     /// Executes the command
@@ -78,7 +76,6 @@ public abstract class StarlightCommand
     /// </summary>
     public virtual Type[] execWhileMenuOpen { get; } = Array.Empty<Type>();
 
-    
     /// <summary>
     /// Gets called every frame
     /// </summary>
@@ -156,7 +153,7 @@ public abstract class StarlightCommand
     public virtual void OnLoadSceneInitialize() { }
 
     /// <summary>
-    /// Sends the usage of the command to the in game console 
+    /// Sends the usage of the command to the in game console
     /// </summary>
     /// <returns>False, for easy chaining in Execute methods</returns
     public bool SendUsage()
@@ -169,7 +166,6 @@ public abstract class StarlightCommand
     /// </summary>
     /// <returns>False, for easy chaining in Execute methods</returns
     public bool SendNoArguments() => SendErrorTr("cmd.noarguments");
-    
     
     /// <summary>
     /// Sends the load a save first message
@@ -196,7 +192,7 @@ public abstract class StarlightCommand
     public void SendMessageTr(string message)
     {
         if (!silent) StarlightLogManager.SendMessage(Tr(message), StarlightEntryPoint.starlightLogToMlLog);
-    } 
+    }
     /// <summary>
     /// Display a translated message in the console
     /// </summary>
@@ -204,7 +200,7 @@ public abstract class StarlightCommand
     public void SendMessageTr(string message, params object[] trArgs)
     {
         if (!silent) StarlightLogManager.SendMessage(Tr(message,trArgs), StarlightEntryPoint.starlightLogToMlLog);
-    } 
+    }
     /// <summary>
     /// Display an error in the console
     /// </summary>
@@ -464,7 +460,6 @@ public abstract class StarlightCommand
     /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotValidOption(object obj) => SendErrorTr("cmd.error.notvalidoption",obj);
 
-
     /// <summary>
     /// Tries to parse a Vector3 from three string inputs
     /// </summary>
@@ -614,7 +609,7 @@ public abstract class StarlightCommand
         try { value = int.Parse(input); }
         catch { return SendNotValidInt(input); }
         if (inclusive)
-        { 
+        {
             if (value < min) return SendNotIntAtLeast(input, min);
         }
         else if (value <= min) return SendNotIntAbove(input,min);
@@ -726,5 +721,4 @@ public abstract class StarlightCommand
         value = LKey.None;
         return SendNotValidKeyCode(input);
     }
-    
 }

@@ -46,7 +46,7 @@ internal class EmberModeMouseIndicator : MonoBehaviour
         {
             _overrideState = (OverrideState)(((int)_overrideState + 1) % 3);
             if(DebugLogging.HasFlag()) Log($"[EmberMode/Mouse] State: {_overrideState}");
-            _nextUpdate = 0f; 
+            _nextUpdate = 0f;
         }
 
         if (_overrideState == OverrideState.ForceUnlocked)

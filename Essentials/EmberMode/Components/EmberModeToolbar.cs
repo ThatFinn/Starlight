@@ -81,7 +81,7 @@ internal class EmberModeToolbar : MonoBehaviour
             if (_currentlyHovered && MenubarRegistry.Interactions.TryGetValue(_currentlyHovered.GetInstanceID(), out var oldInt))
             {
                 oldInt.OnHoverExit?.Invoke();
-                if (oldInt.TargetImage) 
+                if (oldInt.TargetImage)
                     oldInt.TargetImage.color = oldInt.NormalColor;
             }
 
@@ -90,12 +90,11 @@ internal class EmberModeToolbar : MonoBehaviour
             if (_currentlyHovered && MenubarRegistry.Interactions.TryGetValue(_currentlyHovered.GetInstanceID(), out var newInt))
             {
                 newInt.OnHoverEnter?.Invoke();
-                if (newInt.TargetImage) 
+                if (newInt.TargetImage)
                     newInt.TargetImage.color = newInt.HoverColor;
             }
         }
 
-        
         if (Mouse.current?.leftButton.wasPressedThisFrame == true)
         {
             if (hitObject && MenubarRegistry.Interactions.TryGetValue(hitObject.GetInstanceID(), out var hitInt))
@@ -107,7 +106,6 @@ internal class EmberModeToolbar : MonoBehaviour
             else if(DebugLogging.HasFlag())
                 Log($"[EmberModeToolbar] Click — no matching registry object hit");
         }
-
 
         if (hitObject && MenubarRegistry.Interactions.TryGetValue(hitObject.GetInstanceID(), out var pressInt))
         {
@@ -177,7 +175,6 @@ internal class EmberModeToolbar : MonoBehaviour
                     }
                 }
                 
-                
                 if (anyValid || !disableIfEmpty)
                 {
                     chunkedEntries.Add(new MenubarEntry
@@ -203,7 +200,6 @@ internal class EmberModeToolbar : MonoBehaviour
         {
             fileItem.Entries.Clear();
             
-            
             var slotSummaries = new Dictionary<int, Summary>();
             if (gameContext && autoSaveDirector != null)
             {
@@ -218,20 +214,16 @@ internal class EmberModeToolbar : MonoBehaviour
                 catch { }
             }
             
-            
             fileItem.Entries.Add(new MenubarEntry { Label = Tr("embermode.toolbar.file.save"), IsDisabled = !inGame, OnClick = HandleFileSave() });
             fileItem.Entries.Add(new MenubarEntry { IsSeparator = true });
-            
             
             var saveAsEntries = BuildSaveSlotEntries("Save As", slotSummaries, false, !inGame, (index, summary) => HandleFileSaveAs(index, summary));
             fileItem.Entries.AddRange(saveAsEntries);
             fileItem.Entries.Add(new MenubarEntry { IsSeparator = true });
             
-            
             var loadEntries = BuildSaveSlotEntries("Load", slotSummaries, true, false, (index, summary) => HandleFileLoad(index, summary));
             fileItem.Entries.AddRange(loadEntries);
             fileItem.Entries.Add(new MenubarEntry { IsSeparator = true });
-            
             
             var deleteEntries = BuildSaveSlotEntries("Delete", slotSummaries, true, false, (index, summary) => HandleFileDelete(index, summary));
             fileItem.Entries.AddRange(deleteEntries);
@@ -248,35 +240,34 @@ internal class EmberModeToolbar : MonoBehaviour
             
             settingsItem.Entries = new List<MenubarEntry>
             {
-                new MenubarEntry 
-                { 
-                    Label = "NoClip", 
+                new MenubarEntry
+                {
+                    Label = "NoClip",
                     IsDisabled = !isLoaded,
-                    IsChecked = () => isNoclip, 
+                    IsChecked = () => isNoclip,
                     OnClick = () => {
                         if (!isLoaded) return;
                         StarlightNoClipManager.Toggle();
-                    } 
+                    }
                 },
-                new MenubarEntry 
-                { 
-                    Label = "Infinite Energy", 
+                new MenubarEntry
+                {
+                    Label = "Infinite Energy",
                     IsDisabled = !inGame,
-                    IsChecked = () => infEnergy, 
-                    OnClick = () => { if (inGame) StarlightCommandManager.ExecuteByString("infenergy true", true); } 
+                    IsChecked = () => infEnergy,
+                    OnClick = () => { if (inGame) StarlightCommandManager.ExecuteByString("infenergy true", true); }
                 },
-                new MenubarEntry 
-                { 
-                    Label = "Infinite Health", 
+                new MenubarEntry
+                {
+                    Label = "Infinite Health",
                     IsDisabled = !inGame,
-                    IsChecked = () => infHealth, 
-                    OnClick = () => { if (inGame) StarlightCommandManager.ExecuteByString("infhealth", true); } 
+                    IsChecked = () => infHealth,
+                    OnClick = () => { if (inGame) StarlightCommandManager.ExecuteByString("infhealth", true); }
                 }
             };
         };
         menubar.Items.Add(settingsItem);
 
-        
         var debugItem = new MenubarItem { Label = LanguageEUtil.Tr("embermode.toolbar.debug") };
         debugItem.OnBeforeOpen = () =>
         {
@@ -321,26 +312,26 @@ internal class EmberModeToolbar : MonoBehaviour
                 foreach (var kvp in StarlightSaveManager.data.warps)
                 {
                     var warpName = kvp.Key;
-                    warpsItem.Entries.Add(new MenubarEntry 
-                    { 
-                        Label = warpName, 
+                    warpsItem.Entries.Add(new MenubarEntry
+                    {
+                        Label = warpName,
                         SubEntries = new List<MenubarEntry>
                         {
-                            new MenubarEntry 
-                            { 
-                                Label = Tr("embermode.toolbar.warps.teleport"), 
+                            new MenubarEntry
+                            {
+                                Label = Tr("embermode.toolbar.warps.teleport"),
                                 IsDisabled = !inGame,
-                                OnClick = () => 
+                                OnClick = () =>
                                 {
                                     if (!inGame) return;
                                     var w = StarlightWarpManager.GetWarp(warpName);
                                     if (w != null) w.WarpPlayerThere();
                                 }
                             },
-                            new MenubarEntry 
-                            { 
-                                Label = Tr("embermode.toolbar.file.delete"), 
-                                OnClick = () => 
+                            new MenubarEntry
+                            {
+                                Label = Tr("embermode.toolbar.file.delete"),
+                                OnClick = () =>
                                 {
                                     StarlightWarpManager.RemoveWarp(warpName);
                                 }
@@ -362,15 +353,15 @@ internal class EmberModeToolbar : MonoBehaviour
                     new MenubarEntry { Label = Tr("embermode.toolbar.tools.modmenu"), OnClick = (()=>{MenuEUtil.GetMenu<StarlightModMenu>().Open();}) },
                     new MenubarEntry { Label = Tr("embermode.toolbar.tools.studio"), OnClick = (()=>{MenuEUtil.GetMenu<StarlightStudioMenu>().Open();}) },
                     new MenubarEntry { IsSeparator = true },
-                    new MenubarEntry { 
-                        Label = "Transform Inspector", 
+                    new MenubarEntry {
+                        Label = "Transform Inspector",
                         IsChecked = () => EmberModeTransformInspector.Instance && EmberModeTransformInspector.Instance.WindowRoot && EmberModeTransformInspector.Instance.WindowRoot.activeSelf,
                         OnClick = () => {
                             if (EmberModeTransformInspector.Instance && EmberModeTransformInspector.Instance.WindowRoot)
                             {
                                 EmberModeTransformInspector.Instance.WindowRoot.SetActive(!EmberModeTransformInspector.Instance.WindowRoot.activeSelf);
                             }
-                        } 
+                        }
                     },
                 ]
             },
@@ -419,7 +410,7 @@ internal class EmberModeToolbar : MonoBehaviour
         {
             new MenubarEntry { Label = "This may break the game/mods!", IsDisabled = true, },
             new MenubarEntry { Label = "Do not report issues when using this!", IsDisabled = true, },
-       };
+        };
         foreach (var group in systemContext.SceneLoader.SceneGroupList.items)
         {
             var type = group.IsGameplay ? "Type: Gameplay" : "Type: ";
@@ -427,9 +418,9 @@ internal class EmberModeToolbar : MonoBehaviour
                 type += type == "Type: " ? "Editor" : ", Editor";
             if (type == "Type: ")
                 type += "None";
-            list.Add(new MenubarEntry 
-            { 
-                Label = group.ReferenceId, 
+            list.Add(new MenubarEntry
+            {
+                Label = group.ReferenceId,
                 SubEntries = new List<MenubarEntry>
                 {
                     new MenubarEntry { Label = type, IsDisabled = true },
@@ -450,25 +441,21 @@ internal class EmberModeToolbar : MonoBehaviour
             () => {
                 var currentSummary = GetCurrentSummarySafe();
                 
-                
                 StarlightSaveFileV01 oldData = null;
                 if (currentSummary != null && !currentSummary.IsInvalid)
                 {
                     SaveFileEUtil.ExportSaveV01(currentSummary, out oldData);
                 }
                 
-                
                 autoSaveDirector.SaveGameAndFlush();
                 
                 currentSummary = GetCurrentSummarySafe();
                 if (currentSummary == null) return;
                 
-                
                 if (SaveFileEUtil.ExportSaveV01(currentSummary, out var newData) == StarlightError.NoError)
                 {
                     
                     SaveFileEUtil.ImportSaveV01(newData, slotIndex + 1, false);
-                    
                     
                     if (oldData != null)
                     {

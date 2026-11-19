@@ -21,12 +21,11 @@ public static class AudioEUtil
     }
     public static SECTR_AudioCueInstance PlayMenuSound(string soundName) => PlaySound(GetMenuSound(soundName));*/
     
-    
     public static SECTR_AudioCueInstance PlaySound(SECTR_AudioCue cue)
     {
         if(!cue) return null;
         return AudioUtil.PlayCue(cue);
-    } 
+    }
     public static SECTR_AudioCueInstance PlaySound(MenuSound sound)
     {
         if (!MenuSounds.ContainsKey(sound)) return null;

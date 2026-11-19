@@ -23,7 +23,7 @@ internal class GordoCommand : StarlightCommand
         if (!args.IsBetween(1,2)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
         if (!arg0List.Contains(args[0])) return SendNotValidOption(args[0]);
-         
+        
         Camera cam = MiscEUtil.GetActiveCamera(); if (!cam) return SendNoCamera();
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {
@@ -44,7 +44,7 @@ internal class GordoCommand : StarlightCommand
                         if (args.Length == 1) { SendMessage(Tr("cmd.gordo.eat.show",gordo.identType.GetName(),eat.GetEatenCount())); return true; }
                         int amount;
                         if (!TryParseInt(args[1], out amount, 1, true,eat.GetTargetCount(),true)) return false;
-                        eat.SetEatenCount(amount); 
+                        eat.SetEatenCount(amount);
                         if(amount>=eat.GetTargetCount()) eat.ImmediateReachedTarget();
                         SendMessage(Tr("cmd.gordo.eat.edit",gordo.identType.GetName(),amount));
                         return true;

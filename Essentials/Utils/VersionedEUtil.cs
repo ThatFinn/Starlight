@@ -19,7 +19,7 @@ public static class VersionedEUtil
             if (currentType != null)
             {
                 highestType = currentType;
-                currentVersion++; 
+                currentVersion++;
             }
             else break;
         }
@@ -44,7 +44,7 @@ public static class VersionedEUtil
             if (currentType != null)
             {
                 highestType = currentType;
-                currentVersion++; 
+                currentVersion++;
             }
             else break;
         }

@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 namespace Starlight.Patches.General;
 
-
 [HarmonyPatch(typeof(BootstrapCompanyLogoScene), nameof(BootstrapCompanyLogoScene.Start))]
 internal static class BootstrapCompanyLogoScenePatch
 {
@@ -22,5 +21,4 @@ internal static class BootstrapCompanyLogoScenePatch
 
         obj.transform.SetParent(__instance.companyLogo.gameObject.GetComponent<RectTransform>(), true);
     }
-
 }

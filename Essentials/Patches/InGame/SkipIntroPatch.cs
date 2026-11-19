@@ -8,10 +8,9 @@ internal class SkipIntroPatch
     internal static void Postfix(IntroSequenceUIRoot __instance)
     {
         if (StarlightEntryPoint.SaveSkipIntro)
-        { 
-            __instance.EndSequence(); 
+        {
+            __instance.EndSequence();
             Object.Destroy(__instance.gameObject);
         }
     }
 }
-

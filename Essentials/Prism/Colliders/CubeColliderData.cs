@@ -12,7 +12,7 @@ public class CubeColliderData : ColliderData
     
     public override Collider AddToGameObject(GameObject obj)
     {
-        var col = obj.AddComponent<BoxCollider>(); 
+        var col = obj.AddComponent<BoxCollider>();
         col.size = new Vector3(GetWidth(), GetHeight(), GetDepth());
         return col;
     }

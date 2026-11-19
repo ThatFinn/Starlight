@@ -29,7 +29,7 @@ public class StarlightVMenuListPopUp : StarlightPopUp
         comp.ReloadFont();
     }
     
-    [HideFromIl2Cpp] private PanelUIBlueprintV01 blueprint 
+    [HideFromIl2Cpp] private PanelUIBlueprintV01 blueprint
     {
         get
         {
@@ -69,7 +69,6 @@ public class StarlightVMenuListPopUp : StarlightPopUp
             return bp;
         }
     }
-    
     
     protected override void OnOpen()
     {

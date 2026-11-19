@@ -21,13 +21,11 @@ internal class DestroyCommand : StarlightCommand
         {
             StarlightEntryPoint.Instance.RegisterFor_PlayerCameraDisableUseOcclusionCulling();
             GameObject.Destroy(gameObject);
-            SendMessage(Tr("cmd.destroy.success")); 
+            SendMessage(Tr("cmd.destroy.success"));
             return true;
         }
 
         return SendNotLookingAtValidObject();
 
     }
-
-
 }

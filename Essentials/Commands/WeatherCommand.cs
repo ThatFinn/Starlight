@@ -50,7 +50,7 @@ internal class WeatherCommand : StarlightCommand
         if (!inGame) return SendLoadASaveFirst();
         
         WeatherDirector weatherDirector = Get<WeatherDirector>("WeatherVFX");
-        if (weatherDirector == null) return SendError(Tr("cmd.weather.nodirector")); 
+        if (weatherDirector == null) return SendError(Tr("cmd.weather.nodirector"));
         
         if (args.Length == 1 && (args[0] == "clear" || args[0] == "rain" || args[0] == "thunder"))
             return ExecuteShortcut(args[0]);
@@ -100,7 +100,7 @@ internal class WeatherCommand : StarlightCommand
                 {
                     
                     WeatherStateDefinition def = LookupEUtil.GetWeatherStateDefinitionByName(args[1]);
-                    if (def == null) return SendNotValidWeather(args[1]); 
+                    if (def == null) return SendNotValidWeather(args[1]);
 
                     bool isRunning = weatherDirector._runningStates.Contains(def.Cast<IWeatherState>());
                     if(isRunning) SendMessage( Tr("cmd.weather.currentlyrunning",$"\"{def.name.Replace(" ", "")}\""));
@@ -115,7 +115,7 @@ internal class WeatherCommand : StarlightCommand
                 {
                     
                     WeatherStateDefinition def = LookupEUtil.GetWeatherStateDefinitionByName(args[1]);
-                    if (def == null) return SendNotValidWeather(args[1]); 
+                    if (def == null) return SendNotValidWeather(args[1]);
 
                     bool isRunning = weatherDirector._runningStates.Contains(def.Cast<IWeatherState>());
                     

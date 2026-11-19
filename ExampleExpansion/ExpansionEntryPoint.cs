@@ -2,7 +2,6 @@
 using Starlight.Expansion;
 using Starlight.Storage;
 
-
 namespace StarlightExampleExpansion;
 
 // This is required to load the expansion
@@ -27,10 +26,9 @@ public class ExpansionEntryPoint : StarlightExpansionV01
         //UsePrism = true,
         //IconPath = "Assets/otherpath.png", // By default, the path is "Assets/icon.png"
         
-        
         /// Changing these to the necessity, may allow the expansion to be loaded, unloaded and updated without restarting SR2
         
-        LoadTime = ExpansionLoadTime.Startup, 
+        LoadTime = ExpansionLoadTime.Startup,
             //Startup (default) means the expansion has to be loaded at startup
             //BeforeGameContext means the expansion has to be loaded before GameContext.Start
             //InMainMenu means the expansion can be loaded anytime, except while a save is open
@@ -39,7 +37,7 @@ public class ExpansionEntryPoint : StarlightExpansionV01
             //Never (default) means the expansion cannot be unloaded
             //InMainMenu means the expansion can be unloaded anytime, except while a save is open
             //Anytime means the expansion can be unloaded anytime
-            
+        
         /// This is used for the multiplayer mod
         MultiplayerRequirement = MultiplayerRequirement.ServerAndClient,
             //ServerAndClient (default) means the expansion needs to be installed on both the server and the client
@@ -52,5 +50,4 @@ public class ExpansionEntryPoint : StarlightExpansionV01
     {
         AddLanguages(EmbeddedResourceEUtil.LoadString("Assets.translations.csv"));
     }
-
 }

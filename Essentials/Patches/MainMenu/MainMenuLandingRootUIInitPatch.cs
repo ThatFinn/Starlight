@@ -7,10 +7,8 @@ using Il2CppTMPro;
 using Starlight.Buttons;
 using Starlight.Buttons.Definitions;
 using Starlight.Managers;
-using Starlight.Storage;
 
 namespace Starlight.Patches.MainMenu;
-
 
 [HarmonyPatch(typeof(MainMenuLandingRootUI), nameof(MainMenuLandingRootUI.Init))]
 internal static class MainMenuLandingRootUIInitPatch
@@ -57,7 +55,7 @@ internal static class MainMenuLandingRootUIInitPatch
                     button.Definition2._subMenuItems.items = list.ToIl2CppList();
                     if (__instance._mainMenuConfig.items.Contains(containerButton.Definition2)) continue;
                     int offset = 0;
-                    foreach (var item in __instance._mainMenuConfig.items) 
+                    foreach (var item in __instance._mainMenuConfig.items)
                         if(item is LoadGameItemDefinition) if(!(item is CustomMainMenuItemDefinition)) offset=1;
                     __instance._mainMenuConfig.items.Insert(Math.Clamp(containerButton.InsertIndex+offset,0,__instance._mainMenuConfig.items.Count), containerButton.Definition2);
                 }
@@ -72,7 +70,7 @@ internal static class MainMenuLandingRootUIInitPatch
                         if (__instance._mainMenuConfig.items.Contains(button.Definition))
                             continue;
                         int offset = 0;
-                        foreach (var item in __instance._mainMenuConfig.items) 
+                        foreach (var item in __instance._mainMenuConfig.items)
                             if(item is LoadGameItemDefinition) if(!(item is CustomMainMenuItemDefinition)) offset=1;
                         __instance._mainMenuConfig.items.Insert(Math.Clamp(button.InsertIndex+offset,0,__instance._mainMenuConfig.items.Count), button.Definition);
                     }
@@ -85,7 +83,7 @@ internal static class MainMenuLandingRootUIInitPatch
 
     static void ChangeVersionLabel()
     {
-        if (EnableLocalizedVersionPatch.HasFlag()) 
+        if (EnableLocalizedVersionPatch.HasFlag())
             try
             {
                 var versionLabel = Get<LocalizedVersionText>("Version Label").GetComponent<TextMeshProUGUI>();
@@ -107,7 +105,7 @@ internal static class MainMenuLandingRootUIInitPatch
         ChangeVersionLabel();
         ExecuteInTicks((() => { ChangeVersionLabel();}), 1);
         ExecuteInTicks((() => { ChangeVersionLabel();}), 3);
-        ExecuteInTicks((() => { ChangeVersionLabel();}), 10);            
+        ExecuteInTicks((() => { ChangeVersionLabel();}), 10);
     }
 
     public static bool alreadyLoadedOptions = false;

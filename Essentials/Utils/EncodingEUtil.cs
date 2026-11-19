@@ -31,7 +31,7 @@ public static class EncodingEUtil
                 result.Append((char)((storage >> bits) & 0x7F));
             }
         }
-        if (bits > 0) 
+        if (bits > 0)
             result.Append((char)((storage << (7 - bits)) & 0x7F));
         return result.ToString();
     }

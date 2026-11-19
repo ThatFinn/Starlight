@@ -51,13 +51,13 @@ public static class StarlightVolumeProfileManager
             if (preset == "NORMAL") return false;
             if(Presets.ContainsKey(preset)) return false;
             if (bytes == null || bytes.Length == 0) return false;
-        
+            
             VolumeProfileData data;
             var ms = new MemoryStream(bytes);
-        
+            
             var serializer = new XmlSerializer(typeof(VolumeProfileData));
             data = (VolumeProfileData)serializer.Deserialize(ms);
-        
+            
             var newProfile = ScriptableObject.CreateInstance<VolumeProfile>();
 
             // ReSharper disable once PossibleNullReferenceException
@@ -81,7 +81,7 @@ public static class StarlightVolumeProfileManager
                     else throw;
                 }
             }
-        
+            
             newProfile.hideFlags |= HideFlags.DontUnloadUnusedAsset;
             Presets[preset]=newProfile;
             return true;
@@ -163,7 +163,7 @@ public static class StarlightVolumeProfileManager
         _volumeHolder.m_InternalProfile = null;
         _volumeHolder.enabled = false;
     }
-        
+    
     internal static void OnMainMenuUILoad()
     {
         if (_volumeHolder != null) return;

@@ -33,14 +33,13 @@ public class StarlightTextViewerPopUp : StarlightPopUp
                     new TextUIBlueprintV01
                     {
                         Name = "TextViewerText",
-                        TextContent = _text, Alignment = TextAlignmentOptions.TopLeft, FontSize = 30, Color = UIColor.TextCategory, 
+                        TextContent = _text, Alignment = TextAlignmentOptions.TopLeft, FontSize = 30, Color = UIColor.TextCategory,
                         Size = new Vector2(1250, 760), Margins = new Vector4(20,20,20,20)
                     }
                 ]
             }
         ]
     };
-    
     
     protected override void OnOpen()
     {

@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using Il2CppTMPro;
-using UnityEngine;
 
 namespace Starlight.UI.Blueprints;
 

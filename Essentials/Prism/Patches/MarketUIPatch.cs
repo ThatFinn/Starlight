@@ -27,6 +27,5 @@ internal static class MarketUIPatch
         __instance._config._plorts = plortEntries.Take(34).ToArray();
         
         PrismLibMarket.TryRefreshMarketData();
-    }   
-    
+    }
 }

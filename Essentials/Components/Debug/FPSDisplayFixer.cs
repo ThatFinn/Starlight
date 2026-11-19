@@ -49,7 +49,7 @@ internal class FPSDisplayFixer : MonoBehaviour
             "FPS / Ms\n" +
             (int)targetFps+" / "+(float)Math.Round(targetMs, 1)+"\n" +
             (int)bestFps+" / "+(float)Math.Round(bestMs, 1)+"\n" +
-            (int)worstFps+" / "+(float)Math.Round(worstMs, 1)+"\n" 
+            (int)worstFps+" / "+(float)Math.Round(worstMs, 1)+"\n"
         );
 
         display.frames = 0;
@@ -57,6 +57,4 @@ internal class FPSDisplayFixer : MonoBehaviour
         display.bestDuration = float.MaxValue;
         display.worstDuration = 0f;
     }
-
-
 }

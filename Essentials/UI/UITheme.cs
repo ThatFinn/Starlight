@@ -74,7 +74,7 @@ public class UITheme
 
     public ColorBlock ButtonColors = new ()
     {
-        fadeDuration = 0.1f, colorMultiplier = 1f, 
+        fadeDuration = 0.1f, colorMultiplier = 1f,
         disabledColor = new (0.8706f,0.3098f,0.5216f,1f),
         selectedColor = new (0.8706f, 0.3098f, 0.5216f, 1f),
         pressedColor = new  (0.1371f, 0.5248f, 0.6792f, 1f),
@@ -83,7 +83,7 @@ public class UITheme
     };
     public ColorBlock AlternativeButtonColors = new ()
     {
-        fadeDuration = 0.1f, colorMultiplier = 1f, 
+        fadeDuration = 0.1f, colorMultiplier = 1f,
         disabledColor = new (0.5571f, 0.0548f, 0.1192f, 1f),
         selectedColor = new (0.5571f, 0.0548f, 0.1192f, 1f),
         pressedColor = new (0.1371f, 0.7248f, 0.3792f, 1f),
@@ -92,7 +92,7 @@ public class UITheme
     };
     public ColorBlock GrayButtonColors = new ()
     {
-        fadeDuration = 0.1f, colorMultiplier = 1f, 
+        fadeDuration = 0.1f, colorMultiplier = 1f,
         disabledColor = new (0.6f, 0.6f, 0.6f, 1),
         selectedColor = new (0.6f, 0.6f, 0.6f, 1),
         pressedColor = new (0.3f, 0.3f, 0.3f, 1),
@@ -101,7 +101,7 @@ public class UITheme
     };
     public ColorBlock UnityButtonColors = new ()
     {
-        fadeDuration = 0.1f, colorMultiplier = 1f, 
+        fadeDuration = 0.1f, colorMultiplier = 1f,
         disabledColor = new Color32(200,200,200, 128),
         selectedColor = Color.white,
         pressedColor = new Color32(200,200,200, 255),
@@ -129,7 +129,7 @@ public class UITheme
             case UIColor.Transparent: return new Color(0f, 0f, 0f, 0f);
             default: return PrimaryColor;
         }
-    }    
+    }
     public ColorBlock GetColorBlock(UIColorBlock color)
     {
         switch (color)
@@ -176,10 +176,10 @@ public class UITheme
 public enum UIColor
 {
     None=0,
-    Transparent=10, 
+    Transparent=10,
     Primary=20,
-    Secondary=30, 
-    Accent=40, 
+    Secondary=30,
+    Accent=40,
     AccentAlternate=41,
     TextGeneral=50,
     TextButton=60,
@@ -192,10 +192,10 @@ public enum UIColor
     AutoCompleteSelected=120,
 }
 public enum UIColorBlock
-{ 
+{
     None=0,
     Transparent=10,
-    Buttons=20, 
+    Buttons=20,
     AlternativeButtons=30,
     GrayButtons=40,
     White=50,

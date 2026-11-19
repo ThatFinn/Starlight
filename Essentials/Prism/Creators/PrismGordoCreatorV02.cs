@@ -59,7 +59,7 @@ public sealed record CreatedGordo(
 public static class PrismGordoCreatorV02
 {
     /// <summary>
-    /// The suffix of every gordo slime's name 
+    /// The suffix of every gordo slime's name
     /// </summary>
     private const string Kind = "Gordo";
 

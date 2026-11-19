@@ -31,7 +31,6 @@ public class PrismIdentifiablePediaEntryCreatorV01
         return true;
     }
 
-    
     public PrismIdentifiablePediaEntry CreateIdentifiablePediaEntry()
     {
         if (!IsValid()) return null;

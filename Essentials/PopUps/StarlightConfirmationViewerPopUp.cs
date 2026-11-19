@@ -9,7 +9,6 @@ using Starlight.Managers;
 
 namespace Starlight.Popups;
 
-
 [InjectIntoIL]
 public class StarlightConfirmationViewerPopUp : StarlightPopUp
 {
@@ -54,7 +53,7 @@ public class StarlightConfirmationViewerPopUp : StarlightPopUp
                     new TextUIBlueprintV01
                     {
                         Name = "TextViewerText",
-                        TextContent = _text, Alignment = TextAlignmentOptions.TopLeft, FontSize = 30, Color = UIColor.TextCategory, 
+                        TextContent = _text, Alignment = TextAlignmentOptions.TopLeft, FontSize = 30, Color = UIColor.TextCategory,
                         Size = new Vector2(1250, 600), Position = new Vector2(0, 70), Margins = new Vector4(20,20,20,20)
                     },
                     new PanelUIBlueprintV01
@@ -89,15 +88,12 @@ public class StarlightConfirmationViewerPopUp : StarlightPopUp
         ]
     };
 
-    
     protected override void OnOpen()
     {
         var fontEnum = StarlightMenuFont.Native;
         try { fontEnum = StarlightSaveManager.data.fonts[MenuEUtil.GetOpenMenu().GetMenuIdentifier().saveKey]; } catch { }
         _openThing = blueprint.Render(_theme.GetTheme(), fontEnum.GetFontTheme(), transform);
     }
-    
-    
     
     public static void Open(string text, Action yesAction, Action noAction, Action escapeAction)
     {
@@ -112,7 +108,6 @@ public class StarlightConfirmationViewerPopUp : StarlightPopUp
     {
         OpenSelf(typeof(StarlightConfirmationViewerPopUp),theme,new List<object>(){text,1,yesAction,noAction,escapeAction});
     }
-    
     
     public static void Open(string text, Action okAction, Action escapeAction)
     {

@@ -11,7 +11,7 @@ internal class FlingCommand : StarlightCommand
         if (!inGame) return SendLoadASaveFirst();
         if (!args.IsBetween(1,1)) return SendUsage();
         
-        Camera cam = MiscEUtil.GetActiveCamera(); if (!cam) return SendNoCamera(); 
+        Camera cam = MiscEUtil.GetActiveCamera(); if (!cam) return SendNoCamera();
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {
             Rigidbody rb = hit.rigidbody;
@@ -31,4 +31,3 @@ internal class FlingCommand : StarlightCommand
         return SendNotLookingAtAnything();
     }
 }
-

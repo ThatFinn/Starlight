@@ -47,4 +47,3 @@ internal class StrikeCommand : StarlightCommand
         l.BlastRadius = 9f;
     }
 }
-

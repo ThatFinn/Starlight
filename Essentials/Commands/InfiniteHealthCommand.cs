@@ -24,7 +24,7 @@ internal class InfiniteHealthCommand : StarlightCommand
         }
         else
         {
-            StarlightSaveManager.inGameData.InfiniteHealthActive = true;;
+            StarlightSaveManager.inGameData.InfiniteHealthActive = true;
             if (!_healthMeter) _healthMeter = GetInScene<HealthMeter>("Health Meter");
             _healthMeter.gameObject.active = false;
             SendMessage(Tr("cmd.infhealth.success"));
@@ -40,7 +40,7 @@ internal class InfiniteHealthCommand : StarlightCommand
             _healthMeter = GetInScene<HealthMeter>("Health Meter");
             if (inGame && !StarlightCounterGateManager.srleActive && StarlightSaveManager.inGameData != null && StarlightSaveManager.inGameData.InfiniteHealthActive)
                 _healthMeter.gameObject.active = false;
-        },1);;
+        },1);
     }
     [HarmonyPatch(typeof(PlayerModel), nameof(PlayerModel.LoseHealth))]
     internal class PlayerModelLoseHealthPatch
@@ -50,6 +50,4 @@ internal class InfiniteHealthCommand : StarlightCommand
             return true;
         }
     }
-
 }
-

@@ -19,7 +19,6 @@ internal static class StarlightSaveManager
 
     internal static StarlightCustomInGameData OnInGameSave(SavingGameSessionData sessionData) => inGameData;
     
-    
     internal static StarlightSaveData data = null;
     internal static void Start()
     {

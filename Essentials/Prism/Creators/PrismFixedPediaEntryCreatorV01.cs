@@ -43,7 +43,6 @@ public class PrismFixedPediaEntryCreatorV01
         return true;
     }
 
-    
     public PrismFixedPediaEntry CreateFixedPediaEntry()
     {
         if (!IsValid()) return null;

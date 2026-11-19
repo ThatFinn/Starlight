@@ -1,12 +1,8 @@
-using System;
-using System.Linq;
-using System.Reflection;
 using Il2CppTMPro;
 using Starlight.Enums.Sounds;
 using Starlight.Storage;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 namespace Starlight.Components;
 

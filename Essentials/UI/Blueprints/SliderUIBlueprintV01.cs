@@ -89,12 +89,10 @@ public class SliderUIBlueprintV01 : UIBlueprint
         handleGroup.sortingOrder = Mathf.FloorToInt(5 * ScaleFactor);
         handleGroup.AddComponent<RoundedUIImage>().CornerRadius = 5 * ScaleFactor;
         
-        
         var handleImage = handle.AddComponent<Image>();
         handleImage.color = CustomHandleColor ?? theme.GetColor(HandleColor);
         slider.targetGraphic = handleImage;
         slider.handleRect = handleRect;
-        
         
         var text = new GameObject("Text");
         text.transform.SetParent(handle.transform, false);

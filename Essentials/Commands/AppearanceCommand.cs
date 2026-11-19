@@ -1,6 +1,3 @@
-using Il2CppMonomiPark.SlimeRancher.Slime;
-using Il2CppMonomiPark.SlimeRancher.UI;
-
 namespace Starlight.Commands;
 
 internal class AppearanceCommand: StarlightCommand
@@ -15,7 +12,6 @@ internal class AppearanceCommand: StarlightCommand
         if (!inGame) return SendLoadASaveFirst();
 
         var cam = MiscEUtil.GetActiveCamera(); if (!cam) return SendNoCamera();
-
 
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {

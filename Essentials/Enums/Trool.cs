@@ -8,7 +8,7 @@ namespace Starlight.Enums;
 [Serializable]
 public enum Trool
 {
-    False = 0, 
-    True = 1, 
+    False = 0,
+    True = 1,
     Toggle = 2
 }

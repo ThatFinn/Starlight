@@ -5,12 +5,11 @@ using Starlight.Buttons;
 using Starlight.Buttons.Definitions;
 using Starlight.Enums;
 using Starlight.Saving;
-using Starlight.Storage;
 
 namespace Starlight.Managers;
 public static class StarlightOptionsButtonManager
 {
-     static readonly Dictionary<NativeOptionsUICategory,HashSet<CustomAbstractOptionsButton>> customOptionsUIButtonsInNative = new();
+    static readonly Dictionary<NativeOptionsUICategory,HashSet<CustomAbstractOptionsButton>> customOptionsUIButtonsInNative = new();
     internal static Dictionary<CustomOptionsUICategory,HashSet<CustomAbstractOptionsButton>> customOptionsUICategories = new();
     static string path => Path.Combine(StarlightEntryPoint.dataPath, "customsettings.starlighters");
     static CustomOptionsSave _save;
@@ -105,8 +104,6 @@ public static class StarlightOptionsButtonManager
         }
     }
 
-
-
     internal static void GenerateMissingButtons()
     {
         if (!InjectOptionsButtons.HasFlag()) return;
@@ -115,7 +112,7 @@ public static class StarlightOptionsButtonManager
                 button.GetOptionsItemDef();
         
         foreach (var category in customOptionsUICategories)
-            foreach (var button in category.Value) 
+            foreach (var button in category.Value)
                 button.GetOptionsItemDef();
         
     }

@@ -34,7 +34,7 @@ internal class PlayerCommand : StarlightCommand
         if (!args.IsBetween(1,2)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
         if (!arg0List.Contains(args[0])) return SendNotValidOption(args[0]);
-         
+        
         switch (args[0])
         {
             case "size":
@@ -71,13 +71,13 @@ internal class PlayerCommand : StarlightCommand
                 switch (mode)
                 {
                     case VacModes.NONE: vacuumItem._vacMode = VacuumItem.VacMode.NONE; break;
-                    case VacModes.AUTO_VAC: vacuumItem._vacMode = VacuumItem.VacMode.VAC;; break;
+                    case VacModes.AUTO_VAC: vacuumItem._vacMode = VacuumItem.VacMode.VAC; break;
                     case VacModes.AUTO_SHOOT: vacuumItem._vacMode = VacuumItem.VacMode.SHOOT; break;
-                    /*case VacModes.DRAG: 
+                    /*case VacModes.DRAG:
                         vacuumItem._vacMode = VacuumItem.VacMode.NONE;
                         ExecuteInSeconds((() => { vacuumItem.gameObject.SetActive(false); sceneContext.Camera.AddComponent<IdentifiableObjectDragger>(); }), 1.5f); break;
-                    case VacModes.LAUNCH: 
-                        vacuumItem._vacMode = VacuumItem.VacMode.NONE; 
+                    case VacModes.LAUNCH:
+                        vacuumItem._vacMode = VacuumItem.VacMode.NONE;
                         ExecuteInSeconds((() => { vacuumItem.gameObject.SetActive(false); sceneContext.Camera.AddComponent<FlingMode>(); }), 1.5f);break;*/
                 }
                 currVacMode = mode;
@@ -101,6 +101,5 @@ internal class PlayerCommand : StarlightCommand
                 currVacMode = VacModes.AUTO_VAC;
                 break;
         }
-        
     }
 }

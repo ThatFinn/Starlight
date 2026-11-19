@@ -19,11 +19,11 @@ internal class PositionCommand: StarlightCommand
         if (args.Length==4) if (!TryParseBool(args[3], out absolute)) return false;
         
         Camera cam = MiscEUtil.GetActiveCamera(); if (!cam) return SendNoCamera();
-             
+        
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {
             var gameobject = hit.collider.gameObject;
-            if (gameobject.GetComponent<Identifiable>()) 
+            if (gameobject.GetComponent<Identifiable>())
                 if(absolute) gameobject.transform.position = move;
                 else gameobject.transform.position += move;
             else if (gameobject.GetComponentInParent<Gadget>())
@@ -43,7 +43,7 @@ internal class PositionCommand: StarlightCommand
                 } catch { }
             }
             else return SendNotLookingAtValidObject();
-           
+            
             SendMessage(Tr("cmd.move.success"));
             return true;
             

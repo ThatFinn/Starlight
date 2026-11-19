@@ -11,7 +11,6 @@ public class PackagePrefs
     public delegate void OnPrefChangedEvent(string key, dynamic oldValue, dynamic newValue);
     public static event OnPrefChangedEvent OnPrefChanged;
     
-    
     public string expansionID { get; }
     internal List<PackagePref> _entries = new();
     public PackagePref[] entries => _entries.ToArray();

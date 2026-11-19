@@ -1,8 +1,3 @@
-using Il2CppMonomiPark.SlimeRancher;
-using Il2CppMonomiPark.SlimeRancher.Persist;
-using Il2CppMonomiPark.World;
-using Starlight.Commands;
-
 namespace Starlight.Patches.InGame;
 /*
  

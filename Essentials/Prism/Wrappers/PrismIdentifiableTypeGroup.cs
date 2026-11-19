@@ -34,5 +34,4 @@ public class PrismIdentifiableTypeGroup
     {
         Group._isFood=isFood;
     }
-
 }

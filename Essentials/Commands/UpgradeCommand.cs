@@ -30,7 +30,7 @@ internal class UpgradeCommand : StarlightCommand
         int level = 1;
         if (args.Length == 3)
         {
-            if (args[0] == "get") return SendErrorToManyArgs(args[0]); 
+            if (args[0] == "get") return SendErrorToManyArgs(args[0]);
             if(!TryParseInt(args[2], out level,1,true)) return false;
         }
         else switch (args[0])
@@ -85,7 +85,7 @@ internal class UpgradeCommand : StarlightCommand
                 newLevel = level;
                 if(newLevel > maxUpgrade) newLevel = maxUpgrade;
                 sceneContext.PlayerState._model.upgradeModel.SetUpgradeLevel(id, newLevel);
-                SendMessage(Tr("cmd.upgrade.successset",itemName,newLevel)); 
+                SendMessage(Tr("cmd.upgrade.successset",itemName,newLevel));
                 break;
             case "decrement":
                 newLevel = Mathf.Clamp((sceneContext.PlayerState._model.upgradeModel.GetUpgradeLevel(id) - level), 0, int.MaxValue);
@@ -95,7 +95,7 @@ internal class UpgradeCommand : StarlightCommand
                 else SendMessage(Tr("cmd.upgrade.successremove",itemName,level));
                 break;
             case "get":
-                SendMessage(Tr("cmd.upgrade.successget",sceneContext.PlayerState._model.upgradeModel.GetUpgradeLevel(id),itemName)); 
+                SendMessage(Tr("cmd.upgrade.successget",sceneContext.PlayerState._model.upgradeModel.GetUpgradeLevel(id),itemName));
                 break;
         }
         return false;

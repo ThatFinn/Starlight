@@ -1,5 +1,4 @@
 using Starlight.Enums;
-using Starlight.Managers;
 using Starlight.Storage;
 using UnityEngine.InputSystem;
 
@@ -7,7 +6,7 @@ namespace Starlight.Components;
 
 /// <summary>
 /// For use with camera
-/// 
+///
 /// Currently bugged...
 /// </summary>
 [InjectIntoIL]
@@ -36,7 +35,6 @@ internal class IdentifiableObjectDragger : MonoBehaviour
         {
             distanceFromCamera += Time.deltaTime * distanceChangeSpeed;
         }
-
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
