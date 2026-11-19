@@ -23,8 +23,13 @@ internal static class MarketUIPatch
         foreach (var pair in PrismShortcuts.MarketPlortEntries)
             if (!pair.Value)
                 plortEntries.Add(pair.Key);
+
+        var slots = 0;
+        if (__instance.pricesPanels != null)
+            foreach (var panel in __instance.pricesPanels)
+                if (panel != null) slots += panel.entryCount;
         
-        __instance._config._plorts = plortEntries.Take(34).ToArray();
+        __instance._config._plorts = plortEntries.Take(slots).ToArray();
         
         PrismLibMarket.TryRefreshMarketData();
     }
