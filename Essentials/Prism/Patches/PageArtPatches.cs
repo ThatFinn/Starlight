@@ -2,7 +2,6 @@
 using Il2CppMonomiPark.SlimeRancher.Pedia;
 using Il2CppMonomiPark.SlimeRancher.UI.Framework.Components;
 using Il2CppMonomiPark.SlimeRancher.UI.Pedia;
-using Starlight.Prism.Creators;
 using Starlight.Storage;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
@@ -260,48 +259,50 @@ internal static class PageArtLoaderPatch
 [HarmonyPatch(typeof(PediaRadiantSlimeScreen),nameof(PediaRadiantSlimeScreen.SetCategory))]
 internal static class PediaRadiantSlimeScreenPatch
 {
-    public static void Prefix(PediaRadiantSlimeScreen __instance)
+    public static void Prefix(PediaRadiantSlimeScreen __instance, IPediaRuntimeCategory<PediaEntry> category)
     {
-        var oldButtonList = __instance._buttons.ToNetList();
-        var newButtonList = __instance._buttons.ToNetList();
-        
-        var created = new List<RadiantSlimePediaEntry>();
-        foreach (var pair in PrismShortcuts.PrismRadiantSlimePediaEntries)
-            if (!pair.Value.GetPrismBaseSlime().GetIsNative()&&pair.Value.GetPrismBaseSlime().GetSlimeAppearanceRadiant()!=null)
-                created.Add(pair.Value.GetRadiantSlimePediaEntry());
-        created.AddRange(PrismPediaCreatorV02.RadiantEntries);
-        foreach (var radiantEntry in created)
+        try
         {
-            var contains = false;
-            foreach (var entry in oldButtonList)
-                try
-                {
-                    if (entry._entry==radiantEntry)
-                    {
-                        contains = true;
-                        break;
-                    }
-                }catch { }
-            if (!contains)
+            var buttons = __instance._buttons;
+            if (buttons == null || buttons.Length < 2) return;
+
+            var items = category?.TryCast<PediaRuntimeCategory>()?._items;
+            if (items == null || items.Count <= buttons.Length) return;
+
+            var origin  = Position(buttons[0]);
+            var columns = 1;
+
+            while (columns < buttons.Length && Mathf.Approximately(Position(buttons[columns]).y, origin.y))
+                columns++;
+
+            var stepX = Position(buttons[1]).x - origin.x;
+            var stepY = columns < buttons.Length ? origin.y - Position(buttons[columns]).y : stepX;
+
+            var list = buttons.ToNetList();
+            var prefab = buttons[0];
+
+            for (var i = list.Count; i < items.Count; i++)
             {
-                var prefab = oldButtonList[0];
-                var instance = GameObject.Instantiate(prefab.gameObject, prefab.transform.parent).GetComponent<PediaEntryIconButton>();
-                instance._entry = radiantEntry;
-                newButtonList.Add(instance);
+                var button = GameObject.Instantiate(prefab.gameObject, prefab.transform.parent).GetComponent<PediaEntryIconButton>();
+                button.name = $"{prefab.name} ({i})";
+                button.transform.SetAsLastSibling();
+                button.GetComponent<RectTransform>().anchoredPosition = origin + new Vector2(i % columns * stepX, -(i / columns) * stepY);
+                list.Add(button);
             }
+
+            __instance._buttons = list.ToIl2CppArray();
+
+            var navigation = __instance._gridNavigation;
+            if (navigation == null || navigation.NumColumns <= 0) return;
+
+            var rows = (items.Count + navigation.NumColumns - 1) / navigation.NumColumns;
+            if (navigation.NumRows < rows) navigation.SetSize(navigation.NumColumns, rows);
         }
-        //This is a workaround until the game does it on its own
-        if (oldButtonList.Count != newButtonList.Count)
+        catch (Exception ex)
         {
-            var gridLayout = newButtonList[0].transform.parent.gameObject.AddComponent<GridLayoutGroup>();
-            ExecuteInTicks(() =>
-            {
-                ExecuteInTicks(() =>
-                {
-                    Object.Destroy(gridLayout);
-                },2);
-            },10);
+            LogError("Prism: Failed to add buttons to the radiant slime screen", ex);
         }
-        __instance._buttons = newButtonList.ToIl2CppArray();
     }
+
+    private static Vector2 Position(PediaEntryIconButton button) => button.GetComponent<RectTransform>().anchoredPosition;
 }
