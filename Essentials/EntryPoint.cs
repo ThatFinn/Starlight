@@ -38,7 +38,7 @@ public static class BuildInfo
     public const string Author = "ThatFinn";
     public const string CoAuthors = "Shark (py8)";
     public const string Contributors = "PinkTarr, shizophrenicgopher, Atmudia";
-    public const string CodeVersion = "4.1.0";
+    public const string CodeVersion = "5.0.0";
     public const string DownloadLink = "https://starlight.sr2.dev/";
     public const string SourceCode = "https://github.com/ThatFinn/Starlight";
     public const string Nexus = "https://www.nexusmods.com/slimerancher2/mods/60";
@@ -50,7 +50,7 @@ public static class BuildInfo
     /// For dev versions, use "-dev". Do not add a build number!<br />
     /// Add "+metadata" only in dev builds!
     /// </summary>
-    public const string DisplayVersion = "4.1.0";
+    public const string DisplayVersion = "5.0.0";
 
     // Allow Metadata, Check Update Link
     internal static readonly Dictionary<string, (bool, string)> PreInfo = new()
