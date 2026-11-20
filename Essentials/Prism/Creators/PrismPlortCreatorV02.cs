@@ -124,6 +124,8 @@ public static class PrismPlortCreatorV02
 
         created.Type.IsPlort = true;
 
+        if (!request.Edible) Groups.Remove(created.Type, Groups.Names.EdiblePlortFood);
+
         if (request.Color.HasValue && request.Texture == null)
             Tint(created.Type.prefab, request.Color.Value);
 
