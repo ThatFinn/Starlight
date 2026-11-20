@@ -30,6 +30,13 @@ internal class SpawnCommand : StarlightCommand
         if (args.Length >= 2) if(!TryParseInt(args[1], out amount,1, true)) return false;
         if (args.Length >= 3) if (!TryParseBool(args[2], out makeRadiant)) return false;
 
+        var radiant = SupportRadiant.HasFlag() && makeRadiant;
+        if (radiant)
+        {
+            var slime = def.TryCast<SlimeDefinition>();
+            if (slime == null || !slime.GetRadiantAppearance()) return SendError(Tr("cmd.spawn.notradiant", def.GetName()));
+        }
+
         for (int i = 0; i < amount; i++)
         {
             if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
@@ -42,7 +49,7 @@ internal class SpawnCommand : StarlightCommand
                     spawned.transform.position = hit.point + hit.normal * PhysicsUtil.CalcRad(spawned.GetComponent<Collider>());
                     var delta = -(hit.point - cam.transform.position).normalized;
                     spawned.transform.rotation = Quaternion.LookRotation(delta, hit.normal);
-                    if (makeRadiant && SupportRadiant.HasFlag())
+                    if (radiant)
                         SpawnEUtil.SetAnyRadiantSlimeAppearance(spawned.GetComponent<IdentifiableActor>());
                 } catch { }
             }
