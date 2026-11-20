@@ -28,6 +28,11 @@ public sealed record PlortRequest
     public PrismNativePlort Base { get; init; } = PrismNativePlort.Pink;
 
     /// <summary>
+    /// Whether slimes and largos can eat it
+    /// </summary>
+    public bool Edible { get; init; } = true;
+
+    /// <summary>
     /// Inventory icon
     /// </summary>
     /// <remarks> Null falls back to the base plort's icon </remarks>
@@ -110,12 +115,9 @@ public static class PrismPlortCreatorV02
             PediaFactSet = PediaFactSetKind.Resource,
             Components   = request.Components,
             Actions      = request.Actions,
-            Groups       = new[]
-            {
-                Groups.Names.Plort,
-                Groups.Names.EdiblePlortFood,
-                Groups.Names.PlortDroneExplorer
-            }
+            Groups       = request.Edible
+                ? new[] { Groups.Names.Plort, Groups.Names.EdiblePlortFood, Groups.Names.PlortDroneExplorer }
+                : new[] { Groups.Names.Plort, Groups.Names.PlortDroneExplorer },
         });
 
         if (created == null) return null;
