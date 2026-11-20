@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using Starlight.Prism.Data.Native;
 
 namespace Starlight.Prism.Data.Appearance;
 
@@ -79,6 +81,74 @@ public static class SlimeColors
         if (SetColor(material, "_TwinSpecColor", palette.Specular)) written++;
 
         return written;
+    }
+
+    /// <summary>
+    /// Applies a texture to a slime appearance
+    /// </summary>
+    /// <returns> How many materials show the texture </returns>
+    public static int ApplyTexture(SlimeAppearance appearance, Texture picture)
+    {
+        ArgumentNullException.ThrowIfNull(appearance);
+        ArgumentNullException.ThrowIfNull(picture);
+
+        var painted = 0;
+        foreach (var structure in appearance.Structures.AsEnumerable())
+            foreach (var material in structure?.DefaultMaterials.AsEnumerable() ?? Enumerable.Empty<Material>())
+                if (material != null && ApplyTexture(material, picture)) painted++;
+
+        return painted;
+    }
+
+    /// <summary>
+    /// Applies a texture to a material
+    /// </summary>
+    /// <returns> False if the shader has no color mask, or no native variant with the multi coloring </returns>
+    public static bool ApplyTexture(Material material, Texture picture)
+    {
+        ArgumentNullException.ThrowIfNull(material);
+        ArgumentNullException.ThrowIfNull(picture);
+
+        if (!material.HasProperty(ColorMaskProperty)) return false;
+        if (!material.IsKeywordEnabled(MultiColoringKeyword) && !UseMultiColoring(material)) return false;
+
+        material.SetTexture(ColorMaskProperty, picture);
+        foreach (var (prefix, color) in PictureColorSets)
+        {
+            SetColor(material, prefix + "TopColor", color);
+            SetColor(material, prefix + "MiddleColor", color);
+            SetColor(material, prefix + "BottomColor", color);
+        }
+
+        return true;
+    }
+
+    private const string ColorMaskProperty    = "_ColorMask";
+    private const string MultiColoringKeyword = "_BODYCOLORING_MULTI";
+
+    private static readonly (string Prefix, Color Color)[] PictureColorSets =
+    {
+        ("_Red", Color.red),
+        ("_Green", Color.green),
+        ("_Blue", Color.blue),
+        ("_", Color.black)
+    };
+
+    /// <summary>
+    /// Uses multi-coloring
+    /// </summary>
+    private static bool UseMultiColoring(Material material)
+    {
+        var angler = PrismNativeBaseSlime.Angler.Find()?.AppearancesDefault.AsEnumerable().FirstOrDefault(a => a != null);
+        var body = angler?.Structures.AsEnumerable().FirstOrDefault(s => s?.Element?.Type == SlimeAppearanceElement.ElementType.BODY);
+        var donor = body?.DefaultMaterials.AsEnumerable().FirstOrDefault(m => m != null);
+
+        if (donor == null || donor.shader == null || material.shader == null) return false;
+        if (donor.shader.name != material.shader.name) return false;
+
+        material.shaderKeywords = donor.shaderKeywords;
+        if (material.HasProperty("_BodyColoring")) material.SetFloat("_BodyColoring", donor.GetFloat("_BodyColoring"));
+        return true;
     }
 
     /// <summary>

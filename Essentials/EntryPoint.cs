@@ -125,7 +125,6 @@ public class StarlightEntryPoint : MelonMod
     internal static bool prismEnableStyleVariants => !_prefs.HasEntry("prismEnableStyleVariants") || _prefs.GetEntry<bool>("prismEnableStyleVariants").value;
     internal static bool prismShowModdedPlorts => !_prefs.HasEntry("prismShowModdedPlorts") || _prefs.GetEntry<bool>("prismShowModdedPlorts").value;
     internal static bool prismSecondMarketScreen => !_prefs.HasEntry("prismSecondMarketScreen") || _prefs.GetEntry<bool>("prismSecondMarketScreen").value;
-    internal static bool prismStructureArtwork => !_prefs.HasEntry("prismStructureArtwork") || _prefs.GetEntry<bool>("prismStructureArtwork").value;
     public override void OnEarlyInitializeMelon()
     {
         Instance = this;
@@ -377,8 +376,6 @@ public class StarlightEntryPoint : MelonMod
                 _prefs.AddEntry("prismShowModdedPlorts", true, "Prism: Show modded plorts", "Lists plorts created with Prism on the plort market board", false, false);
             if (!_prefs.HasEntry("prismSecondMarketScreen"))
                 _prefs.AddEntry("prismSecondMarketScreen", true, "Prism: Second market screen", "Adds a second market screen when one is not enough", false, false);
-            if (!_prefs.HasEntry("prismStructureArtwork"))
-                _prefs.AddEntry("prismStructureArtwork", true, "Prism: Draw body parts with their own texture", "Draws a slime's body parts with their own texture, at the cost of the slime's squash", false, false);
         }
         //if(DevMode.HasFlag()) if (!_prefs.HasEntry("testLKey")) _prefs.AddEntry("testLKey", LKey.None, "Test LKey", null,false, false);
         

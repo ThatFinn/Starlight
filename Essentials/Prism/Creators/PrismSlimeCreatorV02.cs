@@ -43,6 +43,12 @@ public sealed record SlimeRequest
     public SlimePalette? Palette { get; init; }
 
     /// <summary>
+    /// A texture painted over the slime
+    /// </summary>
+    /// <remarks> <see cref="Palette"/> still colours the splats and effects </remarks>
+    public Texture2D? Texture { get; init; }
+
+    /// <summary>
     /// The Inventory and Slimepedia icon
     /// </summary>
     /// <remarks> Null = base slime's icon, recolored to <see cref="Palette"/> </remarks>
@@ -194,6 +200,9 @@ public static class PrismSlimeCreatorV02
 
         if (request.Palette.HasValue)
             SlimeColors.Apply(appearance, request.Palette.Value);
+
+        if (request.Texture != null)
+            SlimeColors.ApplyTexture(appearance, request.Texture);
 
         var vacColor = request.VacColor ?? request.Palette?.Middle ?? definition.color;
         vacColor.a = 1f;

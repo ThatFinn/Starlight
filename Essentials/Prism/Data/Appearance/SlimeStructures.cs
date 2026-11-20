@@ -8,8 +8,8 @@ namespace Starlight.Prism.Data.Appearance;
 /// <summary> A mesh piece attached to a slime's body </summary>
 /// <param name="Name"> Display name of the structure</param>
 /// <param name="Mesh"> The mesh to attach </param>
-/// <param name="Texture"> Texture for the structure, or null to reuse the slime body's material </param>
-/// <param name="Material"> A material for the structure </param>
+/// <param name="Texture"> Texture for the structure, applied to the slime's material </param>
+/// <param name="Material"> The structure's own material; Only its texture is used, unless it is transparent </param>
 /// <param name="EulerAngles"> Local rotation relative to the bone it's attached to </param>
 /// <param name="Position"> Local offset relative to the bone it hangs from </param>
 /// <param name="Scale"> Local scale </param>
@@ -140,16 +140,15 @@ public static class SlimeStructures
         SlimeStructureRequest request,
         SlimeAppearance appearance)
     {
-        if (request.Material != null && StarlightEntryPoint.prismStructureArtwork)
-        {
-            Recolor(request.Material, appearance);
+        var hasTemplate = template.DefaultMaterials is { Length: > 0 };
 
-            renderer.material = request.Material;
-            structure.DefaultMaterials = new[] { request.Material }.ToIl2CppArray();
+        if (request.Material != null && (!hasTemplate || NeedsTransparency(request.Material)))
+        {
+            UseOwnMaterial(structure, renderer, request.Material, appearance);
             return;
         }
 
-        if (template.DefaultMaterials is not { Length: > 0 })
+        if (!hasTemplate)
         {
             structure.DefaultMaterials = template.DefaultMaterials;
             return;
@@ -158,14 +157,40 @@ public static class SlimeStructures
         var material = UObject.Instantiate(template.DefaultMaterials[0]);
         material.hideFlags = HideFlags.DontUnloadUnusedAsset;
 
-        if (request.Texture != null && HasArtworkSlot(material))
-            MaterialTextures.ApplyToAllTextureSlots(material, request.Texture);
+        var artwork = request.Texture ?? (request.Material != null ? MaterialTextures.FirstTextureOf(request.Material) : null);
+        if (artwork != null && HasArtworkSlot(material))
+            MaterialTextures.ApplyToAllTextureSlots(material, artwork);
+        else if (artwork != null && SlimeColors.ApplyTexture(material, artwork))
+        {
+            Use(structure, renderer, material);
+            return;
+        }
+        else if (artwork != null && request.Material != null)
+        {
+            UseOwnMaterial(structure, renderer, request.Material, appearance);
+            return;
+        }
 
         Recolor(material, appearance);
+        Use(structure, renderer, material);
+    }
 
+    private static void UseOwnMaterial(SlimeAppearanceStructure structure, MeshRenderer renderer, Material material, SlimeAppearance appearance)
+    {
+        Recolor(material, appearance);
+        Use(structure, renderer, material);
+    }
+
+    private static void Use(SlimeAppearanceStructure structure, MeshRenderer renderer, Material material)
+    {
         renderer.material = material;
         structure.DefaultMaterials = new[] { material }.ToIl2CppArray();
     }
+
+    private static bool NeedsTransparency(Material material) =>
+        material.renderQueue >= 2450
+        || material.IsKeywordEnabled("_ALPHATEST_ON")
+        || material.IsKeywordEnabled("_SURFACE_TYPE_TRANSPARENT");
 
     /// <summary>
     /// Recolors a structure to be in the colours of the new slime
