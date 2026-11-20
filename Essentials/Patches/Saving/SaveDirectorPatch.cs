@@ -53,12 +53,16 @@ internal static class SaveDirectorPatch
     {
         foreach (var expansion in StarlightEntryPoint.ExpansionV01S)
         {
-            ContentNames.SourceModName = expansion.GetPackageInfoFromExpansion()?.Name;
+            var info = expansion.GetPackageInfoFromExpansion();
+
+            ContentNames.SourceModId   = info?.ID;
+            ContentNames.SourceModName = info?.Name;
 
             try { step(expansion); }
             catch (Exception e) { LogError(e); }
         }
 
+        ContentNames.SourceModId   = null;
         ContentNames.SourceModName = null;
     }
 }
