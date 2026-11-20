@@ -125,6 +125,7 @@ public class StarlightEntryPoint : MelonMod
     internal static bool prismEnableStyleVariants => !_prefs.HasEntry("prismEnableStyleVariants") || _prefs.GetEntry<bool>("prismEnableStyleVariants").value;
     internal static bool prismShowModdedPlorts => !_prefs.HasEntry("prismShowModdedPlorts") || _prefs.GetEntry<bool>("prismShowModdedPlorts").value;
     internal static bool prismSecondMarketScreen => !_prefs.HasEntry("prismSecondMarketScreen") || _prefs.GetEntry<bool>("prismSecondMarketScreen").value;
+    internal static bool enableIl2CppError => _prefs.HasEntry("enableIl2CppError") && _prefs.GetEntry<bool>("enableIl2CppError").value;
     public override void OnEarlyInitializeMelon()
     {
         Instance = this;
@@ -196,6 +197,7 @@ public class StarlightEntryPoint : MelonMod
         RefreshPrefs();
 
         AlreadyInitialized = true;
+        if (enableIl2CppError) LogIl2CppError();
         InjectIl2CppComponents(MelonAssembly.Assembly);
         foreach (var expansion in ExpansionV01S)
             try { InjectIl2CppComponents(expansion.Assembly); }
@@ -356,6 +358,8 @@ public class StarlightEntryPoint : MelonMod
             _prefs.AddEntry("noclipAdjustSpeed", 235f, "NoClip scroll speed", null,false, false);
         if (!_prefs.HasEntry("consoleMaxSpeed"))
             _prefs.AddEntry("consoleMaxSpeed", 0.75f, "Console scroll speed", null,false, false);
+        if (!_prefs.HasEntry("enableIl2CppError"))
+            _prefs.AddEntry("enableIl2CppError", false, "Il2CppInterop error", "Brings back the 'Assembly Starlight.dll is not registered in il2cpp' message on startup", false, false);
         if (AllowPrism.HasFlag())
         {
             if (!_prefs.HasEntry("prismEnableSpawning"))
@@ -427,6 +431,17 @@ public class StarlightEntryPoint : MelonMod
             case LogType.Error: UnityLog.Error(toDisplay); break;
             case LogType.Warning: UnityLog.Warning(toDisplay); break;
         }
+    }
+
+    /// <summary>
+    /// Logs the Il2CppInterop error Starlight used to cause on every startup :P
+    /// </summary>
+    private static void LogIl2CppError()
+    {
+        Log("The following message by Il2CppInterop is incorrectly labeled as an error. It does nothing and thus should NOT be reported and can be safely ignored. This is NOT an error:");
+
+        try { Il2CppInterop.Runtime.IL2CPP.GetIl2CppClass("Starlight.dll", "Starlight.Enums", "LKey"); }
+        catch { }
     }
 
     internal void InjectIl2CppComponents(Assembly assembly)
