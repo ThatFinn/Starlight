@@ -33,5 +33,16 @@ internal static class SaveTables
         }
     }
 
+    /// <summary>
+    /// Registers a legacy reference id to a translation
+    /// </summary>
+    internal static void RegisterLegacy<T>(PersistenceIDTranslation<T>? translation, string legacyId, T value)
+        where T : Il2CppObjectBase
+    {
+        if (translation == null || string.IsNullOrEmpty(legacyId)) return;
+
+        translation.RawLookupDictionary.TryAdd(legacyId, value);
+    }
+
     internal static SaveReferenceTranslation? Translation => autoSaveDirector?._saveReferenceTranslation;
 }

@@ -91,7 +91,12 @@ public static class PrismGordoCreatorV02
         var referenceId = ContentNames.ReferenceId(
             "IdentifiableType", ContentNames.StableName(slime.ObjectName, Kind), Kind);
 
-        var legacyIds = new[] { ContentNames.LegacyReferenceId("IdentifiableType", name, Kind) };
+        var stableName = ContentNames.StableName(slime.ObjectName, Kind);
+        var legacyIds = new[]
+        {
+            ContentNames.LegacyReferenceId("IdentifiableType", name, Kind),
+            ContentNames.LegacyReferenceId("IdentifiableType", stableName, Kind)
+        };
 
         var type                     = UObject.Instantiate(template.Type);
         type.hideFlags               = HideFlags.DontUnloadUnusedAsset;
@@ -100,7 +105,7 @@ public static class PrismGordoCreatorV02
         type.icon                    = request.Icon ?? template.Type.icon;
         PageArt.ClearFullArt(type);
         type.color                   = template.Type.color;
-        type._pediaPersistenceSuffix = ContentNames.PediaPersistenceSuffix(name, Kind.ToLowerInvariant());
+        PediaSaveIds.SetSuffix(type, stableName, name, Kind.ToLowerInvariant());
 
         var prefab = Prefabs.Create(objectName + "Prefab", template.Prefab);
 

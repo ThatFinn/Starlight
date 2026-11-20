@@ -183,7 +183,7 @@ public static class PrismSlimeCreatorV02
         definition.Name = name;
         definition.localizedName = request.DisplayName;
         definition.CanLargofy = request.CanLargofy;
-        definition._pediaPersistenceSuffix = ContentNames.PediaPersistenceSuffix(name, "slime");
+        PediaSaveIds.SetSuffix(definition, ContentNames.StableName(request.Name, string.Empty), name, "slime");
 
         var appearance = AppearanceCloner.Clone(baseAppearance, name + "Default");
         appearance._appearType = SlimeAppearance.AppearanceType.DEFAULT;

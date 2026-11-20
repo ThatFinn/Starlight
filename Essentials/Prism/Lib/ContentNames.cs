@@ -207,8 +207,14 @@ public static class ContentNames
         ReferenceId("IdentifiableType", sanitizedName, "Fruit");
 
     /// <summary>
-    /// Suffix the pedia persists the "seen" state under
+    /// Suffix the pedia persists the "seen" state under; <c>test_slimeABCD</c>
     /// </summary>
-    public static string PediaPersistenceSuffix(string sanitizedName, string kind) =>
-        $"{ModdedPrefix.ToLowerInvariant()}{sanitizedName.ToLowerInvariant()}_{kind}{SourceModTag.ToLowerInvariant()}";
+    public static string PediaPersistenceSuffix(string stableName, string kind) =>
+        $"{stableName.ToLowerInvariant()}_{kind}{SourceModTag.ToLowerInvariant()}";
+    
+    /// <summary>
+    /// The suffix this content had before pedia ids carried a mod tag; <c>moddedtest_slime</c>
+    /// </summary>
+    public static string LegacyPediaPersistenceSuffix(string name, string kind) =>
+        $"{ModdedPrefix.ToLowerInvariant()}{name.ToLowerInvariant()}_{kind}";
 }

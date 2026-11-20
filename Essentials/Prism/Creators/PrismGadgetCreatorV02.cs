@@ -243,7 +243,7 @@ public static class PrismGadgetCreatorV02
         gadget.icon = request.Icon ?? template.icon;
         PageArt.ClearFullArt(gadget);
         gadget.color = request.Color ?? template.color;
-        gadget._pediaPersistenceSuffix = ContentNames.PediaPersistenceSuffix(name, "gadget");
+        PediaSaveIds.SetSuffix(gadget, ContentNames.StableName(request.Name, Kind), name, "gadget");
 
         gadget.VariantOf = null;
         gadget.LinkedDefinition = null;
@@ -262,7 +262,9 @@ public static class PrismGadgetCreatorV02
             identifiable.identType = gadget;
         ApplyAppearance(gadget, request);
 
-        if (!SaveRegistry.Register(gadget, referenceId))
+        var legacyId = ContentNames.LegacyReferenceId("GadgetDefinition", ContentNames.StableName(request.Name, Kind), Kind);
+
+        if (!SaveRegistry.Register(gadget, referenceId, legacyId))
         {
             try
             {

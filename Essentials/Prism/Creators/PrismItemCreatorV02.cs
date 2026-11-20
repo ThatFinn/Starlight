@@ -176,6 +176,7 @@ public static class PrismItemCreatorV02
 
         var legacyIds = new[]
         {
+            ContentNames.LegacyReferenceId("IdentifiableType", ContentNames.StableName(request.Name, request.Kind), request.Kind),
             ContentNames.LegacyReferenceId("IdentifiableType", name, request.Kind),
             ContentNames.LegacyReferenceId("IdentifiableType", ContentNames.Sanitize(request.Name), request.Kind)
         };
@@ -201,8 +202,11 @@ public static class PrismItemCreatorV02
         
         CopyFromTemplate(item, request.Template);
         
-        item._pediaPersistenceSuffix = ContentNames.PediaPersistenceSuffix(
-            name, string.IsNullOrEmpty(request.Kind) ? "item" : request.Kind.ToLowerInvariant());
+        PediaSaveIds.SetSuffix(
+            item,
+            ContentNames.StableName(request.Name, request.Kind),
+            name,
+            string.IsNullOrEmpty(request.Kind) ? "item" : request.Kind.ToLowerInvariant());
 
         item.prefab = Prefabs.Create(objectName + "Prefab", request.Template.prefab);
 

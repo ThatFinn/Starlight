@@ -79,6 +79,8 @@ public static class PrismMusicCreatorV02
 
     private static readonly Dictionary<string, MusicPlayerMusicDefinition> Created = new(StringComparer.Ordinal);
 
+    private static readonly Dictionary<string, string> LegacyGuids = new(StringComparer.Ordinal);
+
     /// <summary>
     /// The files corresponding to their reference id
     /// </summary>
@@ -148,6 +150,8 @@ public static class PrismMusicCreatorV02
         track.name = objectName;
         
         track.Guid = referenceId;
+        LegacyGuids[referenceId] = ContentNames.LegacyReferenceId(
+            nameof(MusicPlayerMusicDefinition), ContentNames.StableName(request.Name, Kind), Kind);
 
         track._trackTitle = request.Title;
         if (request.Icon != null) track._trackIcon = SpriteEUtil.Hold(request.Icon);
@@ -228,6 +232,9 @@ public static class PrismMusicCreatorV02
                 list._items.Add(track);
 
             SaveTables.Register(SaveTables.Translation?._musicPlayerTranslation, track.ReferenceId, track);
+
+            if (LegacyGuids.TryGetValue(track.ReferenceId, out var legacyGuid))
+                SaveTables.RegisterLegacy(SaveTables.Translation?._musicPlayerTranslation, legacyGuid, track);
 
             AddToPlayer(track);
         }

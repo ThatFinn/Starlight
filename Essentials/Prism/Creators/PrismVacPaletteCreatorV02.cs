@@ -112,6 +112,8 @@ public static class PrismVacPaletteCreatorV02
 
     private static readonly Dictionary<string, VacPalette> Created = new(StringComparer.Ordinal);
 
+    private static readonly Dictionary<string, string> LegacyGuids = new(StringComparer.Ordinal);
+
     private static bool IsCreated(VacPalette? palette) =>
         palette != null && Created.Values.Any(created => created.Pointer == palette.Pointer);
 
@@ -182,6 +184,7 @@ public static class PrismVacPaletteCreatorV02
         palette._materialSlots = BuildSlots(template, request, objectName);
 
         Created[guid] = palette;
+        LegacyGuids[guid] = ContentNames.LegacyReferenceId(string.Empty, ContentNames.StableName(request.Name, Kind), Kind).TrimStart('.');
         Register(palette, template.PediaEntry);
 
         return new CreatedVacPalette(palette, entry, palette.ReferenceId, objectName);
@@ -212,10 +215,17 @@ public static class PrismVacPaletteCreatorV02
             return null;
         }
 
-        fixedEntry._persistenceSuffix = ContentNames.PediaPersistenceSuffix(name, Kind.ToLowerInvariant());
+        var templatePrefix = fixedEntry._persistenceId;
+        var stableName = ContentNames.StableName(request.Name, Kind);
+        var kind = Kind.ToLowerInvariant();
+
+        fixedEntry._persistenceId = PediaSaveIds.Prefix;
+        fixedEntry._persistenceSuffix = ContentNames.PediaPersistenceSuffix(stableName, kind);
 
         fixedEntry._fullArt = null;
         if (request.Icon != null) fixedEntry._icon = request.Icon;
+
+        PediaSaveIds.Register(entry, PediaSaveIds.Combine(new[] { templatePrefix }, PediaSaveIds.LegacySuffixesOf(stableName, name, kind)));
 
         return entry;
     }
@@ -325,6 +335,9 @@ public static class PrismVacPaletteCreatorV02
                 list.items.Add(palette);
 
             SaveTables.Register(SaveTables.Translation?._paletteTranslation, palette.ReferenceId, palette);
+
+            if (LegacyGuids.TryGetValue(palette.ReferenceId, out var legacyGuid))
+                SaveTables.RegisterLegacy(SaveTables.Translation?._paletteTranslation, legacyGuid, palette);
 
             if (templateEntry != null) AddToCategories(palette.PediaEntry, templateEntry);
         }

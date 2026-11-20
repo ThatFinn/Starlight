@@ -425,6 +425,7 @@ public static class PrismPediaCreatorV02
         }
 
         var entry = UObject.Instantiate(template);
+        var templatePrefix = entry._persistenceId;
         FillInformation(entry, request.Subject.name, request.Description, request.Sections, request.CustomUnlockAction);
         entry._identifiableType = request.Subject;
         entry._title = request.Subject.localizedName;
@@ -434,6 +435,7 @@ public static class PrismPediaCreatorV02
 
         Documented.Add(request.Subject.name);
         Entries[request.Subject.name] = entry;
+        PediaSaveIds.Register(entry, PediaSaveIds.LegacyIdsOf(request.Subject, templatePrefix));
 
         Queue(request.Category, entry);
         RebuildCategory(request.Category);
@@ -489,11 +491,13 @@ public static class PrismPediaCreatorV02
         }
 
         var entry = UObject.Instantiate(template);
+        var templatePrefix = entry._persistenceId;
+        var stableName = ContentNames.Sanitize(request.Name);
         FillInformation(entry, name, request.Description, request.Sections, request.CustomUnlockAction);
         entry._title = request.Title;
-        entry._persistenceSuffix = ContentNames.PediaPersistenceSuffix(name, "pedia");
+        entry._persistenceSuffix = ContentNames.PediaPersistenceSuffix(stableName, "pedia");
         entry._isUnlockedInitially = false;
-        
+
         entry._fullArt = null;
 
         if (request.Icon != null) entry._icon = request.Icon;
@@ -501,6 +505,7 @@ public static class PrismPediaCreatorV02
 
         Entries[name] = entry;
         Documented.Add(name);
+        PediaSaveIds.Register(entry, PediaSaveIds.Combine(new[] { templatePrefix }, PediaSaveIds.LegacySuffixesOf(stableName, name, "pedia")));
 
         Queue(request.Category, entry);
         RebuildCategory(request.Category);
@@ -561,12 +566,15 @@ public static class PrismPediaCreatorV02
         }
 
         var entry = UObject.Instantiate(template);
+        var templatePrefix = entry._persistenceId;
         FillInformation(entry, entryName, request.Description, request.Sections, request.CustomUnlockAction);
+        entry._persistenceId = PediaSaveIds.RadiantPrefix;
         entry._slimeDefinition = subject;
         entry._title = subject.localizedName;
         entry._highlightSet = FindHighlightSet(request.FactSet);
 
         RadiantEntries.Add(entry);
+        PediaSaveIds.Register(entry, PediaSaveIds.RadiantLegacyIdsOf(entry, subject, templatePrefix));
 
         Queue(PediaCategoryKind.RadiantSlimes, entry);
         RebuildCategory(PediaCategoryKind.RadiantSlimes);
@@ -586,6 +594,7 @@ public static class PrismPediaCreatorV02
     {
         entry.hideFlags = HideFlags.DontUnloadUnusedAsset;
         entry.name = name;
+        entry._persistenceId = PediaSaveIds.Prefix;
         entry._description = description;
         entry._details = BuildDetails(WithCredit(sections));
         PediaEvents.Register(entry, unlockAction);
