@@ -142,12 +142,6 @@ public class StarlightEntryPoint : MelonMod
             if (correctName.Exists) try { correctName.Delete(); } catch { }
             try { thisDll.MoveTo(correctName.FullName); } catch { }
         }
-        MelonLogger.MsgDrawingCallbackHandler += (_, _, _, s2) =>
-        {
-            if (!string.IsNullOrWhiteSpace(s2))
-                if (s2.Contains("Support Module Loaded")&&s2.EndsWith("MelonLoader\\Dependencies\\SupportModules\\Il2Cpp.dll"))
-                    Log("The following message by Il2CppInterop is incorrectly labeled as an error. It does nothing and thus should NOT be reported and can be safely ignored. This is NOT an error:");
-        };
 
         var launchArgs = Environment.GetCommandLineArgs();
         var usedArgs = new List<string>();

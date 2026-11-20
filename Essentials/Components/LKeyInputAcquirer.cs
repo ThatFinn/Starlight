@@ -1,3 +1,4 @@
+using Il2CppInterop.Runtime.Attributes;
 using Starlight.Enums;
 using Starlight.Storage;
 using UnityEngine.InputSystem;
@@ -103,9 +104,11 @@ internal class LKeyInputAcquirer : MonoBehaviour
         }
     }
 
-    internal bool OnKey(LKey key) => pressedKeys.Contains(key);
-    internal bool OnKeyDown(LKey key) => downThisFrame.Contains(key);
-    internal bool OnKeyUp(LKey key) => upThisFrame.Contains(key);
+    [HideFromIl2Cpp] internal bool OnKey(LKey key) => pressedKeys.Contains(key);
+    [HideFromIl2Cpp] internal bool OnKeyDown(LKey key) => downThisFrame.Contains(key);
+    [HideFromIl2Cpp] internal bool OnKeyUp(LKey key) => upThisFrame.Contains(key);
+    
+    [HideFromIl2Cpp]
     internal bool OnKey(LMultiKey multiKey)
     {
         foreach (var k in multiKey.keys)
@@ -114,6 +117,7 @@ internal class LKeyInputAcquirer : MonoBehaviour
         return true;
     }
 
+    [HideFromIl2Cpp]
     internal bool OnKeyDown(LMultiKey multiKey)
     {
         int i = 0;
@@ -127,6 +131,8 @@ internal class LKeyInputAcquirer : MonoBehaviour
         if (!wasThisFrame) return false;
         return i == multiKey.keys.Length;
     }
+    
+    [HideFromIl2Cpp]
     internal bool OnKeyUp(LMultiKey multiKey)
     {
         int i = 0;
