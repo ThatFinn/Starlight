@@ -83,7 +83,7 @@ public sealed record PlortRequest
     /// <summary>
     /// How much it charges a drone station
     /// </summary>
-    /// <remarks> Null = pink plort; Use <see cref="Data.Drones.DroneFuel.Like"/> to copy a native plort </remarks>
+    /// <remarks> Null charges like any plort the game does not list (5 energy, down to 1 as the station fills); Use <see cref="Data.Drones.DroneFuel.Like"/> to copy a native plort </remarks>
     public DroneFuel? DroneFuel { get; init; }
 }
 
