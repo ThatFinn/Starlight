@@ -148,9 +148,7 @@ internal class SystemContextPatch
                                                 rectT.anchoredPosition = Vector2.zero;
                                         } catch { }
                                         menusToInit.Add(rootObject.name, type);
-                                        if (!ClassInjector.IsTypeRegisteredInIl2Cpp(type))
-                                            ClassInjector.RegisterTypeInIl2Cpp(type,
-                                                new RegisterTypeOptions() { LogSuccess = false });
+                                        InjectionEUtil.Register(type, new RegisterTypeOptions() { LogSuccess = false });
 
                                     }
                                     else LogError($"The menu under the name {type.Name} couldn't be loaded! It's MenuIdentifier is broken!");

@@ -464,6 +464,7 @@ public class StarlightEntryPoint : MelonMod
                     if(inject.LOGOnSuccess)
                         Log($"Injected {type.FullName} into il2cpp");
                 }
+                InjectionEUtil.MarkAsHoldingReferences(type);
             }
             catch (Exception e)
             {
