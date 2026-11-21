@@ -83,6 +83,57 @@ public static class PrismLibSpawning
 
     }
 
+    /// <summary>
+    /// Makes an Identifiable a member of the spawns that are already there
+    /// </summary>
+    /// <param name="ident"> The object's type </param>
+    /// <param name="activeTime"> The time of day it can spawn in </param>
+    /// <param name="locations"> Which zones to spawn in </param>
+    /// <param name="weight"> Its weight next to the others in each spawn, which weigh about 1 each. (Gold slimes weigh 0.002 to 0.005) </param>
+    /// <param name="spawnerType"> Which spawner type to mix into </param>
+    public static void MixIntoSpawns(IdentifiableType ident, PrismSpawnerActiveTime activeTime,
+        PrismSpawnLocations[] locations, float weight, PrismSpawnerType spawnerType)
+    {
+        if (ident == null || locations == null || locations.Length == 0) return;
+
+        var sceneNames = GetSceneNamesFromSpawnerZones(locations);
+
+        ExecuteOnSpawnerAwake.Add(spawner =>
+        {
+            if (!ContainsZoneName(spawner.gameObject.scene.name, sceneNames)) return;
+            if (spawnerType == PrismSpawnerType.Slime  && spawner.TryCast<DirectedSlimeSpawner>()  == null) return;
+            if (spawnerType == PrismSpawnerType.Animal && spawner.TryCast<DirectedAnimalSpawner>() == null) return;
+
+            MixIn(spawner, ident, weight, activeTime);
+        });
+    }
+
+    private static void MixIn(DirectedActorSpawner spawner, IdentifiableType ident, float weight, PrismSpawnerActiveTime activeTime)
+    {
+        if (spawner.Constraints == null) return;
+
+        foreach (var constraint in spawner.Constraints)
+        {
+            if (constraint?.Slimeset?.Members == null) continue;
+            if (!Overlaps(constraint.Window, activeTime)) continue;
+            if (constraint.Slimeset.Members.Any(member => member?.IdentType != null && member.IdentType.Pointer == ident.Pointer)) continue;
+
+            constraint.Slimeset.Members = constraint.Slimeset.Members.AddToNew(new SlimeSet.Member
+            {
+                _prefab   = ident.prefab,
+                IdentType = ident,
+                Weight    = weight,
+            });
+        }
+    }
+
+    private static bool Overlaps(DirectedActorSpawner.TimeWindow? window, PrismSpawnerActiveTime activeTime) => activeTime switch
+    {
+        PrismSpawnerActiveTime.DuringDay   => window == null || window.TimeMode != DirectedActorSpawner.TimeMode.NIGHT,
+        PrismSpawnerActiveTime.DuringNight => window == null || window.TimeMode != DirectedActorSpawner.TimeMode.DAY,
+        _                                  => true,
+    };
+
     private static List<string> GetSceneNamesFromSpawnerZones(PrismSpawnLocations[] locations)
     {
         List<string> names = new();
