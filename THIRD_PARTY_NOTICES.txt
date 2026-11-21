@@ -2,13 +2,13 @@ THIRD-PARTY ASSET NOTICES
 
 The following assets included in Starlight are not covered by the Starlight-SAL:
 
-1. Asset: Essentials/EncodedAssets/OriginalFiles/mlIcon.png
+1. Asset: Essentials/Assets/mlIcon.png
    Author: The MelonLoader Team / LavaGang
    Source: https://github.com/LavaGang/MelonLoader
    Notes: Used to depict the game running with MelonLoader installed on startup-
           Starlight is an independent project and is not officially affiliated with LavaGang.
 
-2. Asset: Essentials/EncodedAssets/OriginalFiles/NotoSans.ttf
+2. Asset: Essentials/Assets/NotoSans.ttf
    Author: Google LLC
    Source: https://github.com/notofonts/latin-greek-cyrillic
    Notes: Licensed under the SIL Open Font License, Version 1.1. 
