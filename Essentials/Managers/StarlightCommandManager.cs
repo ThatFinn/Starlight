@@ -7,7 +7,7 @@ namespace Starlight.Managers;
 
 public static class StarlightCommandManager
 {
-    internal static Dictionary<string, StarlightCommand> Commands = new();
+    internal static Dictionary<string, StarlightCommand> Commands = new(StringComparer.OrdinalIgnoreCase);
     internal static void Start()
     {
         SetupCommands();
@@ -167,7 +167,7 @@ public static class StarlightCommandManager
         {
             return pair1.Key.CompareTo(pair2.Key);
         });
-        Commands = myList.ToDictionary(x => x.Key, x => x.Value);
+        Commands = myList.ToDictionary(x => x.Key, x => x.Value, StringComparer.OrdinalIgnoreCase);
         return true;
     }
 
@@ -234,7 +234,7 @@ public static class StarlightCommandManager
         return false;
     }
 
-    public static readonly Dictionary<string, List<Action<string[]>>> CommandAddons = new();
+    public static readonly Dictionary<string, List<Action<string[]>>> CommandAddons = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Registers a command addon
@@ -247,6 +247,25 @@ public static class StarlightCommandManager
             list.Add(action);
         else
             CommandAddons.Add(command, new List<Action<string[]>> { action });
+    }
+    
+    /// <summary>
+    /// Gives every argument proper case-sensitivity
+    /// </summary>
+    /// <param name="command"> The command whose autocomplete options are used </param>
+    /// <param name="args"> The arguments, changed in place </param>
+    static void MatchArgumentCase(StarlightCommand command, string[] args)
+    {
+        for (int i = 0; i < args.Length; i++)
+        {
+            List<string> options;
+            try { options = command.GetAutoComplete(i, args.Take(i + 1).ToArray()); }
+            catch { continue; }
+            if (options == null || options.Contains(args[i])) continue;
+
+            var matches = options.Where(option => string.Equals(option, args[i], StringComparison.OrdinalIgnoreCase)).Distinct().ToList();
+            if (matches.Count == 1) args[i] = matches[0];
+        }
     }
     
     /// <summary>
@@ -307,8 +326,7 @@ public static class StarlightCommandManager
                         split.RemoveAt(split.Count - 1);
                         if (canPlay)
                         {
-                            string[] args = null;
-                            if (split.Count != 0) args = split.ToArray();
+                            string[] args = split.ToArray();
                             var command = Commands[cmd];
                             if (command.type.HasFlag(CommandType.Cheat) && StarlightCounterGateManager.disableCheats)
                             {
@@ -317,6 +335,7 @@ public static class StarlightCommandManager
                             else
                             {
                                 command.silent = silent;
+                                MatchArgumentCase(command, args);
                                 try { successful = command.Execute(args); } catch (Exception e) { LogError($"Error in command execution!\n{e}"); }
 
                                 try

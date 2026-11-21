@@ -8,13 +8,6 @@ internal class HelpCommand : StarlightCommand
     public override string Usage => "help [cmdName]";
     public override CommandType type => CommandType.Common;
 
-    public string GetCommandDescription(string command)
-    {
-        if (StarlightCommandManager.Commands.ContainsKey(command))
-            return StarlightCommandManager.Commands[command].ExtendedDescription;
-        return string.Empty;
-    }
-
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)
@@ -30,23 +23,20 @@ internal class HelpCommand : StarlightCommand
     public override bool Execute(string[] args)
     {
         if (!args.IsBetween(0,1)) return SendUsage();
-        if (args == null)
+        if (args == null || args.Length == 0)
         {
             string currText = Tr("cmd.help.success")+"\n";
 
             foreach (KeyValuePair<string, StarlightCommand> entry in StarlightCommandManager.Commands)
                 if (!entry.Value.Hidden)
-                    currText = $"{currText}\n{entry.Value.Usage} - {GetCommandDescription(entry.Key)}";
+                    currText = $"{currText}\n{entry.Value.Usage} - {entry.Value.ExtendedDescription}";
             SendMessage(currText);
             return true;
         }
-        var desc = GetCommandDescription(args[0]);
-        if (StarlightCommandManager.Commands.ContainsKey(args[0]))
-        {
-            SendMessage(Tr("cmd.help.successspecific",StarlightCommandManager.Commands[args[0]].Usage,desc));
-            return true;
-        }
-        return SendError(Tr("cmd.help.notvalidcommand",args[0]));
-        
+        if (!StarlightCommandManager.Commands.TryGetValue(args[0], out var command))
+            return SendError(Tr("cmd.help.notvalidcommand",args[0]));
+
+        SendMessage(Tr("cmd.help.successspecific",command.Usage,command.ExtendedDescription));
+        return true;
     }
 }

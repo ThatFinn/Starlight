@@ -23,7 +23,7 @@ internal class InfiniteEnergyCommand : StarlightCommand
         if (!inGame) return SendLoadASaveFirst();
 
         bool shouldDisableThrusterHeight = false;
-        if (args != null) if (!TryParseBool(args[0], out shouldDisableThrusterHeight)) return false;
+        if (args != null && args.Length != 0) if (!TryParseBool(args[0], out shouldDisableThrusterHeight)) return false;
 
         if (StarlightSaveManager.inGameData.InfiniteEnergyActive)
         {

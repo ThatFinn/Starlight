@@ -21,7 +21,7 @@ internal class RefillInvCommand : StarlightCommand
         int numberOfSlots = InventoryEUtil.GetAllSlotCount() - 1;
         int slotToFill = -1;
 
-        if(args!=null)
+        if(args != null && args.Length != 0)
             if(!TryParseInt(args[0], out slotToFill,0, false,slotToFill)) return false;
             else try
                 {
@@ -31,7 +31,7 @@ internal class RefillInvCommand : StarlightCommand
                     slotToFill -= 1;
                 }
                 catch { return SendNotValidInt(args[0]); }
-        if (args==null)
+        if (args == null || args.Length == 0)
         {
             foreach (var slotIndex in InventoryEUtil.GetUnlockedSlots())
                 InventoryEUtil.SetSlotItemCount(slotIndex,InventoryEUtil.GetSlotMaxItemCount(slotIndex));

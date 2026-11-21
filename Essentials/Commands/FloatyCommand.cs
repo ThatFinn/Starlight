@@ -22,7 +22,7 @@ internal class FloatyCommand : StarlightCommand
         Camera cam = MiscEUtil.GetActiveCamera(); if (!cam) return SendNoCamera();
         
         float duration = -1;
-        if(args!=null) if(!TryParseFloat(args[0], out duration, 0, false)) return false;
+        if(args != null && args.Length != 0) if(!TryParseFloat(args[0], out duration, 0, false)) return false;
         
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {

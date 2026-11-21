@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 using Starlight.Enums;
 using Starlight.Managers;
 
@@ -21,12 +22,8 @@ internal class BindCommand : StarlightCommand
             return list;
         }
 
-        string secondArg = args[1];
-        foreach (KeyValuePair<string, StarlightCommand> entry in StarlightCommandManager.Commands)
-        {
-            if (entry.Key == secondArg) return entry.Value.GetAutoComplete(argIndex - 2, args);
-        }
-
+        if (StarlightCommandManager.Commands.TryGetValue(args[1], out var command))
+            return command.GetAutoComplete(argIndex - 2, args.Skip(2).ToArray());
         return null;
     }
 

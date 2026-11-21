@@ -32,7 +32,7 @@ internal class LandPlotRemoveCommand : StarlightCommand
         if (!args.IsBetween(0,1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
 
-        if (args==null)
+        if (args == null || args.Length == 0)
         {
             Camera cam = MiscEUtil.GetActiveCamera(); if (!cam) return SendNoCamera();
             if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))

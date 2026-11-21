@@ -18,7 +18,7 @@ internal class ClearInventoryCommand : StarlightCommand
 
         int numberOfSlots = InventoryEUtil.GetAllSlotCount() - 1;
         int slotToClear = -1;
-        if (args!=null)
+        if (args != null && args.Length != 0)
         {
             try { slotToClear = int.Parse(args[0]); }
             catch { SendError(Tr("cmd.error.notvalidint",args[0])); return false; }
