@@ -4,6 +4,7 @@ using Starlight.Prism.Lib;
 using Starlight.Prism.Data.Native;
 using UnityEngine.Localization;
 using Starlight.Prism.Creators.Actions;
+using Starlight.Prism.Data.Drones;
 
 namespace Starlight.Prism.Creators;
 
@@ -78,6 +79,12 @@ public sealed record PlortRequest
     /// </summary>
     /// <remarks> Examples: it spawns, it is vacuumed in, it is shot out, it is sold </remarks>
     public ItemActions? Actions { get; init; }
+
+    /// <summary>
+    /// How much it charges a drone station
+    /// </summary>
+    /// <remarks> Null = pink plort; Use <see cref="Data.Drones.DroneFuel.Like"/> to copy a native plort </remarks>
+    public DroneFuel? DroneFuel { get; init; }
 }
 
 /// <summary>
@@ -125,6 +132,8 @@ public static class PrismPlortCreatorV02
         created.Type.IsPlort = true;
 
         if (!request.Edible) Groups.Remove(created.Type, Groups.Names.EdiblePlortFood);
+
+        if (request.DroneFuel != null) DroneFuelTable.Register(created.Type, request.DroneFuel);
 
         if (request.Color.HasValue && request.Texture == null)
             Tint(created.Type.prefab, request.Color.Value);
