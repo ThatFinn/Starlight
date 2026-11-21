@@ -145,7 +145,9 @@ public static class PrismItemCreatorV02
         item.IsSceneObject        = template.IsSceneObject;
         item.FashionParentOffset  = template.FashionParentOffset;
         item.gordoSnareBaitPrefab = template.gordoSnareBaitPrefab;
-        item.showForZones         = template.showForZones;
+        item.showForZones         = template.IsPlort
+            ? new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<Il2CppMonomiPark.SlimeRancher.World.ZoneDefinition>(0)
+            : template.showForZones;
     }
 
     /// <summary>
