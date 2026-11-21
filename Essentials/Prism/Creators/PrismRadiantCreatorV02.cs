@@ -123,6 +123,7 @@ public static class PrismRadiantCreatorV02
 
         var variant = AppearanceCloner.Clone(source ?? baseAppearance, name);
         variant._appearType = SlimeAppearance.AppearanceType.RADIANT_BASE;
+        UseRadiantStoneForm(variant, RadiantBaseStoneForm);
         variant._icon = request.Icon ?? SpriteEUtil.Recolour(source?._icon ?? baseAppearance._icon, (source ?? baseAppearance)._colorPalette.Middle, request.Palette.Middle) ?? baseAppearance._icon;
         
         variant._fullArt = null;
@@ -196,6 +197,7 @@ public static class PrismRadiantCreatorV02
         form._icon       = defaultAppearance._icon;
         form._fullArt    = null;
 
+        UseRadiantStoneForm(form, RadiantLargoStoneForm);
         SlimeColors.Apply(form, palette);
 
         largo.AppearancesDefault = largo.AppearancesDefault.AddToNew(form);
@@ -204,6 +206,27 @@ public static class PrismRadiantCreatorV02
         return form;
     }
 
+    private const string RadiantBaseStoneForm = "StoneFormRadiantBase";
+    
+    private const string RadiantLargoStoneForm = "StoneFormRadiantLargo";
+    
+    /// <summary>
+    /// Applies the correct Statue form to the slime, so radiant ringtail slimes show the radiancy on the statue
+    /// </summary>
+    private static void UseRadiantStoneForm(SlimeAppearance form, string stoneFormName)
+    {
+        if (form._stoneFormAppearance == null) return;
+        
+        var radiant = Get<StoneFormAppearance>(stoneFormName);
+        if (radiant == null)
+        {
+            LogWarning($"Prism: '{form.name}': the radiant statue '{stoneFormName}' is not loaded, so it shows a non-radiant statue");
+            return;
+        }
+        
+        form._stoneFormAppearance = radiant;
+    }
+    
     /// <summary>
     /// Sets the color of the vac and splat of an appearance
     /// </summary>
