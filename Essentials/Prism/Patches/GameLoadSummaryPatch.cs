@@ -8,6 +8,8 @@ namespace Starlight.Prism.Patches;
 [HarmonyPatch()]
 internal static class GameLoadSummaryPatch
 {
+    private static int refreshedFrame = -1;
+
     static System.Reflection.MethodBase TargetMethod()
     
         => VersionedEUtil.GetLatestSystemGameVXX().GetMethod("LoadSummaryData", BindingFlags.Instance | BindingFlags.Public);
@@ -16,6 +18,10 @@ internal static class GameLoadSummaryPatch
     {
         try
         {
+            var frame = Time.frameCount;
+            if (frame == refreshedFrame) return;
+
+            refreshedFrame = frame;
             SaveRegistry.RefreshAll();
         } catch { }
     }

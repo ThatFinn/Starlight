@@ -112,8 +112,16 @@ public static class SaveRegistry
             return;
         }
         
-        var position = -1;
         var index = persistence._primaryIndex;
+
+        if (persistence._reverseIndex.TryGetValue(referenceId, out var known) && known >= 0 && known < index.Count &&
+            string.Equals(index[known], referenceId, StringComparison.Ordinal))
+        {
+            MissingPersistenceIds.Remove(referenceId);
+            return;
+        }
+
+        var position = -1;
         var at = 0;
 
         try
