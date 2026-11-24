@@ -108,6 +108,41 @@ public static class PrismLibSpawning
         });
     }
 
+    /// <summary>
+    /// Makes a slime a member of the spawners that only spawn radiant slimes, like the radiant room spawners in the Grey Labyrinth
+    /// </summary>
+    /// <remarks>
+    /// These spawners don't use the radiant bags;
+    /// They pick a slime whose Slimepedia entry is unlocked and roll their own radiant chance,
+    /// so the slime only shows up once it has been discovered
+    /// </remarks>
+    /// <param name="slime"> The slime </param>
+    /// <param name="weight"> Its weight next to the other members of the spawner </param>
+    /// <param name="locations"> Which zones to spawn in, null or empty for every zone </param>
+    /// <param name="activeTime"> The time of day it can spawn in </param>
+    public static void MixIntoRadiantSpawns(SlimeDefinition slime, float weight, PrismSpawnLocations[] locations = null,
+        PrismSpawnerActiveTime activeTime = PrismSpawnerActiveTime.AllTheTime)
+    {
+        if (slime == null) return;
+
+        if (slime.RadiantBase == null)
+        {
+            LogWarning($"Prism: '{slime.name}' has no radiant form, so it can't be mixed into radiant spawns");
+            return;
+        }
+
+        var sceneNames = GetSceneNamesFromSpawnerZones(locations);
+
+        ExecuteOnSpawnerAwake.Add(spawner =>
+        {
+            if (!spawner._onlySpawnRadiant) return;
+            if (sceneNames.Count != 0 && !ContainsZoneName(spawner.gameObject.scene.name, sceneNames)) return;
+            if (spawner.TryCast<DirectedSlimeSpawner>() == null) return;
+
+            MixIn(spawner, slime, weight, activeTime);
+        });
+    }
+
     private static void MixIn(DirectedActorSpawner spawner, IdentifiableType ident, float weight, PrismSpawnerActiveTime activeTime)
     {
         if (spawner.Constraints == null) return;
