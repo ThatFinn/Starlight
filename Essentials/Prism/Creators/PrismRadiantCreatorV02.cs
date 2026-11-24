@@ -48,6 +48,11 @@ public sealed record RadiantRequest
     public PrismNativeBaseSlime? AppearanceBase { get; init; }
 
     /// <summary>
+    /// Whether the radiant form glows like native radiant slimes
+    /// </summary>
+    public bool Glowing { get; init; } = true;
+
+    /// <summary>
     /// A custom slime face
     /// </summary>
     /// <remarks> Null keeps the original face </remarks>
@@ -124,7 +129,7 @@ public static class PrismRadiantCreatorV02
         var variant = AppearanceCloner.Clone(source ?? baseAppearance, name);
         variant._appearType = SlimeAppearance.AppearanceType.RADIANT_BASE;
         UseRadiantStoneForm(variant, RadiantBaseStoneForm);
-        variant._icon = request.Icon ?? SpriteEUtil.Recolour(source?._icon ?? baseAppearance._icon, (source ?? baseAppearance)._colorPalette.Middle, request.Palette.Middle) ?? baseAppearance._icon;
+        variant._icon = request.Icon ?? SpriteEUtil.Recolor(source?._icon ?? baseAppearance._icon, (source ?? baseAppearance)._colorPalette.Middle, request.Palette.Middle) ?? baseAppearance._icon;
         
         variant._fullArt = null;
         
@@ -133,6 +138,7 @@ public static class PrismRadiantCreatorV02
 
         Attempt(name, "slime's body structures", () => ApplyStructures(variant, name, request));
         Attempt(name, "slime's face",            () => ApplyFace(variant, request.Face));
+        Attempt(name, "radiant glow",            () => ApplyGlow(variant, request.Glowing, request.Palette.Middle));
 
         definition.RadiantBase = variant;
         PageArt.RegisterRadiant(definition, request.FullArt);
@@ -166,6 +172,7 @@ public static class PrismRadiantCreatorV02
             largo.RadiantLargo0 = BuildLargoForm(
                 largo, defaultAppearance,
                 SlimeColors.Blend(first.RadiantBase._colorPalette, secondDefault._colorPalette),
+                RadiantGlow.Has(first.RadiantBase),
                 SlimeAppearance.AppearanceType.RADIANT_LARGO_0, largo.name + "Radiant0");
             added++;
         }
@@ -175,6 +182,7 @@ public static class PrismRadiantCreatorV02
             largo.RadiantLargo1 = BuildLargoForm(
                 largo, defaultAppearance,
                 SlimeColors.Blend(firstDefault._colorPalette, second.RadiantBase._colorPalette),
+                RadiantGlow.Has(second.RadiantBase),
                 SlimeAppearance.AppearanceType.RADIANT_LARGO_1, largo.name + "Radiant1");
             added++;
         }
@@ -189,6 +197,7 @@ public static class PrismRadiantCreatorV02
         SlimeDefinition largo,
         SlimeAppearance defaultAppearance,
         SlimePalette palette,
+        bool glowing,
         SlimeAppearance.AppearanceType type,
         string name)
     {
@@ -199,6 +208,7 @@ public static class PrismRadiantCreatorV02
 
         UseRadiantStoneForm(form, RadiantLargoStoneForm);
         SlimeColors.Apply(form, palette);
+        Attempt(name, "radiant glow", () => ApplyGlow(form, glowing, palette.Middle));
 
         largo.AppearancesDefault = largo.AppearancesDefault.AddToNew(form);
         Register(largo, form, defaultAppearance);
@@ -275,11 +285,26 @@ public static class PrismRadiantCreatorV02
                 LogWarning($"Prism: '{variant.name}': {from} has no face to copy");
         }
 
-        if (face.Colours is { } colours)
-            SlimeFaces.Recolour(variant, colours.EyeRed, colours.EyeGreen, colours.EyeBlue, colours.Mouth);
+        if (face.Colors is { } colors)
+            SlimeFaces.Recolor(variant, colors.EyeRed, colors.EyeGreen, colors.EyeBlue, colors.Mouth);
 
         if (face.Overrides.Count > 0)
             SlimeFaces.Apply(variant, face.Overrides);
+    }
+
+    /// <summary>
+    /// Gives the radiant form the glow of the native radiant slimes, or removes it
+    /// </summary>
+    private static void ApplyGlow(SlimeAppearance variant, bool glowing, Color lightColor)
+    {
+        if (!glowing)
+        {
+            RadiantGlow.Remove(variant);
+            return;
+        }
+
+        if (!RadiantGlow.Add(variant, lightColor))
+            LogWarning($"Prism: '{variant.name}': the native radiant to copy the glow from is not loaded, so it doesn't glow");
     }
 
     private static void Attempt(string name, string part, Action step)
