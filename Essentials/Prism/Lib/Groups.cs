@@ -276,6 +276,7 @@ public static class Groups
             if (runtime == null || !runtime.IsMember(template) || runtime.IsMember(type)) continue;
 
             runtime.AddMember(type);
+            PlaceNextTo(runtime, type, template);
             joined++;
         }
 
@@ -480,9 +481,62 @@ public static class Groups
             if (group == null || string.IsNullOrEmpty(group.name)) continue;
             if (!ListsDirectly(group, template) || group.IsMember(type)) continue;
 
-            if (Add(type, group)) joined++;
+            if (!Add(type, group)) continue;
+
+            PlaceNextTo(group, type, template);
+            joined++;
         }
 
         return joined;
     }
+
+    /// <summary>
+    /// The template each copied type came from
+    /// </summary>
+    private static readonly Dictionary<IntPtr, IntPtr> Templates = new();
+
+    /// <summary>
+    /// Moves a copy right next to its template
+    /// </summary>
+    private static void PlaceNextTo(IdentifiableTypeGroup group, IdentifiableType type, IdentifiableType template)
+    {
+        Templates[type.Pointer] = template.Pointer;
+
+        MoveNextTo(group._memberTypes, type, template);
+
+        if (group.GetRuntimeObject() is { } runtime)
+            PlaceNextTo(runtime, type, template);
+    }
+
+    private static void PlaceNextTo(IdentifiableTypeGroupRuntimeObject runtime, IdentifiableType type, IdentifiableType template)
+    {
+        Templates[type.Pointer] = template.Pointer;
+
+        if (!MoveNextTo(runtime._memberTypes, type, template)) return;
+
+        runtime._memberIndices.Clear();
+
+        for (var i = 0; i < runtime._memberTypes.Count; i++)
+        {
+            if (runtime._memberTypes[i] != null) runtime._memberIndices[runtime._memberTypes[i]] = i;
+        }
+    }
+
+    private static bool MoveNextTo(Il2CppSystem.Collections.Generic.List<IdentifiableType>? members, IdentifiableType type, IdentifiableType template)
+    {
+        if (members == null || !members.Contains(type) || !members.Contains(template)) return false;
+
+        members.Remove(type);
+
+        var index = members.IndexOf(template) + 1;
+
+        while (index < members.Count && IsCopyOf(members[index], template))
+            index++;
+
+        members.Insert(index, type);
+        return true;
+    }
+
+    private static bool IsCopyOf(IdentifiableType? type, IdentifiableType template) =>
+        type != null && Templates.TryGetValue(type.Pointer, out var source) && source == template.Pointer;
 }
