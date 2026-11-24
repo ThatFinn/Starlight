@@ -2,7 +2,7 @@
 
 /// <summary>
 /// Sprites made from code;
-/// Recolouring & keeping it alive
+/// Recoloring & keeping it alive
 /// </summary>
 public static class SpriteEUtil
 {
@@ -38,14 +38,16 @@ public static class SpriteEUtil
     /// <summary>
     /// Recolors a game's icon
     /// </summary>
-    public static Sprite? Recolour(this Sprite? source, Color from, Color to)
+    public static Sprite? Recolor(this Sprite? source, Color from, Color to) => source.Recolor(new ColorShift(from, to));
+
+    /// <summary>
+    /// Recolors a game's icon with a <see cref="ColorShift"/>
+    /// </summary>
+    public static Sprite? Recolor(this Sprite? source, ColorShift shift)
     {
         if (source == null) return null;
 
-        Color.RGBToHSV(from, out var fromHue, out var fromSaturation, out _);
-        Color.RGBToHSV(to, out var toHue, out var toSaturation, out _);
-        
-        if (Mathf.Abs(fromHue - toHue) < 0.01f && Mathf.Abs(fromSaturation - toSaturation) < 0.05f) return source;
+        if (!shift.Changes) return source;
 
         RenderTexture? target = null;
         var previous = RenderTexture.active;
@@ -53,48 +55,48 @@ public static class SpriteEUtil
         try
         {
             var texture = source.texture;
-            var area = source.textureRect;
+
+            var full    = source.rect;
+            var area    = source.textureRect;
+            var offset  = source.textureRectOffset;
+            var width   = Mathf.RoundToInt(full.width);
+            var height  = Mathf.RoundToInt(full.height);
 
             target = RenderTexture.GetTemporary(texture.width, texture.height, 0, RenderTextureFormat.ARGB32);
             Graphics.Blit(texture, target);
             RenderTexture.active = target;
 
-            var copy = new Texture2D((int) area.width, (int) area.height, TextureFormat.RGBA32, false) { hideFlags = HideFlags.DontUnloadUnusedAsset };
-            copy.ReadPixels(new Rect(area.x, area.y, area.width, area.height), 0, 0);
+            var copy = new Texture2D(width, height, TextureFormat.RGBA32, texture.mipmapCount > 1)
+            {
+                hideFlags  = HideFlags.DontUnloadUnusedAsset,
+                filterMode = texture.filterMode,
+                anisoLevel = texture.anisoLevel,
+                wrapMode   = TextureWrapMode.Clamp
+            };
+            copy.SetPixels32(new Color32[width * height]);
+            copy.ReadPixels(new Rect(area.x, area.y, area.width, area.height), Mathf.RoundToInt(offset.x), Mathf.RoundToInt(offset.y));
 
             var pixels = copy.GetPixels();
-            var saturationScale = fromSaturation > 0.05f ? Mathf.Clamp(toSaturation / fromSaturation, 0.2f, 2.5f) : 1f;
 
             for (var i = 0; i < pixels.Length; i++)
             {
-                var pixel = pixels[i];
-                if (pixel.a < 0.01f) continue;
-
-                Color.RGBToHSV(pixel, out var hue, out var saturation, out var value);
-                
-                if (saturation < 0.12f) continue;
-
-                hue = Mathf.Repeat(hue + (toHue - fromHue), 1f);
-                saturation = Mathf.Clamp01(saturation * saturationScale);
-
-                var shifted = Color.HSVToRGB(hue, saturation, value);
-                shifted.a = pixel.a;
-                pixels[i] = shifted;
+                if (pixels[i].a >= 0.01f) pixels[i] = shift.Apply(pixels[i]);
             }
 
             copy.SetPixels(pixels);
-            copy.Apply();
+            copy.Apply(true);
 
             copy.Hold();
 
-            var sprite = Sprite.Create(copy, new Rect(0, 0, copy.width, copy.height), new Vector2(0.5f, 0.5f), source.pixelsPerUnit);
+            var pivot  = new Vector2(source.pivot.x / full.width, source.pivot.y / full.height);
+            var sprite = Sprite.Create(copy, new Rect(0, 0, width, height), pivot, source.pixelsPerUnit);
             sprite.hideFlags = HideFlags.DontUnloadUnusedAsset;
-            sprite.name = source.name + "Recoloured";
+            sprite.name = source.name + "Recolored";
             return sprite.Hold();
         }
         catch (Exception exception)
         {
-            LogWarning($"Prism: Couldn't recolour the icon '{source.name}': {exception.Message}");
+            LogWarning($"Prism: Couldn't recolor the icon '{source.name}': {exception.Message}");
             return source;
         }
         finally

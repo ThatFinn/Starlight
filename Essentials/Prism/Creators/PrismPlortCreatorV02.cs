@@ -187,7 +187,7 @@ public static class PrismPlortCreatorV02
     /// Sets every color slot of an effect material to the tint
     /// </summary>
     /// <returns> How many color slots were set </returns>
-    private static int TintEveryColour(Material material, Color color)
+    private static int TintEveryColor(Material material, Color color)
     {
         var shader = material.shader;
         if (shader == null) return 0;
@@ -209,7 +209,7 @@ public static class PrismPlortCreatorV02
     }
 
     /// <summary>
-    /// Recolours the plort
+    /// Recolors the plort
     /// </summary>
     private static void Tint(GameObject prefab, Color color)
     {
@@ -230,10 +230,10 @@ public static class PrismPlortCreatorV02
                 var written = gradient ? SlimeColors.Apply(material, palette) : SlimeColors.Tint(material, color);
 
                 written += TintAccents(material, color);
-                if (effect) written += TintEveryColour(material, color);
+                if (effect) written += TintEveryColor(material, color);
 
                 if (written == 0)
-                    LogWarning($"Prism: The tint of '{prefab.name}' did nothing to a material using shader '{material.shader?.name}': it has none of the colour slots Prism knows");
+                    LogWarning($"Prism: The tint of '{prefab.name}' did nothing to a material using shader '{material.shader?.name}': it has none of the color slots Prism knows");
             }
         }
 

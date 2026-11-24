@@ -13,6 +13,58 @@ public static class PrismLibPedia
 {
     public static IdentifiablePediaEntry IdentifiablePediaEntryPrefab;
     public static RadiantSlimePediaEntry RadiantSlimePediaEntryPrefab;
+
+    // Created things and pages whose creator asked other mods to not recolor their art
+    private static readonly HashSet<System.IntPtr> NotRecolorable = new();
+
+    /// <summary>
+    /// Whether other mods may recolor the created thing's art
+    /// </summary>
+    public static bool CanBeRecolored(this IdentifiableType? type) => type != null && !NotRecolorable.Contains(type.Pointer);
+
+    /// <summary>
+    /// Whether other mods may recolor the page's art
+    /// </summary>
+    public static bool CanBeRecolored(this PediaEntry? entry) =>
+        Starlight.Prism.Patches.PageArt.OwnerOf(entry) is { } owner && !NotRecolorable.Contains(owner.Pointer);
+
+    /// <summary>
+    /// Lets other mods recolor the thing's art, or not
+    /// </summary>
+    public static void SetCanBeRecolored(this IdentifiableType type, bool value)
+    {
+        if (type != null) SetCanBeRecolored(type.Pointer, value);
+    }
+
+    /// <summary>
+    /// Lets other mods recolor the page's art, or not
+    /// </summary>
+    public static void SetCanBeRecolored(this PediaEntry entry, bool value)
+    {
+        if (Starlight.Prism.Patches.PageArt.OwnerOf(entry) is { } owner) SetCanBeRecolored(owner.Pointer, value);
+    }
+
+    private static void SetCanBeRecolored(System.IntPtr pointer, bool value)
+    {
+        if (value) NotRecolorable.Remove(pointer);
+        else NotRecolorable.Add(pointer);
+    }
+
+    /// <summary>
+    /// Shifts the colors of a created thing's art in the Slimepedia, the fabricator and the shop
+    /// </summary>
+    /// <remarks> Works for the game's own things too </remarks>
+    /// <returns> Whether it was recolored; not when <see cref="CanBeRecolored(IdentifiableType)"/> is off or it has no art </returns>
+    public static bool RecolorArt(this IdentifiableType type, Starlight.Utils.ColorShift shift) =>
+        type.CanBeRecolored() && Starlight.Prism.Patches.PageArt.AddRecolor(type, shift);
+
+    /// <summary>
+    /// Shifts the colors of a Slimepedia page's art
+    /// </summary>
+    /// <returns> Whether it was recolored; not when <see cref="CanBeRecolored(PediaEntry)"/> is off or the page has no art </returns>
+    public static bool RecolorArt(this PediaEntry entry, Starlight.Utils.ColorShift shift) =>
+        entry.CanBeRecolored() && Starlight.Prism.Patches.PageArt.AddRecolor(entry, shift);
+
     internal static readonly Dictionary<PrismPediaCategoryType, PediaCategory> PediaCategories = new();
     internal static readonly Dictionary<PediaEntry, List<PrismPediaAdditionalFact>> AdditionalFactsMap = new ();
     internal static FixedPediaEntry FixedPediaEntryPrefab;

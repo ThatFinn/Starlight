@@ -9,7 +9,7 @@ using Starlight.Prism.Creators.Actions;
 namespace Starlight.Prism.Creators;
 
 /// <summary>
-/// The colours of the liquid when shot out
+/// The colors of the liquid when shot out
 /// </summary>
 /// <param name="Center"> The middle of the droplet </param>
 /// <param name="Base"> The base of the droplet </param>
@@ -60,17 +60,17 @@ public sealed record LiquidRequest
     /// <summary>
     /// The tank icon
     /// </summary>
-    /// <remarks> Null falls back to the template's icon, recoloured to the <see cref="VacColor"/> </remarks>
+    /// <remarks> Null falls back to the template's icon, recolored to the <see cref="VacColor"/> </remarks>
     public Sprite? Icon { get; init; }
 
     /// <summary>
-    /// The colour in the vac tank
+    /// The color in the vac tank
     /// </summary>
     /// <remarks> Null keeps the template's color </remarks>
     public Color? VacColor { get; init; }
 
     /// <summary>
-    /// The colours of the liquid
+    /// The colors of the liquid
     /// </summary>
     /// <remarks> Null falls back to <see cref="VacColor"/> with <see cref="LiquidColors.From"/> </remarks>
     public LiquidColors? Colors { get; init; }
@@ -185,7 +185,7 @@ public static class PrismLiquidCreatorV02
         else                 Groups.Remove(liquid, Groups.Names.Water);
 
         ApplyOnLanding(liquid);
-        if (colors.HasValue) Recolour(liquid.prefab, colors.Value);
+        if (colors.HasValue) Recolor(liquid.prefab, colors.Value);
 
         SaveRegistry.Register(liquid, created.ReferenceId,
             ContentNames.LegacyReferenceId("LiquidDefinition", ContentNames.StableName(request.Name, Kind), Kind));
@@ -203,9 +203,9 @@ public static class PrismLiquidCreatorV02
     }
 
     /// <summary>
-    /// Recolours a liquid to have the correct colors
+    /// Recolors a liquid to have the correct colors
     /// </summary>
-    private static void Recolour(GameObject prefab, LiquidColors colors)
+    private static void Recolor(GameObject prefab, LiquidColors colors)
     {
         foreach (var swap in prefab.GetComponentsInChildren<WaterIdentifiableVFXSwap>(includeInactive: true))
         {

@@ -217,11 +217,11 @@ public static class SlimeColors
     {
         ArgumentNullException.ThrowIfNull(material);
 
-        foreach (var (prefix, colour) in new[] { ("_Red", red), ("_Green", green), ("_Blue", blue) })
+        foreach (var (prefix, color) in new[] { ("_Red", red), ("_Green", green), ("_Blue", blue) })
         {
-            SetColor(material, prefix + "TopColor", colour);
-            SetColor(material, prefix + "MiddleColor", colour);
-            SetColor(material, prefix + "BottomColor", colour);
+            SetColor(material, prefix + "TopColor", color);
+            SetColor(material, prefix + "MiddleColor", color);
+            SetColor(material, prefix + "BottomColor", color);
         }
     }
 

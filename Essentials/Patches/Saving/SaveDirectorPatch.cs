@@ -30,6 +30,7 @@ internal static class SaveDirectorPatch
             } catch (Exception e) { LogError(e); }
         StarlightCallEventManager.ExecuteWithArgs(CallEvent.AfterSaveDirectorLoad,("saveDirector",__instance));
 
+        if (StarlightEntryPoint.isPrismInUse) Starlight.Prism.Patches.PageArt.Prewarm();
     }
     
     private static void DispatchContentCreation()

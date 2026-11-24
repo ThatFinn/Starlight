@@ -45,7 +45,7 @@ public sealed record SlimeRequest
     /// <summary>
     /// A texture painted over the slime
     /// </summary>
-    /// <remarks> <see cref="Palette"/> still colours the splats and effects </remarks>
+    /// <remarks> <see cref="Palette"/> still colors the splats and effects </remarks>
     public Texture2D? Texture { get; init; }
 
     /// <summary>
@@ -223,10 +223,10 @@ public static class PrismSlimeCreatorV02
             PageArt.KeepFullArtFrom(definition, appearanceSource);
         
         if (request.Palette.HasValue && request.Icon == null && request.FullArt == null)
-            PageArt.RegisterRecolour(definition, appearanceSource.FullArtReference ?? baseAppearance._fullArt, baseAppearance._colorPalette.Middle, request.Palette.Value.Middle);
+            PageArt.RegisterRecolor(definition, appearanceSource.FullArtReference ?? baseAppearance._fullArt, baseAppearance._colorPalette.Middle, request.Palette.Value.Middle);
         
         if (request.Palette.HasValue && request.Icon == null)
-            appearance._icon = SpriteEUtil.Recolour(baseAppearance._icon, baseAppearance._colorPalette.Middle, request.Palette.Value.Middle) ?? appearance._icon;
+            appearance._icon = SpriteEUtil.Recolor(baseAppearance._icon, baseAppearance._colorPalette.Middle, request.Palette.Value.Middle) ?? appearance._icon;
         
         definition.FavoriteToyIdents = (request.FavouriteToys ?? Array.Empty<ToyDefinition>())
             .Where(toy => toy != null)

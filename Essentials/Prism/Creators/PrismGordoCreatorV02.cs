@@ -154,7 +154,7 @@ public static class PrismGordoCreatorV02
         }
 
         ApplyFace(prefab, slime);
-        ApplyColours(prefab, slime);
+        ApplyColors(prefab, slime);
         CarryStructures(prefab, slime);
     }
 
@@ -202,7 +202,7 @@ public static class PrismGordoCreatorV02
     /// <summary>
     /// Paints the gordo slime in the slime's colors
     /// </summary>
-    private static void ApplyColours(GameObject prefab, CreatedSlime slime)
+    private static void ApplyColors(GameObject prefab, CreatedSlime slime)
     {
         var body = SlimeBodyMaterial(slime);
         if (body == null) return;

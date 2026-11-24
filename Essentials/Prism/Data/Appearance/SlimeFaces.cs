@@ -31,7 +31,7 @@ public sealed record FaceLook
     /// <summary>
     /// Recoloring every expression of the face
     /// </summary>
-    public FaceColors? Colours { get; init; }
+    public FaceColors? Colors { get; init; }
 
     /// <summary>
     /// Artwork for individual expressions
@@ -90,7 +90,7 @@ public static class SlimeFaces
     /// <param name="eyeBlue"> Color for the eye mask's blue region </param>
     /// <param name="mouth"> Gradient for the mouth </param>
     /// <returns> The number of expressions recolored </returns>
-    public static int Recolour(
+    public static int Recolor(
         SlimeAppearance appearance,
         Color eyeRed,
         Color eyeGreen,
@@ -102,11 +102,11 @@ public static class SlimeFaces
         var face = appearance._face;
         if (face == null)
         {
-            LogWarning("Prism: Can't recolour the face: the appearance has none.");
+            LogWarning("Prism: Can't recolor the face: the appearance has none.");
             return 0;
         }
 
-        var recoloured = 0;
+        var recolored = 0;
 
         for (var i = 0; i < FaceExpressionTable.Count(face); i++)
         {
@@ -116,12 +116,12 @@ public static class SlimeFaces
                     face, i,
                     TintChannels(existing.Eyes, eyeRed, eyeGreen, eyeBlue),
                     TintGradient(existing.Mouth, mouth)))
-                recoloured++;
+                recolored++;
         }
         
         face.UpdateCache();
 
-        return recoloured;
+        return recolored;
     }
 
     /// <summary>

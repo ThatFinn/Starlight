@@ -36,7 +36,7 @@ public static class PngTexture
             var width = 0;
             var height = 0;
             var bitDepth = 0;
-            var colourType = 0;
+            var colorType = 0;
             var interlace = 0;
 
             using var compressed = new MemoryStream();
@@ -61,7 +61,7 @@ public static class PngTexture
                         width      = ReadInt(png, body);
                         height     = ReadInt(png, body + 4);
                         bitDepth   = png[body + 8];
-                        colourType = png[body + 9];
+                        colorType = png[body + 9];
                         interlace  = png[body + 12];
                         break;
 
@@ -75,9 +75,9 @@ public static class PngTexture
                 at = body + length + 4;
             }
             
-            if (bitDepth != 8 || interlace != 0 || (colourType != 2 && colourType != 6))
+            if (bitDepth != 8 || interlace != 0 || (colorType != 2 && colorType != 6))
             {
-                failure = $"unsupported PNG (depth {bitDepth}, colour type {colourType}, interlace {interlace})";
+                failure = $"unsupported PNG (depth {bitDepth}, color type {colorType}, interlace {interlace})";
                 return null;
             }
 
@@ -87,7 +87,7 @@ public static class PngTexture
                 return null;
             }
 
-            var channels = colourType == 6 ? 4 : 3;
+            var channels = colorType == 6 ? 4 : 3;
             var stride = width * channels;
 
             compressed.Position = 0;

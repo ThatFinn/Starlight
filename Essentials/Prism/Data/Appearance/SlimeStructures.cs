@@ -193,7 +193,7 @@ public static class SlimeStructures
         || material.IsKeywordEnabled("_SURFACE_TYPE_TRANSPARENT");
 
     /// <summary>
-    /// Recolors a structure to be in the colours of the new slime
+    /// Recolors a structure to be in the colors of the new slime
     /// </summary>
     private static void Recolor(Material material, SlimeAppearance appearance)
     {

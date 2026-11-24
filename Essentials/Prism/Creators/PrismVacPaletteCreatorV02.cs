@@ -10,7 +10,7 @@ using UnityEngine.Localization;
 namespace Starlight.Prism.Creators;
 
 /// <summary>
-/// The three shades the vac's body shader paints one colour channel of its mask with
+/// The three shades the vac's body shader paints one color channel of its mask with
 /// </summary>
 /// <param name="Dark"> The darkest shade </param>
 /// <param name="Light"> The lightest shade </param>
@@ -107,7 +107,7 @@ public static class PrismVacPaletteCreatorV02
     private const string GlassSlot  = "VacGlassSlot";
     private const string HandleSlot = "VacHandleSlot";
 
-    // The colour mask's channels
+    // The color mask's channels
     private static readonly string[] Channels = { "Red", "Green", "Blue", "Black", "Magenta", "Yellow", "Cyan", "White" };
 
     private static readonly Dictionary<string, VacPalette> Created = new(StringComparer.Ordinal);
@@ -293,7 +293,7 @@ public static class PrismVacPaletteCreatorV02
         new[] { request.Red, request.Green, request.Blue, request.Black, request.Magenta, request.Yellow, request.Cyan, request.White };
 
     /// <summary>
-    /// A copy of the material with adjusted colours
+    /// A copy of the material with adjusted colors
     /// </summary>
     private static Material? Painted(Material? material, VacPaletteRequest request, string objectName)
     {
@@ -302,7 +302,7 @@ public static class PrismVacPaletteCreatorV02
 
         if (material == null)
         {
-            LogWarning($"Prism: Vac palette '{objectName}': the body has no material to paint, so its colours are left out");
+            LogWarning($"Prism: Vac palette '{objectName}': the body has no material to paint, so its colors are left out");
             return null;
         }
 
@@ -314,7 +314,7 @@ public static class PrismVacPaletteCreatorV02
             
             if (!painted.HasProperty($"_Color{channel}0"))
             {
-                LogWarning($"Prism: Vac palette '{objectName}': the body material's shader has no {Channels[channel]} channel, so that colour is left out");
+                LogWarning($"Prism: Vac palette '{objectName}': the body material's shader has no {Channels[channel]} channel, so that color is left out");
                 continue;
             }
 

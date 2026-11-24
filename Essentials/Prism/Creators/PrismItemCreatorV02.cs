@@ -192,7 +192,7 @@ public static class PrismItemCreatorV02
         item.name          = objectName;
         item.localizedName = request.DisplayName;
         item.icon          = request.Icon ?? (request.Color.HasValue && request.Texture == null
-                            ? SpriteEUtil.Recolour(request.Template.icon, request.Template.color, request.Color.Value) ?? request.Template.icon
+                            ? SpriteEUtil.Recolor(request.Template.icon, request.Template.color, request.Color.Value) ?? request.Template.icon
                             : request.Template.icon);
         
         PageArt.ClearFullArt(item);

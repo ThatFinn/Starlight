@@ -89,6 +89,11 @@ public sealed class PediaRequest
     /// Runs when the player unlocks the entry
     /// </summary>
     public Action<PediaUnlock>? CustomUnlockAction { get; init; }
+
+    /// <summary>
+    /// Whether other mods can recolor the art of the created thing
+    /// </summary>
+    public bool CanBeRecolored { get; init; } = true;
 }
 
 /// <summary>
@@ -96,6 +101,11 @@ public sealed class PediaRequest
 /// </summary>
 public sealed record PediaInfo
 {
+    /// <summary>
+    /// Whether other mods can recolor the art of the created thing
+    /// </summary>
+    public bool CanBeRecolored { get; init; } = true;
+
     /// <summary>
     /// The opening description
     /// </summary>
@@ -171,6 +181,11 @@ public sealed class FixedPediaRequest
     /// Runs when the player unlocks the page
     /// </summary>
     public Action<PediaUnlock>? CustomUnlockAction { get; init; }
+
+    /// <summary>
+    /// Whether other mods can recolor the page's art
+    /// </summary>
+    public bool CanBeRecolored { get; init; } = true;
 }
 
 /// <summary>
@@ -202,6 +217,11 @@ public sealed class RadiantPediaRequest
     /// Runs when the player unlocks the entry
     /// </summary>
     public Action<PediaUnlock>? CustomUnlockAction { get; init; }
+
+    /// <summary>
+    /// Whether other mods can recolor the page's art
+    /// </summary>
+    public bool CanBeRecolored { get; init; } = true;
 }
 
 /// <summary>
@@ -330,6 +350,8 @@ public static class PrismPediaCreatorV02
     /// <returns> The page that was created or null </returns>
     public static PediaEntry? CreateFor(IdentifiableType subject, PediaInfo? info, PediaCategoryKind defaultCategory, PediaFactSetKind defaultFactSet)
     {
+        if (subject != null && info is { CanBeRecolored: false }) subject.SetCanBeRecolored(false);
+
         if (subject == null || info == null || !StarlightEntryPoint.prismEnablePedia) return null;
 
         try
@@ -365,7 +387,8 @@ public static class PrismPediaCreatorV02
             Description        = DescriptionOf(info),
             FactSet            = info.FactSet ?? PediaFactSetKind.Slime,
             Sections           = SectionsOf(info),
-            CustomUnlockAction = info.CustomUnlockAction
+            CustomUnlockAction = info.CustomUnlockAction,
+            CanBeRecolored     = info.CanBeRecolored
         });
     }
 
@@ -410,6 +433,8 @@ public static class PrismPediaCreatorV02
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(request.Subject);
+
+        if (!request.CanBeRecolored) request.Subject.SetCanBeRecolored(false);
 
         if (HasEntry(request.Subject) && Existing(request.Subject) is { } already)
         {
@@ -502,6 +527,7 @@ public static class PrismPediaCreatorV02
 
         if (request.Icon != null) entry._icon = request.Icon;
         if (request.FactSet != PediaFactSetKind.None) entry._highlightSet = FindHighlightSet(request.FactSet);
+        if (!request.CanBeRecolored) entry.SetCanBeRecolored(false);
 
         Entries[name] = entry;
         Documented.Add(name);
@@ -572,6 +598,7 @@ public static class PrismPediaCreatorV02
         entry._slimeDefinition = subject;
         entry._title = subject.localizedName;
         entry._highlightSet = FindHighlightSet(request.FactSet);
+        if (!request.CanBeRecolored) entry.SetCanBeRecolored(false);
 
         RadiantEntries.Add(entry);
         PediaSaveIds.Register(entry, PediaSaveIds.RadiantLegacyIdsOf(entry, subject, templatePrefix));
