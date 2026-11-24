@@ -48,6 +48,7 @@ public record GadgetCost
     /// <summary>
     /// The items it costs
     /// </summary>
+    /// <remarks> Together with Newbucks, at most <see cref="PrismGadgetCreatorV02.MaxCraftingIngredients"/> possible </remarks>
     public IReadOnlyList<(IdentifiableType Item, int Amount)> Items { get; init; } = Array.Empty<(IdentifiableType, int)>();
 }
 
@@ -192,6 +193,12 @@ public static class PrismGadgetCreatorV02
     private const string Kind = "Gadget";
 
     /// <summary>
+    /// The most ingredients the Fabricator's recipe panel fits, newbucks included
+    /// </summary>
+    /// <remarks> If you add more, the gadget cannot be crafted </remarks>
+    public const int MaxCraftingIngredients = 6;
+
+    /// <summary>
     /// Every created gadget
     /// </summary>
     private static readonly HashSet<IntPtr> CreatedGadgets = new();
@@ -264,7 +271,7 @@ public static class PrismGadgetCreatorV02
         if (request.BlueprintCost.HasValue) gadget.BlueprintCost = request.BlueprintCost.Value;
         if (request.BuyCountLimit.HasValue) gadget.BuyCountLimit = request.BuyCountLimit.Value;
         if (request.CountLimit.HasValue) gadget.CountLimit = request.CountLimit.Value;
-        if (request.Cost != null) gadget.CraftingCosts = BuildCost(request.Cost);
+        if (request.Cost != null) gadget.CraftingCosts = BuildCost(request.Cost, objectName);
 
         gadget.CountOtherDefinitions = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<GadgetDefinition>(0);
 
@@ -334,7 +341,7 @@ public static class PrismGadgetCreatorV02
     /// <summary>
     /// Builds what a gadget costs
     /// </summary>
-    private static PurchaseCost BuildCost(GadgetCost cost)
+    private static PurchaseCost BuildCost(GadgetCost cost, string gadgetName)
     {
         var currencies = new Il2CppSystem.Collections.Generic.List<CurrencyCostEntry>();
         if (cost.Newbucks > 0) currencies.Add(CurrencyCostEntry.CreateNewbucks(cost.Newbucks));
@@ -345,6 +352,10 @@ public static class PrismGadgetCreatorV02
             if (item == null || amount <= 0) continue;
             items.Add(new IdentCostEntry(item, amount));
         }
+
+        var ingredients = currencies.Count + items.Count;
+        if (ingredients > MaxCraftingIngredients)
+            LogWarning($"Prism: '{gadgetName}' costs {ingredients} ingredients, but the Fabricator only fits {MaxCraftingIngredients}, so it can't be crafted");
 
         return new PurchaseCost(currencies, items, new Il2CppSystem.Collections.Generic.List<Il2CppMonomiPark.SlimeRancher.Player.Component.UpgradeComponent>());
     }
