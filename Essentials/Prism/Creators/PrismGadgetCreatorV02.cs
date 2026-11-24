@@ -91,6 +91,18 @@ public record GadgetRequest
     public Color? Color { get; init; }
 
     /// <summary>
+    /// How the colors of the template's icon and full art change
+    /// </summary>
+    /// <remarks> Null keeps the template's icon and art as they are; ignored when there is an <see cref="Icon"/> specified </remarks>
+    public ColorShift? ArtShift { get; init; }
+
+    /// <summary>
+    /// Color properties set on the model's materials, such as the slots of a palette shader
+    /// </summary>
+    /// <remarks> Only materials that have one of the properties are copied and changed </remarks>
+    public IReadOnlyDictionary<string, Color>? MaterialColors { get; init; }
+
+    /// <summary>
     /// A custom model
     /// </summary>
     /// <remarks> Null = the template's model </remarks>
@@ -240,8 +252,8 @@ public static class PrismGadgetCreatorV02
         gadget.name          = objectName;
         gadget.localizedName = request.DisplayName;
         SpriteEUtil.Hold(request.Icon);
-        gadget.icon = request.Icon ?? template.icon;
         PageArt.ClearFullArt(gadget);
+        Recolor(gadget, template, request);
         gadget.color = request.Color ?? template.color;
         PediaSaveIds.SetSuffix(gadget, ContentNames.StableName(request.Name, Kind), name, "gadget");
 
@@ -260,6 +272,7 @@ public static class PrismGadgetCreatorV02
 
         foreach (var identifiable in gadget.prefab.GetComponentsInChildren<Identifiable>(includeInactive: true))
             identifiable.identType = gadget;
+        Prefabs.Retarget(gadget.prefab, template, gadget);
         ApplyAppearance(gadget, request);
 
         var legacyId = ContentNames.LegacyReferenceId("GadgetDefinition", ContentNames.StableName(request.Name, Kind), Kind);
@@ -337,10 +350,27 @@ public static class PrismGadgetCreatorV02
     }
 
     /// <summary>
-    /// Applies the model and texture to the gadget's prefab
+    /// Shifts the colors of the template's icon and full art
+    /// </summary>
+    private static void Recolor(GadgetDefinition gadget, GadgetDefinition template, GadgetRequest request)
+    {
+        gadget.icon = request.Icon ?? template.icon;
+
+        if (request.Icon != null || request.ArtShift is not { } shift) return;
+
+        gadget.icon = template.icon.Recolor(shift) ?? template.icon;
+        
+        PageArt.RegisterRecolor(gadget, template.FullArtReference, shift);
+    }
+
+    /// <summary>
+    /// Applies the colors, model and texture to the gadget's prefab
     /// </summary>
     private static void ApplyAppearance(GadgetDefinition gadget, GadgetRequest request)
     {
+        if (request.MaterialColors is { Count: > 0 } colors)
+            MaterialColors.ApplyToHierarchy(gadget.prefab, colors);
+
         if (request.Mesh == null && request.Texture == null) return;
         
         if (request.Mesh != null)

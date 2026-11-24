@@ -65,6 +65,13 @@ public static class ContentNames
             if (!name.EndsWith(kind, StringComparison.OrdinalIgnoreCase)) name += kind;
         }
 
+        if (prefix == "GadgetDefinition")
+        {
+            const string kind = "Gadget";
+
+            if (name.Length > kind.Length && name.EndsWith(kind, StringComparison.Ordinal)) name = name[..^kind.Length];
+        }
+
         CommandNames[type.Pointer] = name;
     }
 
