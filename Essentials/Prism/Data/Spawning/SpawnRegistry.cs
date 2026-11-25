@@ -54,10 +54,14 @@ public static class SpawnRegistry
         foreach (var rule in Rules)
         {
             if (!SpawnLocations.Matches(sceneName, rule.Locations)) continue;
+            if (!SpawnerFit.Accepts(spawner, rule.Type)) continue;
+
+            var time = SpawnerFit.FitTime(spawner, rule.Time);
+            if (time == null) continue;
 
             try
             {
-                Inject(spawner, rule);
+                Inject(spawner, rule with { Time = time.Value });
             }
             catch (Exception ex)
             {

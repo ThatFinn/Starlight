@@ -69,16 +69,19 @@ public static class PrismLibSpawning
 
         ExecuteOnSpawnerAwake.Add(spawner =>
         {
-            if (ContainsZoneName(spawner.gameObject.scene.name, list))
-            {
-                if (spawnerType==PrismSpawnerType.Slime)
-                    if (spawner.TryCast<DirectedSlimeSpawner>() != null)
-                        AddSpawningSettings(spawner, ident, weight, activeTime, requiredConditions);
+            if (!ContainsZoneName(spawner.gameObject.scene.name, list)) return;
+            if (!SpawnerFit.Accepts(spawner, ident)) return;
 
-                if (spawnerType==PrismSpawnerType.Animal)
-                    if (spawner.TryCast<DirectedAnimalSpawner>() != null)
-                        AddSpawningSettings(spawner, ident, weight, activeTime, requiredConditions);
-            }
+            var time = SpawnerFit.FitTime(spawner, activeTime);
+            if (time == null) return;
+
+            if (spawnerType==PrismSpawnerType.Slime)
+                if (spawner.TryCast<DirectedSlimeSpawner>() != null)
+                    AddSpawningSettings(spawner, ident, weight, time.Value, requiredConditions);
+
+            if (spawnerType==PrismSpawnerType.Animal)
+                if (spawner.TryCast<DirectedAnimalSpawner>() != null)
+                    AddSpawningSettings(spawner, ident, weight, time.Value, requiredConditions);
         });
 
     }
@@ -183,6 +186,7 @@ public static class PrismLibSpawning
         if (locations.Contains(PrismSpawnLocations.LabyrinthDreamland)) names.Add("Dreamland");
         if (locations.Contains(PrismSpawnLocations.LabyrinthHub)) names.Add("Hub");
         if (locations.Contains(PrismSpawnLocations.LabyrinthTerrarium)) names.Add("zoneLabyrinthTerrarium");
+        if (locations.Contains(PrismSpawnLocations.LabyrinthCore)) names.Add("zoneLabyrinthCore");
         return names;
     }
 

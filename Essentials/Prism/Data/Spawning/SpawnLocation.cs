@@ -18,6 +18,7 @@ public static class SpawnLocations
         PrismSpawnLocations.LabyrinthLavadepths => "LabValley",
         PrismSpawnLocations.LabyrinthDreamland => "Dreamland",
         PrismSpawnLocations.LabyrinthTerrarium => "zoneLabyrinthTerrarium",
+        PrismSpawnLocations.LabyrinthCore => "zoneLabyrinthCore",
         _ => string.Empty
     };
 
