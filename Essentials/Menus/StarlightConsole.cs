@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using Il2CppInterop.Runtime.Attributes;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppTMPro;
 using Starlight.Enums;
 using Starlight.Enums.Features;
@@ -33,6 +34,11 @@ public class StarlightConsole : StarlightMenu
     private TMP_InputField _commandInput;
     private Transform _autoCompleteContent;
     private GameObject _autoCompleteScrollView;
+    private ScrollRect _autoCompleteScroll;
+    private int _autoCompleteTopRow;
+    private bool _draggingAutoCompleteBar;
+    private float _autoCompleteGrabOffset;
+    private float _arrowRepeatAt;
     private int _selectedAutoComplete;
     private List<string> _commandHistory = new ();
     private int _commandHistoryIdx = -1;
@@ -84,6 +90,13 @@ public class StarlightConsole : StarlightMenu
         _scrollbar = transform.GetObjectRecursively<Scrollbar>("ConsoleMenuConsoleScrollbarRec");
         _autoCompleteContent = transform.GetObjectRecursively<Transform>("ConsoleMenuAutoCompleteContentRec");
         _autoCompleteScrollView = transform.GetObjectRecursively<GameObject>("ConsoleMenuAutoCompleteScrollRectRec");
+        _autoCompleteScroll = _autoCompleteScrollView.GetComponent<ScrollRect>();
+        _autoCompleteTopRow = 0;
+
+        _autoCompleteScroll.scrollSensitivity = 0;
+        if (_autoCompleteScroll.verticalScrollbar)
+            foreach (var graphic in _autoCompleteScroll.verticalScrollbar.GetComponentsInChildren<Graphic>(true))
+                graphic.raycastTarget = false;
 
         _commandInput.onValueChanged.AddListener((Action<string>)((text) =>
         {
@@ -147,7 +160,8 @@ public class StarlightConsole : StarlightMenu
                 Position = new Vector2(Gap, 0),
                 Name = "ConsoleMenuAutoCompleteScrollRectRec",
                 ContentName = "ConsoleMenuAutoCompleteContentRec",
-                BackgroundColor = UIColor.Primary
+                BackgroundColor = UIColor.Primary,
+                ScrollByMenuKeys = false
             },
         ]
     };
@@ -236,7 +250,6 @@ public class StarlightConsole : StarlightMenu
     void RefreshAutoComplete(string text)
     {
         if (!_openMenu) return;
-        _autoCompleteContent.parent.parent.GetComponent<ScrollRect>().enabled = true; // Make sure that the component is enabled
 
         if (_selectedAutoComplete > _autoCompleteContent.childCount - 1)
             _selectedAutoComplete = 0;
@@ -347,8 +360,8 @@ public class StarlightConsole : StarlightMenu
         }
 
         _autoCompleteScrollView.SetActive(_autoCompleteContent.childCount != 0);
-        _autoCompleteContent.parent.parent.GetComponent<ScrollRect>().enabled = false;
 
+        ExecuteInTicks(ScrollToSelected, 1);
     }
 
     protected override void OnUpdate()
@@ -415,19 +428,25 @@ public class StarlightConsole : StarlightMenu
 
         if (_autoCompleteContent.childCount != 0 && _autoCompleteScrollView.active)
         {
-            if (LKey.DownArrow.OnKeyDown())
-                NextAutoComplete();
-
-            if (LKey.UpArrow.OnKeyDown())
-                PrevAutoComplete();
+            var last = _autoCompleteContent.childCount - 1;
+            if (ArrowPressedOrRepeating(LKey.DownArrow, out var repeated))
+            {
+                if (!repeated || _selectedAutoComplete < last) NextAutoComplete();
+            }
+            else if (ArrowPressedOrRepeating(LKey.UpArrow, out repeated))
+            {
+                if (!repeated || _selectedAutoComplete > 0) PrevAutoComplete();
+            }
         }
+
+        HandleAutoCompleteMouse();
 
         if (_selectedAutoComplete == _autoCompleteContent.childCount)
         {
             _selectedAutoComplete = 0;
         }
 
-        if (_scrollbar)
+        if (_scrollbar && !IsPointerOverAutoComplete())
         {
             float value = Mouse.current.scroll.ReadValue().y;
             if (Mouse.current.scroll.ReadValue().y != 0)
@@ -441,22 +460,175 @@ public class StarlightConsole : StarlightMenu
         try
         {
             if (_autoCompleteContent.childCount != 0)
-            {
                 _autoCompleteContent.GetChild(_selectedAutoComplete).GetComponent<Image>().color =
                     currentTheme.GetColor(UIColor.AutoCompleteSelected);
-                if (_selectedAutoComplete > MAX_AUTOCOMPLETEONSCREEN.Get())
-                    _autoCompleteContent.GetComponent<RectTransform>().anchoredPosition = new Vector2(
-                        _autoCompleteContent.GetComponent<RectTransform>().anchoredPosition.x,
-                        (22f * UIBlueprint.ScaleFactor) * (_selectedAutoComplete - MAX_AUTOCOMPLETEONSCREEN.Get()));
-
-                else
-                    _autoCompleteContent.GetComponent<RectTransform>().anchoredPosition = new Vector2(
-                        _autoCompleteContent.GetComponent<RectTransform>().anchoredPosition.x, 0);
-            }
         }
         catch
         {
         }
+    }
+
+    private const float ArrowRepeatDelay    = 0.4f;
+    private const float ArrowRepeatInterval = 0.06f;
+
+    private bool ArrowPressedOrRepeating(LKey key, out bool repeated)
+    {
+        repeated = false;
+        if (key.OnKeyDown())
+        {
+            _arrowRepeatAt = Time.unscaledTime + ArrowRepeatDelay;
+            return true;
+        }
+
+        if (!key.OnKey() || Time.unscaledTime < _arrowRepeatAt) return false;
+
+        _arrowRepeatAt = Time.unscaledTime + ArrowRepeatInterval;
+        repeated       = true;
+        return true;
+    }
+    
+    private void ScrollToSelected()
+    {
+        if (!TryGetAutoCompleteGrid(out _, out var visible, out _)) return;
+        if (_selectedAutoComplete < 0 || _selectedAutoComplete >= _autoCompleteContent.childCount) return;
+
+        var top = _autoCompleteTopRow;
+        if (_selectedAutoComplete < top) top = _selectedAutoComplete;
+        else if (_selectedAutoComplete >= top + visible) top = _selectedAutoComplete - visible + 1;
+
+        SetAutoCompleteTopRow(top);
+    }
+    
+    private bool TryGetAutoCompleteGrid(out float pitch, out int visible, out int maxTopRow)
+    {
+        pitch     = 0;
+        visible   = 0;
+        maxTopRow = 0;
+        if (!_autoCompleteScroll || _autoCompleteContent.childCount == 0) return false;
+
+        var content = _autoCompleteScroll.content;
+        LayoutRebuilder.ForceRebuildLayoutImmediate(content);
+
+        var layout  = content.GetComponent<VerticalLayoutGroup>();
+        var spacing = layout ? layout.spacing : 0;
+        var padding = layout ? layout.padding.vertical : 0;
+
+        pitch = _autoCompleteContent.GetChild(0).GetComponent<RectTransform>().rect.height + spacing;
+        if (pitch <= 0) return false;
+
+        visible   = Mathf.Max(1, Mathf.FloorToInt((AutoCompleteViewport().rect.height - padding + spacing) / pitch));
+        maxTopRow = Mathf.Max(0, _autoCompleteContent.childCount - visible);
+        return true;
+    }
+    
+    private void SetAutoCompleteTopRow(int row)
+    {
+        if (!TryGetAutoCompleteGrid(out var pitch, out _, out var maxTopRow)) return;
+
+        _autoCompleteTopRow = Mathf.Clamp(row, 0, maxTopRow);
+
+        var content   = _autoCompleteScroll.content;
+        var maxScroll = Mathf.Max(0, content.rect.height - AutoCompleteViewport().rect.height);
+
+        _autoCompleteScroll.StopMovement();
+        content.anchoredPosition = new Vector2(content.anchoredPosition.x, Mathf.Min(_autoCompleteTopRow * pitch, maxScroll));
+    }
+
+    private RectTransform AutoCompleteViewport() =>
+        _autoCompleteScroll.viewport ? _autoCompleteScroll.viewport : _autoCompleteScroll.content.parent.GetComponent<RectTransform>();
+    
+    private void HandleAutoCompleteMouse()
+    {
+        var mouse = Mouse.current;
+        if (mouse == null || !_autoCompleteScroll || !_autoCompleteScrollView.activeInHierarchy || _autoCompleteContent.childCount == 0)
+        {
+            _draggingAutoCompleteBar = false;
+            return;
+        }
+
+        var wheel = mouse.scroll.ReadValue().y;
+        if (wheel != 0 && IsPointerOverAutoComplete())
+            SetAutoCompleteTopRow(_autoCompleteTopRow - Math.Sign(wheel));
+
+        var bar = _autoCompleteScroll.verticalScrollbar;
+        if (!bar) return;
+
+        var cam     = AutoCompleteCamera();
+        var pointer = mouse.position.ReadValue();
+        var onBar   = RectTransformUtility.RectangleContainsScreenPoint(bar.GetComponent<RectTransform>(), pointer, cam);
+
+        if (mouse.leftButton.wasPressedThisFrame && !onBar)
+        {
+            ClickAutoCompleteAt(pointer, cam);
+            return;
+        }
+
+        if (mouse.leftButton.wasPressedThisFrame && onBar)
+        {
+            _draggingAutoCompleteBar = true;
+            
+            var handle = bar.handleRect;
+            _autoCompleteGrabOffset = handle && RectTransformUtility.RectangleContainsScreenPoint(handle, pointer, cam)
+                ? pointer.y - ScreenCenterY(handle, cam)
+                : 0;
+        }
+
+        if (!mouse.leftButton.isPressed) _draggingAutoCompleteBar = false;
+        if (!_draggingAutoCompleteBar) return;
+        if (!TryGetAutoCompleteGrid(out _, out _, out var maxTopRow) || maxTopRow == 0) return;
+
+        var corners = new Il2CppStructArray<Vector3>(4);
+        bar.GetComponent<RectTransform>().GetWorldCorners(corners);
+        var bottom = RectTransformUtility.WorldToScreenPoint(cam, corners[0]).y;
+        var top    = RectTransformUtility.WorldToScreenPoint(cam, corners[1]).y;
+
+        var handleHeight = (top - bottom) * bar.size;
+        var travel       = top - bottom - handleHeight;
+        if (travel <= 0) return;
+
+        var along = (top - handleHeight / 2f - (pointer.y - _autoCompleteGrabOffset)) / travel;
+        SetAutoCompleteTopRow(Mathf.RoundToInt(Mathf.Clamp01(along) * maxTopRow));
+    }
+    
+    private void ClickAutoCompleteAt(Vector2 pointer, Camera cam)
+    {
+        if (!RectTransformUtility.RectangleContainsScreenPoint(AutoCompleteViewport(), pointer, cam)) return;
+
+        for (var i = 0; i < _autoCompleteContent.childCount; i++)
+        {
+            var row = _autoCompleteContent.GetChild(i).GetComponent<RectTransform>();
+            if (!RectTransformUtility.RectangleContainsScreenPoint(row, pointer, cam)) continue;
+
+            _selectedAutoComplete = i;
+            try
+            {
+                row.GetComponent<Button>().onClick.Invoke();
+                _selectedAutoComplete = 0;
+            }
+            catch { }
+            return;
+        }
+    }
+
+    private static float ScreenCenterY(RectTransform rect, Camera cam)
+    {
+        var corners = new Il2CppStructArray<Vector3>(4);
+        rect.GetWorldCorners(corners);
+        return (RectTransformUtility.WorldToScreenPoint(cam, corners[0]).y + RectTransformUtility.WorldToScreenPoint(cam, corners[1]).y) / 2f;
+    }
+
+    private Camera AutoCompleteCamera()
+    {
+        var canvas = _autoCompleteScrollView.GetComponentInParent<Canvas>();
+        return canvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
+    }
+    
+    private bool IsPointerOverAutoComplete()
+    {
+        if (!_autoCompleteScrollView || !_autoCompleteScrollView.activeInHierarchy || Mouse.current == null) return false;
+
+        return RectTransformUtility.RectangleContainsScreenPoint(
+            _autoCompleteScrollView.GetComponent<RectTransform>(), Mouse.current.position.ReadValue(), AutoCompleteCamera());
     }
     
     void NextAutoComplete()
@@ -477,6 +649,7 @@ public class StarlightConsole : StarlightMenu
             _autoCompleteContent.GetChild(_selectedAutoComplete).GetComponent<Image>().color =
                 currentTheme.GetColor(UIColor.AutoCompleteSelected);
         }
+        ScrollToSelected();
     }
 
     void PrevAutoComplete()
@@ -497,6 +670,7 @@ public class StarlightConsole : StarlightMenu
             _autoCompleteContent.GetChild(_selectedAutoComplete).GetComponent<Image>().color =
                 currentTheme.GetColor(UIColor.AutoCompleteSelected);
         }
+        ScrollToSelected();
     }
 
     void Execute()
