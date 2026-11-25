@@ -36,8 +36,14 @@ internal static class RadiantRotationPatch
         foreach (var definition in RadiantRotation.Slimes)
         {
             if (definition == null || definition.RadiantBase == null) continue;
-            if (entries.Any(entry => entry.Slime != null && entry.Slime.Pointer == definition.Pointer)) continue;
 
+            var existing = entries.FirstOrDefault(entry => entry.Slime != null && entry.Slime.Pointer == definition.Pointer);
+            if (existing != null)
+            {
+                existing.BagSize = RadiantRotation.WeightOf(definition);
+                continue;
+            }
+            
             entries.Add(new RadiantSlimeConfig.RadiantShuffleBagConfigEntry
             {
                 Slime = definition,
